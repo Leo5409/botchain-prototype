@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOHR 后台管理系统 — 用户数据导出</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 13px; display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 220px; background: #141627; display: flex; flex-direction: column; flex-shrink: 0; }
+  .logo { padding: 20px 20px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .logo-text { color: #fff; font-size: 14px; font-weight: 600; }
+  .nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .nav-group-title { color: rgba(255,255,255,.3); font-size: 11px; letter-spacing: 1px; padding: 16px 20px 6px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,.55); cursor: pointer; transition: all .15s; font-size: 13px; }
+  .nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.9); }
+  .nav-item.active { background: rgba(91,106,240,.2); color: #7c8ff7; border-right: 2px solid #5b6af0; }
+  .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 10px; }
+  .sidebar-bottom { padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 28px; height: 28px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 600; }
+  .admin-name { color: rgba(255,255,255,.7); font-size: 12px; }
+
+  /* ── Main ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { height: 52px; background: #fff; border-bottom: 1px solid #e8eaed; display: flex; align-items: center; padding: 0 24px; gap: 8px; flex-shrink: 0; }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px; }
+  .breadcrumb .current { color: #1a1a2e; font-weight: 500; }
+  .breadcrumb-sep { color: #d1d5db; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 12px; }
+  .btn-text { background: none; border: none; color: #5b6af0; font-size: 13px; cursor: pointer; padding: 6px 10px; border-radius: 6px; display: flex; align-items: center; gap: 5px; }
+  .btn-text:hover { background: #f0f1fe; }
+
+  /* ── Content ── */
+  .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .page-title { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+  .page-subtitle { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+
+  /* ── Card ── */
+  .card { background: #fff; border-radius: 10px; border: 1px solid #e8eaed; margin-bottom: 14px; }
+  .card-header { padding: 14px 20px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 13px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 7px; }
+  .card-title::before { content: ''; width: 3px; height: 14px; background: #5b6af0; border-radius: 2px; display: inline-block; }
+  .card-body { padding: 16px 20px; }
+
+  /* ── Filter ── */
+  .filter-row { display: flex; align-items: flex-end; gap: 12px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; }
+  .form-group.wide { flex: 1.5; }
+  .form-label { font-size: 12px; color: #6b7280; }
+  .form-input { height: 32px; border: 1px solid #e0e2e7; border-radius: 6px; padding: 0 10px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; transition: border-color .15s; }
+  .form-input:focus { border-color: #5b6af0; background: #fff; }
+  .form-input::placeholder { color: #c0c4cc; }
+  .date-range { display: flex; align-items: center; gap: 6px; }
+  .date-range .form-input { flex: 1; }
+  .date-sep { color: #d1d5db; font-size: 11px; flex-shrink: 0; }
+  .filter-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* ── Buttons ── */
+  .btn { height: 32px; padding: 0 16px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all .15s; }
+  .btn-primary { background: #5b6af0; color: #fff; }
+  .btn-primary:hover { background: #4f5de6; }
+  .btn-secondary { background: #fff; color: #374151; border: 1px solid #e0e2e7; }
+  .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
+  .btn-success { background: #10b981; color: #fff; }
+  .btn-success:hover { background: #059669; }
+  .btn-sm { height: 26px; padding: 0 10px; font-size: 11px; }
+  .btn-ghost { background: none; border: 1px dashed #d1d5db; color: #6b7280; }
+  .btn-ghost:hover { border-color: #5b6af0; color: #5b6af0; }
+
+  /* ── Field Panel ── */
+  .field-panel-toggle { display: flex; align-items: center; justify-content: space-between; cursor: pointer; padding: 14px 20px; border-bottom: 1px solid #f3f4f6; user-select: none; }
+  .field-panel-toggle:hover { background: #fafafa; }
+  .toggle-left { display: flex; align-items: center; gap: 8px; }
+  .toggle-icon { width: 7px; height: 7px; border-right: 2px solid #5b6af0; border-bottom: 2px solid #5b6af0; transform: rotate(45deg); transition: transform .2s; margin-top: -2px; }
+  .toggle-icon.open { transform: rotate(-135deg); margin-top: 2px; }
+  .toggle-label { font-size: 13px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 7px; }
+  .toggle-label::before { content: ''; width: 3px; height: 14px; background: #5b6af0; border-radius: 2px; display: inline-block; }
+  .field-count-badge { background: #eef0fe; color: #5b6af0; font-size: 11px; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+  .field-count-total { color: #9ca3af; font-size: 11px; }
+  .field-panel-body { overflow: hidden; transition: max-height .3s ease; max-height: 0; }
+  .field-panel-body.open { max-height: 700px; }
+  .field-panel-inner { padding: 16px 20px; }
+  .field-group { margin-bottom: 14px; }
+  .field-group:last-child { margin-bottom: 0; }
+  .field-group-header { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+  .field-group-name { font-size: 12px; font-weight: 600; color: #374151; white-space: nowrap; }
+  .field-group-select-all { font-size: 11px; color: #5b6af0; cursor: pointer; white-space: nowrap; }
+  .field-group-select-all:hover { text-decoration: underline; }
+  .field-group-divider { flex: 1; height: 1px; background: #f3f4f6; }
+  .field-checkboxes { display: flex; flex-wrap: wrap; gap: 7px; }
+  .field-checkbox-item { display: flex; align-items: center; gap: 5px; background: #f9fafb; border: 1px solid #e8eaed; border-radius: 6px; padding: 5px 10px; cursor: pointer; transition: all .15s; }
+  .field-checkbox-item:hover { border-color: #5b6af0; background: #f0f1fe; }
+  .field-checkbox-item.checked { background: #eef0fe; border-color: #5b6af0; }
+  .field-checkbox-item input[type=checkbox] { display: none; }
+  .custom-check { width: 14px; height: 14px; border: 1.5px solid #d1d5db; border-radius: 3px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: all .15s; }
+  .field-checkbox-item.checked .custom-check { background: #5b6af0; border-color: #5b6af0; }
+  .custom-check::after { content: ''; width: 8px; height: 5px; border-left: 1.5px solid #fff; border-bottom: 1.5px solid #fff; transform: rotate(-45deg) translate(1px, -1px); display: none; }
+  .field-checkbox-item.checked .custom-check::after { display: block; }
+  .field-checkbox-label { font-size: 12px; color: #374151; }
+  .field-checkbox-item.checked .field-checkbox-label { color: #4f5de6; font-weight: 500; }
+  .field-panel-footer { display: flex; align-items: center; padding: 12px 20px; border-top: 1px solid #f3f4f6; background: #fafafa; gap: 8px; }
+  .footer-summary { font-size: 12px; color: #6b7280; }
+  .footer-summary strong { color: #5b6af0; }
+
+  /* ── Drill Breadcrumb ── */
+  .drill-nav { display: flex; align-items: center; gap: 0; margin-bottom: 14px; background: #fff; border: 1px solid #e8eaed; border-radius: 10px; padding: 12px 20px; flex-wrap: wrap; gap: 4px; }
+  .drill-nav-label { font-size: 11px; color: #9ca3af; margin-right: 8px; flex-shrink: 0; }
+  .bc-item { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; color: #5b6af0; cursor: pointer; padding: 4px 10px; border-radius: 6px; border: 1px solid #e8eaed; background: #fff; transition: all .15s; white-space: nowrap; }
+  .bc-item:hover { background: #f0f1fe; border-color: #5b6af0; }
+  .bc-item.active { background: #eef0fe; border-color: #5b6af0; color: #374151; font-weight: 600; cursor: default; }
+  .bc-item.active:hover { background: #eef0fe; }
+  .bc-arrow { color: #d1d5db; font-size: 14px; flex-shrink: 0; }
+
+  /* ── Node Info Bar ── */
+  .node-info-bar { background: linear-gradient(135deg, #eef0fe, #f5f3ff); border: 1px solid #c7d2fe; border-radius: 10px; padding: 14px 20px; margin-bottom: 14px; display: flex; align-items: center; gap: 0; flex-wrap: wrap; }
+  .node-info-item { padding: 0 20px; border-right: 1px solid #c7d2fe; }
+  .node-info-item:first-child { padding-left: 0; }
+  .node-info-item:last-child { border-right: none; }
+  .node-info-label { font-size: 11px; color: #6b7280; margin-bottom: 4px; }
+  .node-info-value { font-size: 13px; font-weight: 600; color: #1a1a2e; }
+  .node-info-addr { font-family: monospace; font-size: 11px; color: #4f5de6; font-weight: 600; }
+
+  /* ── Table ── */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #f8f9fd; }
+  th { padding: 10px 14px; text-align: left; color: #6b7280; font-weight: 600; font-size: 11px; white-space: nowrap; border-bottom: 1px solid #e8eaed; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; color: #374151; white-space: nowrap; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbff; }
+  .td-address { font-family: monospace; font-size: 11px; color: #5b6af0; cursor: pointer; }
+  .td-address:hover { text-decoration: underline; }
+  .td-num { text-align: right; font-variant-numeric: tabular-nums; }
+  .td-green { color: #059669; font-weight: 500; }
+  .td-blue { color: #2563eb; font-weight: 500; }
+  .td-orange { color: #d97706; font-weight: 500; }
+  .level-badge { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .level-v0  { background: #f3f4f6; color: #6b7280; }
+  .level-v1  { background: #e0f2fe; color: #0369a1; }
+  .level-v3  { background: #dbeafe; color: #1d4ed8; }
+  .level-v5  { background: #d1fae5; color: #065f46; }
+  .level-v7  { background: #ede9fe; color: #5b21b6; }
+  .level-v10 { background: #fef3c7; color: #92400e; }
+  .ops-cell { display: flex; align-items: center; gap: 6px; }
+  .has-children { color: #374151; }
+  .no-children { color: #9ca3af; font-size: 11px; font-style: italic; }
+
+  /* ── Pagination ── */
+  .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #f3f4f6; }
+  .pagination { display: flex; align-items: center; gap: 4px; }
+  .page-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #e0e2e7; background: #fff; color: #374151; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .page-btn:hover { border-color: #5b6af0; color: #5b6af0; }
+  .page-btn.active { background: #5b6af0; border-color: #5b6af0; color: #fff; }
+  .page-btn.disabled { opacity: .4; cursor: not-allowed; }
+  .total-count { font-size: 12px; color: #9ca3af; }
+  .total-count strong { color: #374151; }
+
+  /* ── KOL Tabs ── */
+  .kol-tab-bar { display: flex; align-items: center; justify-content: space-between; padding: 0 20px; border-bottom: 1px solid #f3f4f6; background: #fafafa; }
+  .kol-tabs { display: flex; gap: 0; }
+  .kol-tab { height: 40px; padding: 0 18px; border: none; background: none; font-size: 13px; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; font-weight: 500; }
+  .kol-tab:hover { color: #374151; }
+  .kol-tab.active { color: #5b6af0; border-bottom-color: #5b6af0; font-weight: 600; }
+  .kol-tab-badge { display: inline-block; background: #eef0fe; color: #5b6af0; font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-left: 5px; font-weight: 600; }
+  .kol-tab.active .kol-tab-badge { background: #5b6af0; color: #fff; }
+
+  /* ── Ledger Tabs ── */
+  .ledger-tab { height: 30px; padding: 0 14px; border: none; background: #fff; font-size: 12px; color: #6b7280; cursor: pointer; border-right: 1px solid #e0e2e7; transition: all .15s; }
+  .ledger-tab:last-child { border-right: none; }
+  .ledger-tab:hover { background: #f9fafb; color: #374151; }
+  .ledger-tab.active { background: #eef0fe; color: #5b6af0; font-weight: 600; }
+
+  /* ── Export Bar ── */
+  .export-bar { background: #fff; border-top: 1px solid #e8eaed; padding: 12px 24px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+  .export-hint { font-size: 12px; color: #9ca3af; margin-left: 4px; }
+  .export-hint strong { color: #f59e0b; }
+
+  /* ── Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal { background: #fff; border-radius: 12px; width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,.2); transform: translateY(10px); transition: transform .2s; }
+  .modal-overlay.show .modal { transform: none; }
+  .modal-header { padding: 24px 24px 0; display: flex; align-items: flex-start; justify-content: space-between; }
+  .modal-title { font-size: 17px; font-weight: 700; color: #1a1a2e; }
+  .modal-close { width: 28px; height: 28px; border-radius: 6px; border: none; background: none; cursor: pointer; color: #9ca3af; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #f3f4f6; color: #374151; }
+  .modal-body { padding: 16px 24px 20px; }
+  .modal-info-line { font-size: 13px; color: #374151; margin-bottom: 6px; }
+  .modal-info-line span { color: #6b7280; margin-right: 4px; }
+  .modal-footer { padding: 0 24px 24px; display: flex; gap: 10px; justify-content: flex-end; }
+
+  /* ── Download Center ── */
+  #download-center { display: none; flex: 1; overflow-y: auto; background: #f5f7fa; }
+  .dc-wrap { padding: 0 32px 32px; }
+  .dc-back { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; color: #374151; cursor: pointer; padding: 16px 0 0; }
+  .dc-back:hover { color: #5b6af0; }
+  .dc-title { text-align: center; font-size: 18px; font-weight: 600; color: #1a1a2e; padding: 20px 0 16px; }
+  .dc-table-wrap { background: #fff; border: 1px solid #e8eaed; border-radius: 8px; overflow: hidden; }
+  .dc-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .dc-table thead th { padding: 12px 16px; text-align: center; font-weight: 600; color: #374151; border-bottom: 1px solid #e8eaed; }
+  .dc-table thead th:first-child { text-align: left; }
+  .dc-table tbody td { padding: 12px 16px; border-bottom: 1px solid #f3f4f6; font-size: 13px; text-align: center; }
+  .dc-table tbody td:first-child { text-align: left; font-size: 12px; max-width: 320px; word-break: break-all; white-space: normal; }
+  .dc-table tbody tr:last-child td { border-bottom: none; }
+  .dc-table tbody tr:hover td { background: #fafbff; }
+  .dc-dl-link { color: #5b6af0; cursor: pointer; }
+  .dc-dl-link:hover { text-decoration: underline; }
+  .dc-pagination { display: flex; align-items: center; justify-content: center; gap: 6px; padding: 20px 0; }
+  .dc-pg-total { font-size: 13px; color: #374151; margin-right: 4px; }
+  .dc-pg-btn { min-width: 32px; height: 32px; border-radius: 4px; border: 1px solid #e0e2e7; background: #fff; color: #374151; font-size: 13px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0 6px; transition: all .15s; }
+  .dc-pg-btn:hover { border-color: #5b6af0; color: #5b6af0; }
+  .dc-pg-btn.active { background: #5b6af0; border-color: #5b6af0; color: #fff; }
+  .dc-pg-btn.disabled { opacity: .4; cursor: not-allowed; }
+  .dc-pg-dots { color: #9ca3af; font-size: 13px; }
+  .dc-pg-perpage { height: 32px; border: 1px solid #e0e2e7; border-radius: 4px; padding: 0 8px; font-size: 13px; background: #fff; cursor: pointer; margin-left: 8px; }
+  .dc-pg-jump { display: flex; align-items: center; gap: 6px; font-size: 13px; margin-left: 8px; }
+  .dc-pg-jump input { width: 44px; height: 32px; border: 1px solid #e0e2e7; border-radius: 4px; padding: 0 8px; font-size: 13px; text-align: center; outline: none; }
+  .dc-pg-jump input:focus { border-color: #5b6af0; }
+
+  /* ── Toast ── */
+  .toast { position: fixed; top: 24px; right: 24px; background: #065f46; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; z-index: 2000; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.3); transform: translateX(120%); transition: transform .3s; }
+  .toast.show { transform: none; }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">⛓</div>
+    <span class="logo-text">BOHR 后台</span>
+  </div>
+  <nav class="nav">
+    <div class="nav-group-title">数据管理</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/></svg>用户管理</div>
+    <div class="nav-item active" id="nav-main" onclick="switchPage('main')"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-.293.707L13 10.414V15a1 1 0 01-.553.894l-4 2A1 1 0 017 17v-6.586L3.293 6.707A1 1 0 013 6V4z"/></svg>用户列表 & 导出</div>
+    <div class="nav-item" id="nav-download" onclick="switchPage('download')"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>下载中心<span class="nav-badge">2</span></div>
+    <div class="nav-group-title">挖矿管理</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z"/></svg>DePIN 设备管理</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z"/></svg>PoS 质押管理</div>
+    <div class="nav-group-title">财务管理</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-13a1 1 0 10-2 0v.092a4.535 4.535 0 00-1.676.662C6.602 6.234 6 7.009 6 8c0 .99.602 1.765 1.324 2.246.48.32 1.054.545 1.676.662v1.941c-.391-.127-.68-.317-.843-.504a1 1 0 10-1.51 1.31c.562.649 1.413 1.076 2.353 1.253V15a1 1 0 102 0v-.092a4.535 4.535 0 001.676-.662C13.398 13.766 14 12.991 14 12c0-.99-.602-1.765-1.324-2.246A4.535 4.535 0 0011 9.092V7.151c.391.127.68.317.843.504a1 1 0 101.511-1.31c-.563-.649-1.413-1.076-2.354-1.253V5z"/></svg>收益管理</div>
+    <div class="nav-item"><svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 2a4 4 0 00-4 4v1H5a1 1 0 00-.994.89l-1 9A1 1 0 004 18h12a1 1 0 00.994-1.11l-1-9A1 1 0 0015 7h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4zm-6 3a1 1 0 112 0 1 1 0 01-2 0zm7-1a1 1 0 100 2 1 1 0 000-2z"/></svg>提取审核</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="avatar">OP</div>
+    <div><div class="admin-name">运营管理员</div></div>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <span>用户管理</span><span class="breadcrumb-sep">/</span>
+      <span class="current" id="topbar-title">用户列表 & 数据导出</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-text" onclick="switchPage('download')">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
+        下载中心 <span style="background:#ef4444;color:#fff;font-size:10px;padding:0 4px;border-radius:8px;margin-left:2px;">2</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ── Main Export Page ── -->
+  <div id="main-content" style="flex:1;overflow-y:auto;display:flex;flex-direction:column;">
+    <div class="content" style="flex:1;">
+
+      <div class="page-header">
+        <div>
+          <div class="page-title">用户数据查询与导出</div>
+          <div class="page-subtitle">输入钱包地址查询，逐层下钻浏览关联地址关系</div>
+        </div>
+      </div>
+
+      <!-- Filter Card -->
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group">
+              <label class="form-label">钱包地址</label>
+              <input class="form-input" placeholder="输入钱包地址搜索" id="f-addr">
+            </div>
+            <div class="form-group">
+              <label class="form-label">邀请码</label>
+              <input class="form-input" placeholder="输入邀请码搜索" id="f-inv">
+            </div>
+            <div class="form-group wide">
+              <label class="form-label">查询数据的时间段</label>
+              <div class="date-range">
+                <input class="form-input" placeholder="开始日期" value="2026-01-01" id="f-date-s">
+                <span class="date-sep">—</span>
+                <input class="form-input" placeholder="结束日期" value="2026-05-18" id="f-date-e">
+              </div>
+            </div>
+            <div class="filter-actions">
+              <button class="btn btn-secondary" onclick="resetFilters()">重置</button>
+              <button class="btn btn-primary" onclick="doSearch()">
+                <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"/></svg>
+                搜索
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Field Panel -->
+      <div class="card">
+        <div class="field-panel-toggle" onclick="toggleFieldPanel()">
+          <div class="toggle-left">
+            <div class="toggle-icon" id="toggleIcon"></div>
+            <span class="toggle-label">选择导出字段</span>
+            <span class="field-count-badge" id="selectedCount">已选 37 项</span>
+            <span class="field-count-total">/ 共 37 项</span>
+          </div>
+          <span style="font-size:11px;color:#9ca3af;">展开勾选所需字段，结果表将同步更新</span>
+        </div>
+        <div class="field-panel-body" id="fieldPanelBody">
+          <div class="field-panel-inner">
+            <div class="field-group" data-group="A"><div class="field-group-header"><span class="field-group-name">A. 基础信息</span><span class="field-group-select-all" onclick="selectGroup('A')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">钱包地址</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">注册时间</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">推荐人地址</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">邀请码</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">姓名/备注</span></label><label class="field-checkbox-item" id="field-date-range-chip" style="border-style:dashed;opacity:.5;"><input type="checkbox" id="field-date-range-cb"><div class="custom-check"></div><span class="field-checkbox-label">交易时间段</span><span style="font-size:10px;color:#9ca3af;margin-left:3px;">（筛选后自动勾选）</span></label></div></div>
+            <div class="field-group" data-group="B"><div class="field-group-header"><span class="field-group-name">B. 等级与身份</span><span class="field-group-select-all" onclick="selectGroup('B')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">自己的等级</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">节点身份</span></label></div></div>
+            <div class="field-group" data-group="C"><div class="field-group-header"><span class="field-group-name">C. 关系数据</span><span class="field-group-select-all" onclick="selectGroup('C')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">直推人数</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">社区人数（不含本人）</span></label></div></div>
+            <div class="field-group" data-group="D"><div class="field-group-header"><span class="field-group-name">D. 算力挖矿</span><span class="field-group-select-all" onclick="selectGroup('D')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">算力入金总量</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">自己的算力</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">自己的小区算力</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">社区的总算力</span></label></div></div>
+            <div class="field-group" data-group="E"><div class="field-group-header"><span class="field-group-name">E. 质押数据</span><span class="field-group-select-all" onclick="selectGroup('E')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">质押总量（合计）</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">质押-活期</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">质押-30天</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">质押-90天</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">质押-180天</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">质押-360天</span></label></div></div>
+            <div class="field-group" data-group="F"><div class="field-group-header"><span class="field-group-name">F. 团队/社区业绩</span><span class="field-group-select-all" onclick="selectGroup('F')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">团队总有效业绩</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">小区业绩</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">团队算力业绩</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">团队质押业绩</span></label></div></div>
+            <div class="field-group" data-group="G"><div class="field-group-header"><span class="field-group-name">G. 奖励（BOT / USDT）</span><span class="field-group-select-all" onclick="selectGroup('G')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">已奖励BOT领取总量</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">社区补贴USDT总量</span></label></div></div>
+            <div class="field-group" data-group="H"><div class="field-group-header"><span class="field-group-name">H. CA 奖励与可提币</span><span class="field-group-select-all" onclick="selectGroup('H')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">已奖励CA总量</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">已提币CA总量</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">可提币CA总额</span></label><label class="field-checkbox-item checked" style="margin-left:8px;border-left:2px solid #c7d2fe;padding-left:12px;"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label" style="color:#4f5de6;">↳ CA-算力挖矿奖励</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label" style="color:#4f5de6;">↳ CA-质押奖励</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label" style="color:#4f5de6;">↳ CA-已释放本金</span></label></div></div>
+            <div class="field-group" data-group="I"><div class="field-group-header"><span class="field-group-name">I. 财务汇总（工作室 / 零线）</span><span class="field-group-select-all" onclick="selectGroup('I')">全选</span><div class="field-group-divider"></div></div><div class="field-checkboxes"><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">购买算力金额（汇总）</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">购买节点金额（汇总）</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">节点类型（超算/量子/创世）</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">CA 单价 / 单价</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">总质押价值（USDT）</span></label><label class="field-checkbox-item checked"><input type="checkbox" checked><div class="custom-check"></div><span class="field-checkbox-label">所属工作室 / 零线</span></label></div></div>
+          </div>
+          <div class="field-panel-footer">
+            <button class="btn btn-secondary btn-sm" onclick="selectAll()">全选</button>
+            <button class="btn btn-secondary btn-sm" onclick="clearAll()">清空</button>
+            <button class="btn btn-ghost btn-sm" onclick="resetDefault()">恢复默认</button>
+            <span class="footer-summary">已选 <strong id="footerCount">37</strong> 项字段，将导出这些列</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── KOL 头部地址管理 ── -->
+      <div class="card" id="kolCard">
+        <div class="field-panel-toggle" onclick="toggleKolPanel()">
+          <div class="toggle-left">
+            <div class="toggle-icon open" id="kolToggleIcon"></div>
+            <span class="toggle-label">头部地址（全量）</span>
+            <span class="field-count-badge">共 12 个</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:12px;">
+            <span style="font-size:11px;color:#9ca3af;">社区总人数 15,832 · 总业绩 2,483,600 USDT</span>
+            <button class="btn btn-primary btn-sm" onclick="event.stopPropagation();openAddKolModal()">+ 添加头部地址</button>
+          </div>
+        </div>
+        <div class="field-panel-body open" id="kolPanelBody">
+          <!-- 交易时间筛选 -->
+          <div style="display:flex;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid #f3f4f6;background:#fafafa;">
+            <span style="font-size:12px;color:#6b7280;white-space:nowrap;">交易时间：</span>
+            <input class="form-input" type="date" id="kol-date-s" value="2026-01-01" style="width:130px;height:28px;font-size:12px;">
+            <span style="color:#d1d5db;font-size:11px;">—</span>
+            <input class="form-input" type="date" id="kol-date-e" value="2026-05-19" style="width:130px;height:28px;font-size:12px;">
+            <button class="btn btn-primary btn-sm" onclick="filterKolByDate()">筛选</button>
+            <button class="btn btn-secondary btn-sm" onclick="resetKolDate()">重置</button>
+          </div>
+          <!-- Tab 切换栏 -->
+          <div class="kol-tab-bar">
+            <div class="kol-tabs">
+              <button class="kol-tab active" id="kol-tab-studio" onclick="switchKolTab('studio')">工作室<span class="kol-tab-badge">7</span></button>
+              <button class="kol-tab" id="kol-tab-zeroline" onclick="switchKolTab('zeroline')">零线<span class="kol-tab-badge">5</span></button>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="openExportModal('一键导出头部地址', null, true)">一键导出</button>
+          </div>
+
+          <!-- 工作室列表 -->
+          <div id="kol-content-studio">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>序号</th><th>钱包地址</th><th>备注名称</th><th>等级</th><th>直推人数</th><th>社区人数</th><th>社区总业绩(USDT)</th><th>最深层级</th><th>操作</th></tr></thead>
+                <tbody>
+                  <tr><td style="color:#9ca3af;">1</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0x7c22…F3A1')">0x7c22…F3A1</td><td style="font-size:12px;font-weight:500;">Alice Wang</td><td><span class="level-badge level-v10">V10</span></td><td class="td-num">56</td><td class="td-num">1,037</td><td class="td-num td-blue">620,500.00</td><td class="td-num">47 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0x7c22…F3A1')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0x7c22…F3A1', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">2</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0xA1B2…C3D4')">0xA1B2…C3D4</td><td style="font-size:12px;font-weight:500;">Bob Chen</td><td><span class="level-badge level-v10">V10</span></td><td class="td-num">48</td><td class="td-num">876</td><td class="td-num td-blue">482,300.00</td><td class="td-num">38 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0xA1B2…C3D4')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0xA1B2…C3D4', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">3</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0xD3E4…F5A6')">0xD3E4…F5A6</td><td style="font-size:12px;font-weight:500;">Carol Li</td><td><span class="level-badge level-v7">V7</span></td><td class="td-num">32</td><td class="td-num">541</td><td class="td-num td-blue">298,700.00</td><td class="td-num">29 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0xD3E4…F5A6')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0xD3E4…F5A6', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">4</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0xB7C8…D9E0')">0xB7C8…D9E0</td><td style="font-size:12px;font-weight:500;">David Kim</td><td><span class="level-badge level-v7">V7</span></td><td class="td-num">27</td><td class="td-num">389</td><td class="td-num td-blue">201,400.00</td><td class="td-num">22 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0xB7C8…D9E0')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0xB7C8…D9E0', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">5</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0xE1F2…0A1B')">0xE1F2…0A1B</td><td style="font-size:12px;font-weight:500;">Eva Zhang</td><td><span class="level-badge level-v5">V5</span></td><td class="td-num">21</td><td class="td-num">312</td><td class="td-num td-blue">178,900.00</td><td class="td-num">31 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0xE1F2…0A1B')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0xE1F2…0A1B', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">6</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0xF3A4…B5C6')">0xF3A4…B5C6</td><td style="font-size:12px;color:#c0c4cc;font-style:italic;">未设置</td><td><span class="level-badge level-v3">V3</span></td><td class="td-num">9</td><td class="td-num">98</td><td class="td-num td-blue">51,400.00</td><td class="td-num">9 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0xF3A4…B5C6')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0xF3A4…B5C6', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">7</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0x2C3D…4E5F')">0x2C3D…4E5F</td><td style="font-size:12px;font-weight:500;">Frank Wu</td><td><span class="level-badge level-v5">V5</span></td><td class="td-num">14</td><td class="td-num">167</td><td class="td-num td-blue">89,200.00</td><td class="td-num">14 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0x2C3D…4E5F')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0x2C3D…4E5F', true)">下载</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid #f3f4f6;background:#fafafa;">
+              <span style="font-size:12px;color:#9ca3af;">共 7 个工作室头部地址</span>
+              <div class="pagination"><button class="page-btn disabled">«</button><button class="page-btn active">1</button><button class="page-btn">»</button></div>
+            </div>
+          </div>
+
+          <!-- 零线列表 -->
+          <div id="kol-content-zeroline" style="display:none;">
+            <div class="table-wrapper">
+              <table>
+                <thead><tr><th>序号</th><th>钱包地址</th><th>备注名称</th><th>等级</th><th>直推人数</th><th>社区人数</th><th>社区总业绩(USDT)</th><th>最深层级</th><th>操作</th></tr></thead>
+                <tbody>
+                  <tr><td style="color:#9ca3af;">1</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0xe2f6…35d4')">0xe2f6…35d4</td><td style="font-size:12px;font-weight:500;">顶号</td><td><span class="level-badge level-v10">V10</span></td><td class="td-num">62</td><td class="td-num">2,814</td><td class="td-num td-blue">8,856,465.00</td><td class="td-num">52 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0xe2f6…35d4')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0xe2f6…35d4', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">2</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0x4545…8e63')">0x4545…8e63</td><td style="font-size:12px;font-weight:500;">刘双</td><td><span class="level-badge level-v10">V10</span></td><td class="td-num">38</td><td class="td-num">1,204</td><td class="td-num td-blue">3,336,768.00</td><td class="td-num">41 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0x4545…8e63')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0x4545…8e63', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">3</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0x89ff…388')">0x89ff…388</td><td style="font-size:12px;font-weight:500;">虎总</td><td><span class="level-badge level-v7">V7</span></td><td class="td-num">24</td><td class="td-num">687</td><td class="td-num td-blue">1,482,300.00</td><td class="td-num">35 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0x89ff…388')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0x89ff…388', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">4</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0xac15…46')">0xac15…46</td><td style="font-size:12px;font-weight:500;">半仙</td><td><span class="level-badge level-v7">V7</span></td><td class="td-num">19</td><td class="td-num">423</td><td class="td-num td-blue">894,500.00</td><td class="td-num">28 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0xac15…46')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0xac15…46', true)">下载</button></div></td></tr>
+                  <tr><td style="color:#9ca3af;">5</td><td class="td-address" style="cursor:pointer;" onclick="loadKol('0x6G7H…8I9J')">0x6G7H…8I9J</td><td style="font-size:12px;color:#c0c4cc;font-style:italic;">未设置</td><td><span class="level-badge level-v3">V3</span></td><td class="td-num">9</td><td class="td-num">98</td><td class="td-num td-blue">51,400.00</td><td class="td-num">9 层</td><td><div class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="loadKol('0x6G7H…8I9J')">查看下级</button><button class="btn btn-secondary btn-sm" onclick="openExportModal('导出头部地址数据','0x6G7H…8I9J', true)">下载</button></div></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 16px;border-top:1px solid #f3f4f6;background:#fafafa;">
+              <span style="font-size:12px;color:#9ca3af;">共 5 个零线头部地址</span>
+              <div class="pagination"><button class="page-btn disabled">«</button><button class="page-btn active">1</button><button class="page-btn">»</button></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── 下钻导航面包屑 ── -->
+      <div class="drill-nav" id="drill-nav">
+        <span class="drill-nav-label">当前路径：</span>
+        <span id="breadcrumb-items"></span>
+      </div>
+
+      <!-- ── 当前节点信息条 ── -->
+      <div class="node-info-bar" id="node-info-bar"></div>
+
+      <!-- ── 结果表（始终展示当前层的直接下级）── -->
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title" id="table-title">直接下级地址</span>
+          <span style="font-size:12px;color:#9ca3af;" id="table-sub"></span>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>钱包地址</th>
+                <th>等级</th>
+                <th>直推人数</th>
+                <th>社区人数</th>
+                <th>算力入金(USDT)</th>
+                <th>质押总量</th>
+                <th>团队总业绩</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="result-tbody"></tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span class="total-count">共 <strong id="result-count">—</strong> 条直接下级</span>
+          <div class="pagination" id="result-pager"></div>
+        </div>
+      </div>
+
+      <!-- ── 流水导出 ── -->
+      <div class="card" id="ledgerCard">
+        <div class="field-panel-toggle" onclick="toggleLedger()">
+          <div class="toggle-left">
+            <div class="toggle-icon" id="ledgerToggleIcon"></div>
+            <span class="toggle-label">流水导出</span>
+            <span class="field-count-badge" style="background:#fef3c7;color:#92400e;">3 种流水类型</span>
+          </div>
+          <span style="font-size:11px;color:#9ca3af;">算力购买 · 节点购买 · 质押仓位，可按时间范围筛选后导出</span>
+        </div>
+        <div class="field-panel-body" id="ledgerPanelBody">
+          <div style="padding:16px 20px;">
+            <!-- 当前地址 -->
+            <div style="display:flex;align-items:center;justify-content:space-between;background:#f8f9fd;border:1px solid #e8eaed;border-radius:8px;padding:10px 14px;margin-bottom:14px;">
+              <div style="display:flex;align-items:center;gap:10px;">
+                <span style="font-size:12px;color:#6b7280;white-space:nowrap;">当前地址：</span>
+                <span id="ledger-addr" style="font-family:monospace;font-size:12px;color:#5b6af0;font-weight:600;">—</span>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span style="font-size:11px;color:#9ca3af;">数据范围：</span>
+                <select id="ledger-scope" style="height:26px;border:1px solid #e0e2e7;border-radius:6px;padding:0 8px;font-size:11px;background:#fff;color:#374151;cursor:pointer;">
+                  <option value="self">仅本地址</option>
+                  <option value="all" selected>本地址及所有下级</option>
+                </select>
+              </div>
+            </div>
+            <!-- 类型 tabs -->
+            <div style="display:flex;gap:0;margin-bottom:16px;border:1px solid #e0e2e7;border-radius:8px;overflow:hidden;width:fit-content;">
+              <button id="tab-power"   class="ledger-tab active"  onclick="switchLedgerTab('power')">算力购买流水</button>
+              <button id="tab-node"    class="ledger-tab"         onclick="switchLedgerTab('node')">节点购买流水</button>
+              <button id="tab-stake"   class="ledger-tab"         onclick="switchLedgerTab('stake')">质押仓位流水</button>
+            </div>
+            <!-- 时间范围 -->
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+              <span style="font-size:12px;color:#6b7280;white-space:nowrap;">交易时间：</span>
+              <input class="form-input" type="date" id="ledger-date-from" style="width:140px;">
+              <span style="color:#d1d5db;font-size:11px;">—</span>
+              <input class="form-input" type="date" id="ledger-date-to"   style="width:140px;">
+              <button class="btn btn-secondary btn-sm" onclick="showToastMsg('筛选已应用')">筛选</button>
+              <button class="btn btn-ghost btn-sm" onclick="document.getElementById('ledger-date-from').value='';document.getElementById('ledger-date-to').value='';">重置</button>
+            </div>
+            <!-- 预览表 -->
+            <div class="table-wrapper" style="margin-bottom:14px;">
+              <table id="ledger-table">
+                <thead id="ledger-thead"></thead>
+                <tbody id="ledger-tbody"></tbody>
+              </table>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between;">
+              <span style="font-size:12px;color:#9ca3af;">预览前 5 条 · 实际导出全量数据</span>
+              <div style="display:flex;gap:8px;">
+                <button class="btn btn-secondary" onclick="openExportModal('导出其他流水')">
+                  <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
+                  导出其他流水
+                </button>
+                <button class="btn btn-success" onclick="submitLedgerExport()">
+                  <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>
+                  导出流水（异步）
+                </button>
+                <button class="btn btn-secondary" onclick="switchPage('download')">跳转下载中心</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+
+  </div><!-- /main-content -->
+
+  <!-- ══════════ DOWNLOAD CENTER ══════════ -->
+  <div id="download-center">
+    <div class="dc-wrap">
+      <div class="dc-back" onclick="switchPage('main')">＜ 返回</div>
+      <div class="dc-title">下载记录</div>
+      <div class="dc-table-wrap">
+        <table class="dc-table">
+          <thead><tr><th>地址</th><th>状态</th><th>时间</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr><td>upload/20260518/member_relationship_export_0_1779089793913.xlsx</td><td>统计完成</td><td>2026-05-18 15:36:34</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td>upload/20260515/member_relationship_export_0_1778794613984.xlsx</td><td>统计完成</td><td>2026-05-15 05:36:54</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td>upload/20260514/member_relationship_export_0_1778762742735.xlsx</td><td>统计完成</td><td>2026-05-14 20:45:42</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td>upload/20260509/member_relationship_export_0_1778297297436.xlsx</td><td>统计完成</td><td>2026-05-09 11:28:17</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td>upload/20260509/member_relationship_export_0_1778296859734.xlsx</td><td>统计完成</td><td>2026-05-09 11:21:00</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td>upload/20260425/member_relationship_export_0_1777100897343.xlsx</td><td>统计完成</td><td>2026-04-25 15:08:09</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td></td><td>统计完成</td><td>2026-04-25 15:04:28</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td></td><td>统计完成</td><td>2026-04-25 14:05:17</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td>upload/20260425/member_relationship_export_0_1777092922692.xlsx</td><td>统计完成</td><td>2026-04-25 12:53:12</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+            <tr><td>upload/20260425/member_relationship_export_0_1777092681162.xlsx</td><td>统计完成</td><td>2026-04-25 12:51:19</td><td><div style="display:flex;align-items:center;gap:10px;justify-content:center;"><a class="dc-dl-link" onclick="openExportModal('下载文件')">下载</a><a class="dc-dl-link" style="color:#ef4444;" onclick="confirmDeleteRecord(this)">删除</a></div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="dc-pagination">
+        <span class="dc-pg-total">共 69 条</span>
+        <button class="dc-pg-btn disabled">＜</button>
+        <button class="dc-pg-btn active">1</button>
+        <button class="dc-pg-btn">2</button>
+        <button class="dc-pg-btn">3</button>
+        <span class="dc-pg-dots">···</span>
+        <button class="dc-pg-btn">7</button>
+        <button class="dc-pg-btn">＞</button>
+        <select class="dc-pg-perpage"><option>10 条/页</option><option>20 条/页</option><option>50 条/页</option></select>
+        <div class="dc-pg-jump">跳至 <input type="number" value="1" min="1" max="7"> 页</div>
+      </div>
+    </div>
+  </div>
+</div><!-- /main wrapper -->
+
+<!-- ══════════ MODAL ══════════ -->
+<div class="modal-overlay" id="exportModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">导出数据</span>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info-line"><span>导出地址：</span><span id="modal-addr" style="font-family:monospace;">0x7c22…F3A1</span></div>
+      <div class="modal-info-line"><span>导出时间：</span><span id="modal-time"></span></div>
+      <div class="modal-info-line" id="modal-mode-row" style="display:flex;align-items:center;margin-top:10px;">
+        <span style="white-space:nowrap;">导出模式：</span>
+        <select id="modal-export-mode" style="height:28px;border:1px solid #d1d5db;border-radius:6px;padding:0 8px;font-size:12px;color:#374151;background:#fafafa;outline:none;cursor:pointer;">
+          <option value="cut" selected>切割</option>
+          <option value="full">全量</option>
+        </select>
+      </div>
+      <div style="margin-top:14px;">
+        <div style="font-size:13px;color:#ef4444;font-weight:500;margin-bottom:8px;">提示：多个地址请使用英文分号；分隔</div>
+        <textarea id="excludeAddrs" placeholder="请输入排除地址（多个地址请使用英文分号；分隔）" style="width:100%;height:100px;border:1px solid #d1d5db;border-radius:6px;padding:10px 12px;font-size:13px;color:#374151;resize:vertical;outline:none;font-family:inherit;line-height:1.6;" onfocus="this.style.borderColor='#5b6af0'" onblur="this.style.borderColor='#d1d5db'"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="submitExport()" style="height:36px;padding:0 24px;font-size:13px;">确认导出</button>
+      <button class="btn btn-secondary" onclick="closeModal()" style="height:36px;padding:0 20px;font-size:13px;background:#e5e7eb;border:none;color:#374151;">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- (KOL management merged into main page above) -->
+<div id="kol-page-removed" style="display:none;">
+  <div class="content" style="flex:1;">
+
+    <div class="page-header">
+      <div>
+        <div class="page-title">KOL 头部地址管理</div>
+        <div class="page-subtitle">管理系统内所有头部 KOL 地址，点击地址可下钻查看其关联网络</div>
+      </div>
+      <button class="btn btn-primary" onclick="openAddKolModal()">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"/></svg>
+        添加头部地址
+      </button>
+    </div>
+
+    <!-- 概览统计 -->
+    <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:14px;">
+      <div style="background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">头部地址总数</div>
+        <div style="font-size:24px;font-weight:700;color:#1a1a2e;">12</div>
+        <div style="font-size:11px;color:#10b981;margin-top:4px;">↑ 较上月 +2</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">社区总人数</div>
+        <div style="font-size:24px;font-weight:700;color:#1a1a2e;">15,832</div>
+        <div style="font-size:11px;color:#10b981;margin-top:4px;">↑ 较上月 +1,204</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">社区总业绩(USDT)</div>
+        <div style="font-size:24px;font-weight:700;color:#2563eb;">2,483,600</div>
+        <div style="font-size:11px;color:#10b981;margin-top:4px;">↑ 较上月 +18.3%</div>
+      </div>
+      <div style="background:#fff;border:1px solid #e8eaed;border-radius:10px;padding:16px 20px;">
+        <div style="font-size:11px;color:#9ca3af;margin-bottom:6px;">平均社区深度</div>
+        <div style="font-size:24px;font-weight:700;color:#1a1a2e;">34 层</div>
+        <div style="font-size:11px;color:#9ca3af;margin-top:4px;">最深 47 层</div>
+      </div>
+    </div>
+
+    <!-- 搜索栏 -->
+    <div style="display:flex;gap:10px;margin-bottom:14px;">
+      <input class="form-input" style="max-width:320px;" placeholder="搜索钱包地址或备注名称" id="kol-search">
+      <button class="btn btn-secondary" onclick="">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"/></svg>
+        搜索
+      </button>
+    </div>
+
+    <!-- KOL 列表 -->
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">头部地址列表</span>
+        <span style="font-size:12px;color:#9ca3af;">共 <strong style="color:#374151;">12</strong> 个头部地址</span>
+      </div>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>序号</th>
+              <th>钱包地址</th>
+              <th>备注名称</th>
+              <th>等级</th>
+              <th>直推人数</th>
+              <th>社区人数</th>
+              <th>社区总业绩(USDT)</th>
+              <th>最深层级</th>
+              <th>加入时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color:#9ca3af;">1</td>
+              <td class="td-address" onclick="gotoMain('0x7c22…F3A1')" style="cursor:pointer;">0x7c22…F3A1</td>
+              <td><span style="font-size:12px;font-weight:500;color:#374151;">Alice Wang</span></td>
+              <td><span class="level-badge level-v10">V10</span></td>
+              <td class="td-num">56</td><td class="td-num">1,037</td>
+              <td class="td-num td-blue">620,500.00</td>
+              <td class="td-num">47 层</td>
+              <td style="color:#6b7280;">2026-01-08</td>
+              <td><div class="ops-cell">
+                <button class="btn btn-secondary btn-sm" onclick="gotoMain('0x7c22…F3A1')">查看下级</button>
+                <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#fca5a5;" onclick="confirmRemove('0x7c22…F3A1')">移除</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td style="color:#9ca3af;">2</td>
+              <td class="td-address" onclick="gotoMain('0xA1B2…C3D4')" style="cursor:pointer;">0xA1B2…C3D4</td>
+              <td><span style="font-size:12px;font-weight:500;color:#374151;">Bob Chen</span></td>
+              <td><span class="level-badge level-v10">V10</span></td>
+              <td class="td-num">48</td><td class="td-num">876</td>
+              <td class="td-num td-blue">482,300.00</td>
+              <td class="td-num">38 层</td>
+              <td style="color:#6b7280;">2026-01-12</td>
+              <td><div class="ops-cell">
+                <button class="btn btn-secondary btn-sm" onclick="gotoMain('0xA1B2…C3D4')">查看下级</button>
+                <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#fca5a5;" onclick="confirmRemove('0xA1B2…C3D4')">移除</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td style="color:#9ca3af;">3</td>
+              <td class="td-address" style="cursor:pointer;">0xD3E4…F5A6</td>
+              <td><span style="font-size:12px;font-weight:500;color:#374151;">Carol Li</span></td>
+              <td><span class="level-badge level-v7">V7</span></td>
+              <td class="td-num">32</td><td class="td-num">541</td>
+              <td class="td-num td-blue">298,700.00</td>
+              <td class="td-num">29 层</td>
+              <td style="color:#6b7280;">2026-01-20</td>
+              <td><div class="ops-cell">
+                <button class="btn btn-secondary btn-sm">查看下级</button>
+                <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#fca5a5;" onclick="confirmRemove('0xD3E4…F5A6')">移除</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td style="color:#9ca3af;">4</td>
+              <td class="td-address" style="cursor:pointer;">0xB7C8…D9E0</td>
+              <td><span style="font-size:12px;font-weight:500;color:#374151;">David Kim</span></td>
+              <td><span class="level-badge level-v7">V7</span></td>
+              <td class="td-num">27</td><td class="td-num">389</td>
+              <td class="td-num td-blue">201,400.00</td>
+              <td class="td-num">22 层</td>
+              <td style="color:#6b7280;">2026-02-03</td>
+              <td><div class="ops-cell">
+                <button class="btn btn-secondary btn-sm">查看下级</button>
+                <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#fca5a5;" onclick="confirmRemove('0xB7C8…D9E0')">移除</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td style="color:#9ca3af;">5</td>
+              <td class="td-address" style="cursor:pointer;">0xE1F2…0A1B</td>
+              <td><span style="font-size:12px;font-weight:500;color:#374151;">Eva Zhang</span></td>
+              <td><span class="level-badge level-v7">V7</span></td>
+              <td class="td-num">21</td><td class="td-num">312</td>
+              <td class="td-num td-blue">178,900.00</td>
+              <td class="td-num">31 层</td>
+              <td style="color:#6b7280;">2026-02-15</td>
+              <td><div class="ops-cell">
+                <button class="btn btn-secondary btn-sm">查看下级</button>
+                <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#fca5a5;" onclick="confirmRemove('0xE1F2…0A1B')">移除</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td style="color:#9ca3af;">6</td>
+              <td class="td-address" style="cursor:pointer;">0xF3A4…B5C6</td>
+              <td><span style="font-size:12px;color:#c0c4cc;font-style:italic;">未设置</span></td>
+              <td><span class="level-badge level-v5">V5</span></td>
+              <td class="td-num">18</td><td class="td-num">204</td>
+              <td class="td-num td-blue">112,600.00</td>
+              <td class="td-num">18 层</td>
+              <td style="color:#6b7280;">2026-03-01</td>
+              <td><div class="ops-cell">
+                <button class="btn btn-secondary btn-sm">查看下级</button>
+                <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#fca5a5;" onclick="confirmRemove('0xF3A4…B5C6')">移除</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td style="color:#9ca3af;">7</td>
+              <td class="td-address" style="cursor:pointer;">0x2C3D…4E5F</td>
+              <td><span style="font-size:12px;font-weight:500;color:#374151;">Frank Wu</span></td>
+              <td><span class="level-badge level-v5">V5</span></td>
+              <td class="td-num">14</td><td class="td-num">167</td>
+              <td class="td-num td-blue">89,200.00</td>
+              <td class="td-num">14 层</td>
+              <td style="color:#6b7280;">2026-03-18</td>
+              <td><div class="ops-cell">
+                <button class="btn btn-secondary btn-sm">查看下级</button>
+                <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#fca5a5;" onclick="confirmRemove('0x2C3D…4E5F')">移除</button>
+              </div></td>
+            </tr>
+            <tr>
+              <td style="color:#9ca3af;">8</td>
+              <td class="td-address" style="cursor:pointer;">0x6G7H…8I9J</td>
+              <td><span style="font-size:12px;color:#c0c4cc;font-style:italic;">未设置</span></td>
+              <td><span class="level-badge level-v3">V3</span></td>
+              <td class="td-num">9</td><td class="td-num">98</td>
+              <td class="td-num td-blue">51,400.00</td>
+              <td class="td-num">9 层</td>
+              <td style="color:#6b7280;">2026-04-02</td>
+              <td><div class="ops-cell">
+                <button class="btn btn-secondary btn-sm">查看下级</button>
+                <button class="btn btn-secondary btn-sm" style="color:#ef4444;border-color:#fca5a5;" onclick="confirmRemove('0x6G7H…8I9J')">移除</button>
+              </div></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="table-footer">
+        <span class="total-count">共 <strong>12</strong> 个头部地址</span>
+        <div class="pagination">
+          <button class="page-btn disabled">«</button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn">»</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- 添加 KOL 地址弹框 -->
+<div class="modal-overlay" id="addKolModal">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">添加头部地址</span>
+      <button class="modal-close" onclick="closeAddKolModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div>
+          <div class="form-label" style="margin-bottom:5px;">钱包地址 <span style="color:#ef4444;">*</span></div>
+          <input class="form-input" style="height:36px;" placeholder="输入完整钱包地址（0x...）" id="kol-addr-input">
+        </div>
+        <div>
+          <div class="form-label" style="margin-bottom:8px;">类型 <span style="color:#ef4444;">*</span></div>
+          <div style="display:flex;gap:20px;">
+            <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:#374151;">
+              <input type="radio" name="kol-type" value="studio" checked style="accent-color:#5b6af0;width:14px;height:14px;">
+              工作室
+            </label>
+            <label style="display:flex;align-items:center;gap:7px;cursor:pointer;font-size:13px;color:#374151;">
+              <input type="radio" name="kol-type" value="zeroline" style="accent-color:#5b6af0;width:14px;height:14px;">
+              零线
+            </label>
+          </div>
+        </div>
+        <div>
+          <div class="form-label" style="margin-bottom:5px;">备注名称（KOL 名称）</div>
+          <input class="form-input" style="height:36px;" placeholder="填写 KOL 名称或备注，便于识别" id="kol-name-input">
+        </div>
+        <div style="background:#f0f9ff;border:1px solid #bae6fd;border-radius:8px;padding:10px 14px;font-size:12px;color:#0369a1;">
+          添加后该地址将出现在头部地址列表中，并可通过「查看下级」按钮下钻查看其关联网络。
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="submitAddKol()">确认添加</button>
+      <button class="btn btn-secondary" onclick="closeAddKolModal()">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ TOAST ══════════ -->
+<div class="toast" id="toast"><span>✓</span><span id="toastMsg">操作成功</span></div>
+
+<script>
+// ── Mock data tree ──
+const tree = {
+  '0x7c22…F3A1': {
+    level: 'v10', direct: 56, community: 1037, hashpower: '186,000.00', stake: '120,000', team: '620,500.00',
+    children: [
+      { addr: '0x3a4F…8c2E', level: 'v7',  direct: 28, community: 312, hashpower: '48,500.00', stake: '32,000', team: '125,800.00' },
+      { addr: '0x91D8…2B4C', level: 'v3',  direct: 6,  community: 23,  hashpower: '8,800.00',  stake: '5,000',  team: '18,200.00'  },
+      { addr: '0x2F5C…D812', level: 'v3',  direct: 9,  community: 41,  hashpower: '12,500.00', stake: '9,800',  team: '34,600.00'  },
+      { addr: '0xA1B2…C3D4', level: 'v5',  direct: 15, community: 87,  hashpower: '31,000.00', stake: '18,000', team: '72,400.00'  },
+      { addr: '0xE9F0…1A2B', level: 'v3',  direct: 4,  community: 12,  hashpower: '6,200.00',  stake: '3,100',  team: '11,500.00'  },
+      { addr: '0xD7C6…B5A4', level: 'v1',  direct: 1,  community: 2,   hashpower: '900.00',    stake: '500',    team: '1,600.00'   },
+    ]
+  },
+  '0x3a4F…8c2E': {
+    level: 'v7', direct: 28, community: 312, hashpower: '48,500.00', stake: '32,000', team: '125,800.00',
+    children: [
+      { addr: '0xBf91…447D', level: 'v5',  direct: 14, community: 89, hashpower: '22,000.00', stake: '15,500', team: '58,300.00' },
+      { addr: '0xAB12…C3D4', level: 'v3',  direct: 5,  community: 18, hashpower: '9,000.00',  stake: '6,000',  team: '21,500.00' },
+      { addr: '0x7E3D…F2C1', level: 'v1',  direct: 2,  community: 5,  hashpower: '2,100.00',  stake: '1,200',  team: '4,800.00'  },
+    ]
+  },
+  '0xBf91…447D': {
+    level: 'v5', direct: 14, community: 89, hashpower: '22,000.00', stake: '15,500', team: '58,300.00',
+    children: [
+      { addr: '0xC8D3…A01F', level: 'v3', direct: 4, community: 11, hashpower: '5,400.00', stake: '3,200', team: '12,000.00' },
+      { addr: '0x5E9F…B12A', level: 'v1', direct: 1, community: 2,  hashpower: '1,100.00', stake: '600',   team: '2,200.00'  },
+    ]
+  },
+  '0xC8D3…A01F': {
+    level: 'v3', direct: 4, community: 11, hashpower: '5,400.00', stake: '3,200', team: '12,000.00',
+    children: [
+      { addr: '0xF4E3…D2C1', level: 'v1', direct: 1, community: 2, hashpower: '800.00', stake: '400', team: '1,500.00' },
+      { addr: '0x8A9B…0C1D', level: 'v0', direct: 0, community: 0, hashpower: '200.00', stake: '0',   team: '200.00'   },
+    ]
+  },
+};
+
+// ── State ──
+let bcStack = []; // [{addr, short}]
+
+function init() {
+  const rootAddr = '0x7c22…F3A1';
+  bcStack = [{ addr: rootAddr, short: '查询地址' }];
+  renderLevel(rootAddr);
+}
+
+function renderLevel(addr) {
+  const node = tree[addr];
+  const children = node ? node.children || [] : [];
+  const depth = bcStack.length; // 1 = root's children = 第1层
+
+  // Breadcrumb
+  const bcEl = document.getElementById('breadcrumb-items');
+  bcEl.innerHTML = bcStack.map((item, i) => {
+    const isLast = i === bcStack.length - 1;
+    const arrow = i > 0 ? `<span class="bc-arrow">›</span>` : '';
+    return `${arrow}<span class="bc-item ${isLast ? 'active' : ''}" ${isLast ? '' : `onclick="goTo(${i})"`}>${item.short}</span>`;
+  }).join('');
+
+  // 同步流水面板地址
+  const ledgerAddrEl = document.getElementById('ledger-addr');
+  if (ledgerAddrEl) ledgerAddrEl.textContent = addr;
+
+  // Node info bar
+  const info = document.getElementById('node-info-bar');
+  info.innerHTML = `
+    <div class="node-info-item"><div class="node-info-label">当前节点</div><div class="node-info-addr">${addr}</div></div>
+    <div class="node-info-item"><div class="node-info-label">等级</div><div><span class="level-badge level-${node?.level || 'v0'}" style="margin-top:3px;">${(node?.level || 'v0').toUpperCase()}</span></div></div>
+    <div class="node-info-item"><div class="node-info-label">直推人数</div><div class="node-info-value">${node?.direct ?? '—'}</div></div>
+    <div class="node-info-item"><div class="node-info-label">社区总人数</div><div class="node-info-value">${node?.community ?? '—'}</div></div>
+    <div class="node-info-item"><div class="node-info-label">展示层级</div><div class="node-info-value">第 ${depth} 层直接下级</div></div>
+  `;
+
+  // Table
+  document.getElementById('table-title').textContent = `第 ${depth} 层 — 直接下级地址`;
+  document.getElementById('table-sub').textContent = `共 ${children.length} 个直接下级`;
+  document.getElementById('result-count').textContent = children.length;
+
+  const tbody = document.getElementById('result-tbody');
+  if (children.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;color:#9ca3af;padding:32px 0;">该地址暂无下级</td></tr>`;
+  } else {
+    tbody.innerHTML = children.map(c => {
+      const hasKids = tree[c.addr] && tree[c.addr].children && tree[c.addr].children.length > 0;
+      return `
+      <tr>
+        <td class="td-address" onclick="${hasKids ? `drillDown('${c.addr}')` : ''}" style="${hasKids ? 'cursor:pointer;' : 'cursor:default;color:#374151;'}">${c.addr}</td>
+        <td><span class="level-badge level-${c.level}">${c.level.toUpperCase()}</span></td>
+        <td class="td-num">${c.direct}</td>
+        <td class="td-num">${c.community}</td>
+        <td class="td-num td-blue">${c.hashpower}</td>
+        <td class="td-num td-blue">${c.stake}</td>
+        <td class="td-num td-green">${c.team}</td>
+        <td>
+          <div class="ops-cell">
+            ${hasKids
+              ? `<button class="btn btn-secondary btn-sm" onclick="drillDown('${c.addr}')">查看下级</button>`
+              : `<span class="no-children">无下级</span>`}
+            <button class="btn btn-primary btn-sm" onclick="openExportModal('导出用户数据','${c.addr}')">下载</button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  // Pagination
+  document.getElementById('result-pager').innerHTML = children.length > 0 ? `
+    <button class="page-btn disabled">«</button>
+    <button class="page-btn active">1</button>
+    <button class="page-btn">»</button>` : '';
+}
+
+function drillDown(addr) {
+  const shortAddr = addr;
+  bcStack.push({ addr, short: addr });
+  renderLevel(addr);
+}
+
+function goTo(index) {
+  bcStack = bcStack.slice(0, index + 1);
+  renderLevel(bcStack[bcStack.length - 1].addr);
+}
+
+// ── Field panel ──
+function toggleFieldPanel() {
+  document.getElementById('fieldPanelBody').classList.toggle('open');
+  document.getElementById('toggleIcon').classList.toggle('open');
+}
+document.querySelectorAll('.field-checkbox-item').forEach(item => {
+  item.addEventListener('click', function(e) {
+    if (e.target.tagName === 'INPUT') return;
+    this.classList.toggle('checked');
+    updateCount();
+  });
+});
+function updateCount() {
+  const n = document.querySelectorAll('.field-checkbox-item.checked').length;
+  document.getElementById('selectedCount').textContent = '已选 ' + n + ' 项';
+  document.getElementById('footerCount').textContent = n;
+  document.getElementById('exportFieldCount').textContent = n;
+}
+function selectAll() { document.querySelectorAll('.field-checkbox-item').forEach(i => i.classList.add('checked')); updateCount(); }
+function clearAll() { document.querySelectorAll('.field-checkbox-item').forEach(i => i.classList.remove('checked')); updateCount(); }
+function resetDefault() { selectAll(); }
+function selectGroup(g) { document.querySelector(`.field-group[data-group="${g}"]`).querySelectorAll('.field-checkbox-item').forEach(i => i.classList.add('checked')); updateCount(); }
+function toggleAllRows(cb) { document.querySelectorAll('#result-tbody input[type=checkbox]').forEach(c => c.checked = cb.checked); }
+
+// ── Page switch ──
+function switchPage(page) {
+  document.getElementById('main-content').style.display = page === 'main' ? 'flex' : 'none';
+  document.getElementById('download-center').style.display = page === 'download' ? 'flex' : 'none';
+  document.getElementById('nav-main').classList.toggle('active', page === 'main');
+  document.getElementById('nav-download').classList.toggle('active', page === 'download');
+  const titles = { main: '用户列表 & 数据导出', download: '下载中心' };
+  document.getElementById('topbar-title').textContent = titles[page] || '用户列表 & 数据导出';
+}
+
+// ── KOL 管理 ──
+function toggleKolPanel() {
+  const body = document.getElementById('kolPanelBody');
+  const icon = document.getElementById('kolToggleIcon');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  icon.classList.toggle('open', !isOpen);
+}
+function loadKol(addr) {
+  bcStack = [{ addr, short: addr }];
+  renderLevel(addr);
+  document.getElementById('drill-nav').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  showToastMsg(`已加载 ${addr} 的下级网络`);
+}
+function setDateRangeChip(active) {
+  const chip = document.getElementById('field-date-range-chip');
+  const cb   = document.getElementById('field-date-range-cb');
+  if (active) {
+    chip.classList.add('checked');
+    chip.style.borderStyle = '';
+    chip.style.opacity = '1';
+    cb.checked = true;
+  } else {
+    chip.classList.remove('checked');
+    chip.style.borderStyle = 'dashed';
+    chip.style.opacity = '0.5';
+    cb.checked = false;
+  }
+  updateCount();
+}
+function filterKolByDate() {
+  const s = document.getElementById('kol-date-s').value;
+  const e = document.getElementById('kol-date-e').value;
+  setDateRangeChip(true);
+  showToastMsg(`已按交易时间 ${s} — ${e} 筛选，导出字段已自动勾选「交易时间段」`);
+}
+function resetKolDate() {
+  document.getElementById('kol-date-s').value = '2026-01-01';
+  document.getElementById('kol-date-e').value = '2026-05-19';
+  setDateRangeChip(false);
+  showToastMsg('时间筛选已重置');
+}
+function switchKolTab(tab) {
+  document.getElementById('kol-content-studio').style.display = tab === 'studio' ? '' : 'none';
+  document.getElementById('kol-content-zeroline').style.display = tab === 'zeroline' ? '' : 'none';
+  document.getElementById('kol-tab-studio').classList.toggle('active', tab === 'studio');
+  document.getElementById('kol-tab-zeroline').classList.toggle('active', tab === 'zeroline');
+}
+function openAddKolModal() { document.getElementById('addKolModal').classList.add('show'); }
+function closeAddKolModal() { document.getElementById('addKolModal').classList.remove('show'); }
+function submitAddKol() {
+  const addr = document.getElementById('kol-addr-input').value.trim();
+  if (!addr) { alert('请输入钱包地址'); return; }
+  const type = document.querySelector('input[name="kol-type"]:checked').value;
+  closeAddKolModal();
+  document.getElementById('kol-addr-input').value = '';
+  document.getElementById('kol-name-input').value = '';
+  showToastMsg(`已成功添加到${type === 'studio' ? '工作室' : '零线'}头部地址`);
+}
+function confirmRemove(addr) {
+  if (confirm(`确认将 ${addr} 从头部地址列表中移除？`)) {
+    showToastMsg('已移除该头部地址');
+  }
+}
+
+// ── 流水导出 ──
+const ledgerConfig = {
+  power: {
+    headers: ['ID', '地址', '上级地址', '购买算力金额(USDT)', '交易时间'],
+    rows: [
+      ['413', '0xba11…8ee2', '0x1af7…eb3a', '100.00', '2026-03-17 20:08'],
+      ['416', '0x9858…a3d8', '0xba11…8ee2', '100.00', '2026-03-17 20:14'],
+      ['763', '0x7798…82e', '0xaf89…82d',  '1,000.00', '2026-03-18 19:48'],
+      ['820', '0x3c41…d7f', '0x7798…82e',  '500.00',  '2026-03-19 10:22'],
+      ['901', '0xd22b…a9c', '0x3c41…d7f',  '200.00',  '2026-03-20 08:31'],
+    ]
+  },
+  node: {
+    headers: ['ID', '地址', '上级地址', '购买节点金额(USDT)', '节点类型', '交易Hash', '交易时间'],
+    rows: [
+      ['42',   '0x3712…38d1', '0x24e6…83c', '1,000.00',  '超算节点', '0x45d5…a3a', '2025-12-07 16:51'],
+      ['43',   '0x7dd9…4d2',  '0xec86…072', '1,000.00',  '超算节点', '0x9d17…70b', '2025-12-07 16:54'],
+      ['8',    '0x8ae3…f7b',  '0xac15…46',  '10,000.00', '量子节点', '0x20e7…c3',  '2025-12-04 17:36'],
+      ['9',    '0x89ff…388',  '0x776a…9c',  '10,000.00', '创世节点', '0xe525…f4f', '2025-12-04 18:47'],
+      ['3734', '0x044e…17ca', '0xe2f6…35d4','1,000.00',  '超算节点', '0xd605…dda', '2026-03-04 16:21'],
+    ]
+  },
+  stake: {
+    headers: ['ID', '地址', '质押期限', '质押金额(USDT)', '质押价值(CA)', '质押状态', '开始时间', '到期时间'],
+    rows: [
+      ['101', '0x307a…066', '30天',  '5,000.00', '4,820.50',  '收益中', '2026-02-01', '2026-03-03'],
+      ['102', '0x307a…066', '90天',  '8,000.00', '7,712.80',  '收益中', '2026-01-15', '2026-04-15'],
+      ['203', '0xdbc9…74f', '180天', '3,000.00', '2,892.00',  '已到期', '2025-10-01', '2026-03-31'],
+      ['204', '0x74d4…f1f', '30天',  '1,000.00', '964.10',    '已结束', '2026-01-01', '2026-01-31'],
+      ['305', '0xba11…e2',  '360天', '20,000.00','19,280.00', '收益中', '2026-01-08', '2027-01-08'],
+    ]
+  }
+};
+let currentLedgerTab = 'power';
+
+function toggleLedger() {
+  const body = document.getElementById('ledgerPanelBody');
+  const icon = document.getElementById('ledgerToggleIcon');
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open', !isOpen);
+  icon.classList.toggle('open', !isOpen);
+}
+
+function switchLedgerTab(type) {
+  currentLedgerTab = type;
+  ['power','node','stake'].forEach(t => {
+    document.getElementById('tab-'+t).classList.toggle('active', t === type);
+  });
+  renderLedgerTable(type);
+}
+
+function renderLedgerTable(type) {
+  const cfg = ledgerConfig[type];
+  const statusColor = { '收益中': '#10b981', '已到期': '#f59e0b', '已结束': '#9ca3af' };
+  document.getElementById('ledger-thead').innerHTML =
+    '<tr>' + cfg.headers.map(h => `<th>${h}</th>`).join('') + '</tr>';
+  document.getElementById('ledger-tbody').innerHTML = cfg.rows.map(row =>
+    '<tr>' + row.map((cell, i) => {
+      if (type === 'stake' && i === 5) {
+        const c = statusColor[cell] || '#374151';
+        return `<td><span style="color:${c};font-weight:500;">${cell}</span></td>`;
+      }
+      if (type === 'node' && i === 4) {
+        const colors = { '超算节点': '#2563eb', '量子节点': '#7c3aed', '创世节点': '#b45309' };
+        return `<td><span style="color:${colors[cell]||'#374151'};font-weight:500;">${cell}</span></td>`;
+      }
+      return `<td>${cell}</td>`;
+    }).join('') + '</tr>'
+  ).join('');
+}
+
+function submitLedgerExport() {
+  const labels = { power: '导出算力购买流水', node: '导出节点购买流水', stake: '导出质押仓位流水' };
+  const addr = bcStack.length ? bcStack[bcStack.length - 1].addr : '—';
+  openExportModal(labels[currentLedgerTab], addr);
+}
+
+
+function confirmDeleteRecord(el) {
+  if (confirm('确认删除该条导出记录？删除后文件将从服务器移除，无法恢复。')) {
+    el.closest('tr').remove();
+    showToastMsg('记录已删除');
+  }
+}
+
+// ── Modal ──
+function openExportModal(title, addr, showMode) {
+  document.getElementById('modal-title').textContent = title || '导出数据';
+  const address = addr || (bcStack.length ? bcStack[0].addr : '—');
+  document.getElementById('modal-addr').textContent = address;
+  const now = new Date();
+  const pad = n => String(n).padStart(2, '0');
+  document.getElementById('modal-time').textContent =
+    `${now.getFullYear()}/${now.getMonth()+1}/${now.getDate()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+  document.getElementById('excludeAddrs').value = '';
+  const modeRow = document.getElementById('modal-mode-row');
+  const modeSelect = document.getElementById('modal-export-mode');
+  if (showMode) {
+    modeRow.style.display = '';
+    modeSelect.value = 'cut';
+  } else {
+    modeRow.style.display = 'none';
+    modeSelect.value = 'full';
+  }
+  document.getElementById('exportModal').classList.add('show');
+}
+function closeModal() { document.getElementById('exportModal').classList.remove('show'); }
+function submitExport() {
+  closeModal();
+  showToastMsg('导出任务已提交，请前往下载中心查看进度');
+  setTimeout(() => switchPage('download'), 1800);
+}
+
+// ── Toast ──
+function showToast() { showToastMsg('文件下载已开始'); }
+function showToastMsg(msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toastMsg').textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function doSearch() {
+  init();
+  showToastMsg('搜索完成，已加载第1层直接下级');
+}
+function resetFilters() {
+  ['f-addr','f-inv','f-date-s','f-date-e'].forEach(id => document.getElementById(id).value = '');
+}
+
+// Auto-load on page open
+init();
+renderLedgerTable('power');
+
+// Reorder cards: page-header → 字段选择 → 头部地址 → 筛选条件 → …
+(function() {
+  const content = document.querySelector('#main-content .content');
+  const pageHeader = content.querySelector('.page-header');
+  const kolCard = document.getElementById('kolCard');
+  const fieldCard = document.getElementById('fieldPanelBody').closest('.card');
+  if (!pageHeader || !kolCard || !fieldCard) return;
+  pageHeader.after(fieldCard);   // 字段选择紧跟标题
+  fieldCard.after(kolCard);      // 头部地址在字段选择之后
+})();
+</script>
+</body>
+</html>
