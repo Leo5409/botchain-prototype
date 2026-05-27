@@ -97,6 +97,24 @@
   .btn-sm { height: 26px; padding: 0 10px; font-size: 11px; }
   .btn-ghost { background: none; border: 1px dashed #d1d5db; color: #6b7280; }
   .btn-ghost:hover { border-color: #5b6af0; color: #5b6af0; }
+
+  /* ── Session Badge ── */
+  .session-badge { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: default; }
+  .session-badge.active { background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+  .session-badge.expiring { background: #fffbeb; color: #92400e; border: 1px solid #fde68a; }
+  .session-badge .s-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; flex-shrink: 0; }
+  .session-badge.expiring .s-dot { background: #f59e0b; }
+
+  /* ── Session Unlock Overlay ── */
+  .session-overlay { position: fixed; inset: 0; background: rgba(15,18,40,.7); z-index: 999; display: flex; align-items: center; justify-content: center; }
+  .session-box { background: #fff; border-radius: 14px; padding: 36px 40px; width: 360px; box-shadow: 0 24px 60px rgba(0,0,0,.2); text-align: center; }
+  .session-box .s-icon { font-size: 40px; margin-bottom: 16px; }
+  .session-box h2 { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+  .session-box p { font-size: 12px; color: #6b7280; margin-bottom: 20px; line-height: 1.6; }
+  .session-box .otp-row { justify-content: center; margin-bottom: 6px; }
+  .session-box .hint { font-size: 11px; color: #9ca3af; margin-bottom: 20px; }
+  .session-box .s-info { background: #f0f2ff; border-radius: 8px; padding: 10px 14px; font-size: 11px; color: #5b6af0; margin-bottom: 20px; text-align: left; line-height: 1.7; }
+  .btn-link { background: none; border: none; color: #5b6af0; font-size: 12px; cursor: pointer; padding: 0; text-decoration: underline; }
   .btn-link { background: none; border: none; color: #5b6af0; font-size: 12px; cursor: pointer; padding: 0; }
   .btn-link:hover { text-decoration: underline; }
 
@@ -347,8 +365,12 @@
       <span class="current" id="topbar-title">提币工单列表</span>
     </div>
     <div class="topbar-right">
+      <div class="session-badge active" id="sessionBadge" title="会话有效期 4 小时，到期后需重新验证">
+        <span class="s-dot"></span>
+        <span>会话已解锁 · 剩余 <span id="sessionTimer">3:58:42</span></span>
+      </div>
       <button class="btn-text" onclick="alert('打开审计日志查询（5 年留存）')">
-        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"/></svg>
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"/></svg>
         审计日志
       </button>
       <button class="btn-emergency" onclick="openCircuitModal()">
@@ -578,7 +600,7 @@
               <div class="approver-meta">
                 时间：2026-05-25 14:36:12<br>
                 IP：10.8.x.x · PC 后台<br>
-                二次确认：谷歌验证码 ●●●●●●<br>
+                二次确认：会话认证（登录时已验证）<br>
                 备注：客户来源合法，地址白名单已通过
               </div>
             </div>
@@ -590,7 +612,7 @@
               <div class="approver-meta">
                 SLA：剩余 18 min（绿色阶段）<br>
                 提醒：站内信 + 邮件已推送<br>
-                <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="openApproveModal()">输入谷歌验证码并签</button>
+                <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="openApproveModal()">签批确认</button>
                 <button class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="openRejectModal()">拒绝</button>
               </div>
             </div>
@@ -606,7 +628,7 @@
             <tbody>
               <tr><td class="text-mute">14:32:01</td><td>工单创建</td><td>用户 U_29348</td><td>202.108.x.x</td><td>—</td><td>App 提交</td></tr>
 <tr><td class="text-mute">14:35:50</td><td>分配至运营 1 / 运营 2</td><td>系统</td><td>—</td><td>—</td><td>站内信 + 邮件推送</td></tr>
-              <tr><td class="text-mute">14:36:12</td><td>第 1 笔签批</td><td>运营 1</td><td>10.8.x.x</td><td>谷歌验证码</td><td>—</td></tr>
+              <tr><td class="text-mute">14:36:12</td><td>第 1 笔签批</td><td>运营 1</td><td>10.8.x.x</td><td>会话认证</td><td>—</td></tr>
             </tbody>
           </table>
         </div>
@@ -1473,11 +1495,11 @@
 
 <!-- ══════════ Modals ══════════ -->
 
-<!-- 谷歌验证码 审批通过 -->
+<!-- 审批通过确认 -->
 <div class="modal-overlay" id="approveModal">
   <div class="modal">
     <div class="modal-header">
-      <div class="modal-title">输入谷歌验证码完成审批</div>
+      <div class="modal-title">确认签批</div>
       <button class="modal-close" onclick="closeModal('approveModal')">×</button>
     </div>
     <div class="modal-body">
@@ -1485,16 +1507,10 @@
       <div class="modal-info-row"><span class="lbl">金额</span><span class="val" style="color:#2563eb;">50,000.00 USDT</span></div>
       <div class="modal-info-row"><span class="lbl">目标地址</span><span class="val td-mono">0x9d2a…B114</span></div>
       <div class="modal-info-row"><span class="lbl">已签批</span><span class="val">运营 1 ✓ · 待你（运营 2）签</span></div>
-      <div style="margin-top:14px;font-size:12px;color:#6b7280;">请输入 Google Authenticator 6 位验证码：</div>
-      <div class="otp-row">
-        <input class="otp-cell" maxlength="1" value="3">
-        <input class="otp-cell" maxlength="1" value="8">
-        <input class="otp-cell" maxlength="1" value="4">
-        <input class="otp-cell" maxlength="1" value="9">
-        <input class="otp-cell" maxlength="1" value="2">
-        <input class="otp-cell" maxlength="1" value="1">
+      <div style="margin-top:14px;display:flex;align-items:center;gap:8px;padding:10px 12px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#047857;">
+        <span style="font-size:16px;">🔓</span>
+        <div>会话已验证 · 剩余 <strong id="approveModalTimer">3:58:42</strong>，无需重复输入验证码</div>
       </div>
-      <div style="text-align:center;font-size:11px;color:#9ca3af;">验证码 5 分钟内有效</div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('approveModal')">取消</button>
@@ -1515,9 +1531,8 @@
         <label class="form-label">拒绝原因（必填）</label>
         <textarea class="form-textarea" placeholder="请说明拒绝原因，进入审计日志"></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">谷歌验证码</label>
-        <input class="form-input" placeholder="6 位验证码">
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#047857;">
+        <span style="font-size:14px;">🔓</span>会话已验证，操作将记入审计日志
       </div>
     </div>
     <div class="modal-footer">
@@ -1540,9 +1555,8 @@
         <label class="form-label">撤回原因</label>
         <textarea class="form-textarea" placeholder="请说明撤回原因"></textarea>
       </div>
-      <div class="form-group">
-        <label class="form-label">谷歌验证码</label>
-        <input class="form-input" placeholder="6 位验证码">
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#047857;">
+        <span style="font-size:14px;">🔓</span>会话已验证，操作将记入审计日志
       </div>
     </div>
     <div class="modal-footer">
@@ -1576,7 +1590,9 @@
         </select>
       </div>
       <div class="form-group"><label class="form-label">处理备注（必填）</label><textarea class="form-textarea" placeholder="请说明处理依据"></textarea></div>
-      <div class="form-group"><label class="form-label">谷歌验证码</label><input class="form-input" placeholder="6 位验证码"></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#047857;">
+        <span style="font-size:14px;">🔓</span>会话已验证，操作将记入审计日志
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('miningApproveModal')">取消</button>
@@ -1661,7 +1677,9 @@
       <div class="modal-alert danger"><span class="icon">⚠</span><div>加入黑名单后，该地址的所有提现请求将被自动拦截，无法提款。此操作进入审计日志。</div></div>
       <div class="form-group"><label class="form-label">目标地址 *</label><input class="form-input" placeholder="0x..."></div>
       <div class="form-group"><label class="form-label">加入原因</label><input class="form-input" placeholder="如：Chainalysis 黑名单 / 用户举报欺诈 / 混币器关联"></div>
-      <div class="form-group"><label class="form-label">谷歌验证码</label><input class="form-input" placeholder="6 位验证码"></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#047857;">
+        <span style="font-size:14px;">🔓</span>会话已验证，操作将记入审计日志
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('addBlacklistModal')">取消</button>
@@ -1682,7 +1700,9 @@
       <div class="modal-info-row"><span class="lbl">地址</span><span class="val td-mono">0x4cba…3322</span></div>
       <div class="modal-info-row"><span class="lbl">加入原因</span><span class="val">链上黑名单地址（Chainalysis 标记）</span></div>
       <div class="form-group" style="margin-top:12px;"><label class="form-label">解除原因</label><input class="form-input" placeholder="如：复查确认误判 / 地址已更换所有者"></div>
-      <div class="form-group"><label class="form-label">谷歌验证码</label><input class="form-input" placeholder="6 位验证码"></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#047857;margin-top:12px;">
+        <span style="font-size:14px;">🔓</span>会话已验证，操作将记入审计日志
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('unblockModal')">取消</button>
@@ -1761,6 +1781,30 @@
       <button class="btn btn-secondary" onclick="closeModal('circuitModal')">取消</button>
       <button class="btn btn-danger" onclick="closeModal('circuitModal'); showToastMsg('紧急熔断已生效，相关模块已进入只读', 'danger');">确认熔断</button>
     </div>
+  </div>
+</div>
+
+<!-- ══════════ Session Unlock ══════════ -->
+<div class="session-overlay" id="sessionUnlockOverlay" style="display:none;">
+  <div class="session-box">
+    <div class="s-icon">🔐</div>
+    <h2>身份验证</h2>
+    <p>每次登录需完成一次 Google Authenticator 验证<br>会话解锁后 <strong>4 小时内</strong>无需重复输入，<br>操作行为全程记录审计日志</p>
+    <div class="s-info">
+      🕐 &nbsp;会话有效期：<strong>4 小时</strong><br>
+      📍 &nbsp;会话绑定当前 IP，IP 变化需重新验证<br>
+      🔒 &nbsp;10 分钟无操作自动锁屏
+    </div>
+    <div class="otp-row">
+      <input class="otp-cell" maxlength="1" type="text" inputmode="numeric">
+      <input class="otp-cell" maxlength="1" type="text" inputmode="numeric">
+      <input class="otp-cell" maxlength="1" type="text" inputmode="numeric">
+      <input class="otp-cell" maxlength="1" type="text" inputmode="numeric">
+      <input class="otp-cell" maxlength="1" type="text" inputmode="numeric">
+      <input class="otp-cell" maxlength="1" type="text" inputmode="numeric">
+    </div>
+    <div class="hint">输入 Google Authenticator 6 位验证码</div>
+    <button class="btn btn-primary" style="width:100%;height:38px;font-size:13px;" onclick="unlockSession()">验证并进入后台</button>
   </div>
 </div>
 
@@ -1860,6 +1904,68 @@
   // Click overlay to close
   document.querySelectorAll('.modal-overlay').forEach(m => {
     m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('show'); });
+  });
+
+  // ── Session Timer ──
+  // Simulates a 4-hour session starting from "now"
+  let sessionSeconds = 4 * 3600; // 4 hours total, start as if just unlocked
+
+  function formatTime(s) {
+    const h = Math.floor(s / 3600);
+    const m = Math.floor((s % 3600) / 60);
+    const sec = s % 60;
+    return `${h}:${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  }
+
+  function updateSessionUI() {
+    const badge = document.getElementById('sessionBadge');
+    const timerEl = document.getElementById('sessionTimer');
+    const approveTimer = document.getElementById('approveModalTimer');
+    const timeStr = formatTime(sessionSeconds);
+    if (timerEl) timerEl.textContent = timeStr;
+    if (approveTimer) approveTimer.textContent = timeStr;
+    if (sessionSeconds <= 0) {
+      badge.className = 'session-badge expiring';
+      badge.querySelector('span:last-child').textContent = '会话已过期，请重新验证';
+      document.getElementById('sessionUnlockOverlay').style.display = 'flex';
+    } else if (sessionSeconds <= 1800) {
+      badge.className = 'session-badge expiring';
+    } else {
+      badge.className = 'session-badge active';
+    }
+  }
+
+  const sessionInterval = setInterval(() => {
+    sessionSeconds--;
+    updateSessionUI();
+  }, 1000);
+
+  function unlockSession() {
+    const cells = document.querySelectorAll('#sessionUnlockOverlay .otp-cell');
+    const code = Array.from(cells).map(c => c.value).join('');
+    if (code.length < 6) {
+      showToastMsg('请输入完整的 6 位验证码', 'warn');
+      return;
+    }
+    sessionSeconds = 4 * 3600;
+    updateSessionUI();
+    document.getElementById('sessionUnlockOverlay').style.display = 'none';
+    showToastMsg('会话已解锁，有效期 4 小时');
+  }
+
+  // OTP cell auto-advance
+  document.querySelectorAll('.otp-cell').forEach((cell, i, cells) => {
+    cell.addEventListener('input', () => {
+      if (cell.value && i < cells.length - 1) cells[i + 1].focus();
+    });
+    cell.addEventListener('keydown', (e) => {
+      if (e.key === 'Backspace' && !cell.value && i > 0) cells[i - 1].focus();
+    });
+  });
+
+  // Show session unlock modal on page load
+  window.addEventListener('load', () => {
+    document.getElementById('sessionUnlockOverlay').style.display = 'flex';
   });
 </script>
 
