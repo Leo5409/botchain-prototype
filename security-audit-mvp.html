@@ -1,0 +1,1867 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOHR 后台管理系统 — 安全审计整改 MVP</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 13px; display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 232px; background: #141627; display: flex; flex-direction: column; flex-shrink: 0; }
+  .logo { padding: 20px 20px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .logo-text { color: #fff; font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .logo-text small { display: block; font-size: 10px; color: rgba(255,255,255,.45); font-weight: 400; margin-top: 2px; letter-spacing: .5px; }
+  .nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .nav-group-title { color: rgba(255,255,255,.3); font-size: 11px; letter-spacing: 1px; padding: 16px 20px 6px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,.55); cursor: pointer; transition: all .15s; font-size: 13px; }
+  .nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.9); }
+  .nav-item.active { background: rgba(91,106,240,.2); color: #7c8ff7; border-right: 2px solid #5b6af0; }
+  .nav-item svg { width: 16px; height: 16px; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 10px; }
+  .nav-badge.warn { background: #f59e0b; }
+  .sidebar-bottom { padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 28px; height: 28px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 600; }
+  .admin-name { color: rgba(255,255,255,.75); font-size: 12px; line-height: 1.2; }
+  .admin-role { color: rgba(255,255,255,.4); font-size: 10px; }
+
+  /* ── Main ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { height: 52px; background: #fff; border-bottom: 1px solid #e8eaed; display: flex; align-items: center; padding: 0 24px; gap: 8px; flex-shrink: 0; }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px; }
+  .breadcrumb .current { color: #1a1a2e; font-weight: 500; }
+  .breadcrumb-sep { color: #d1d5db; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .btn-emergency { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-weight: 600; transition: all .15s; }
+  .btn-emergency:hover { background: #fee2e2; border-color: #f87171; }
+  .btn-emergency .dot { width: 6px; height: 6px; border-radius: 50%; background: #ef4444; box-shadow: 0 0 0 0 rgba(239,68,68,.6); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(239,68,68,.6); } 70% { box-shadow: 0 0 0 6px rgba(239,68,68,0); } 100% { box-shadow: 0 0 0 0 rgba(239,68,68,0); } }
+  .btn-text { background: none; border: none; color: #5b6af0; font-size: 13px; cursor: pointer; padding: 6px 10px; border-radius: 6px; display: flex; align-items: center; gap: 5px; }
+  .btn-text:hover { background: #f0f1fe; }
+
+  /* ── Content ── */
+  .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .page-title { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+  .page-subtitle { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+  .tag-module { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #eef0fe; color: #5b6af0; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+
+  /* ── Card ── */
+  .card { background: #fff; border-radius: 10px; border: 1px solid #e8eaed; margin-bottom: 14px; }
+  .card-header { padding: 14px 20px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 13px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 7px; }
+  .card-title::before { content: ''; width: 3px; height: 14px; background: #5b6af0; border-radius: 2px; display: inline-block; }
+  .card-body { padding: 16px 20px; }
+
+  /* ── Stat Grid ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  .stat-card { background: #fff; border: 1px solid #e8eaed; border-radius: 10px; padding: 14px 16px; }
+  .stat-label { font-size: 11px; color: #9ca3af; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .stat-value { font-size: 20px; font-weight: 700; color: #1a1a2e; font-variant-numeric: tabular-nums; }
+  .stat-value small { font-size: 11px; font-weight: 400; color: #9ca3af; margin-left: 4px; }
+  .stat-trend { font-size: 11px; margin-top: 4px; }
+  .stat-trend.up { color: #ef4444; }
+  .stat-trend.down { color: #10b981; }
+  .stat-trend.neutral { color: #9ca3af; }
+  .stat-card.alert { border-color: #fecaca; background: linear-gradient(135deg, #fef2f2, #fff); }
+  .stat-card.warn { border-color: #fde68a; background: linear-gradient(135deg, #fffbeb, #fff); }
+
+  /* ── Filter ── */
+  .filter-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+  .form-group.wide { flex: 1.5; }
+  .form-label { font-size: 12px; color: #6b7280; }
+  .form-input, .form-select { height: 32px; border: 1px solid #e0e2e7; border-radius: 6px; padding: 0 10px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; transition: border-color .15s; }
+  .form-input:focus, .form-select:focus { border-color: #5b6af0; background: #fff; }
+  .form-input::placeholder { color: #c0c4cc; }
+  .form-textarea { min-height: 76px; padding: 8px 10px; border: 1px solid #e0e2e7; border-radius: 6px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; font-family: inherit; resize: vertical; }
+  .form-textarea:focus { border-color: #5b6af0; background: #fff; }
+  .filter-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* ── Buttons ── */
+  .btn { height: 32px; padding: 0 16px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all .15s; }
+  .btn-primary { background: #5b6af0; color: #fff; }
+  .btn-primary:hover { background: #4f5de6; }
+  .btn-secondary { background: #fff; color: #374151; border: 1px solid #e0e2e7; }
+  .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
+  .btn-success { background: #10b981; color: #fff; }
+  .btn-success:hover { background: #059669; }
+  .btn-danger { background: #ef4444; color: #fff; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-warn { background: #f59e0b; color: #fff; }
+  .btn-warn:hover { background: #d97706; }
+  .btn-sm { height: 26px; padding: 0 10px; font-size: 11px; }
+  .btn-ghost { background: none; border: 1px dashed #d1d5db; color: #6b7280; }
+  .btn-ghost:hover { border-color: #5b6af0; color: #5b6af0; }
+  .btn-link { background: none; border: none; color: #5b6af0; font-size: 12px; cursor: pointer; padding: 0; }
+  .btn-link:hover { text-decoration: underline; }
+
+  /* ── Table ── */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #f8f9fd; }
+  th { padding: 10px 14px; text-align: left; color: #6b7280; font-weight: 600; font-size: 11px; white-space: nowrap; border-bottom: 1px solid #e8eaed; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; color: #374151; white-space: nowrap; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbff; }
+  .td-address { font-family: monospace; font-size: 11px; color: #5b6af0; cursor: pointer; }
+  .td-address:hover { text-decoration: underline; }
+  .td-num { text-align: right; font-variant-numeric: tabular-nums; }
+  .td-mono { font-family: monospace; font-size: 11px; color: #4f5de6; }
+  .td-green { color: #059669; font-weight: 500; }
+  .td-red   { color: #dc2626; font-weight: 500; }
+  .td-blue  { color: #2563eb; font-weight: 500; }
+  .td-orange { color: #d97706; font-weight: 500; }
+  .ops-cell { display: flex; align-items: center; gap: 6px; }
+
+  /* ── Badges ── */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-auto    { background: #ecfdf5; color: #047857; }
+  .badge-single  { background: #e0f2fe; color: #0369a1; }
+  .badge-double  { background: #ede9fe; color: #5b21b6; }
+  .badge-owner   { background: #fef3c7; color: #92400e; }
+  .badge-pending { background: #fef3c7; color: #92400e; }
+  .badge-process { background: #dbeafe; color: #1d4ed8; }
+  .badge-signing { background: #ede9fe; color: #5b21b6; }
+  .badge-done    { background: #d1fae5; color: #065f46; }
+  .badge-fail    { background: #fee2e2; color: #991b1b; }
+  .badge-reject  { background: #f3f4f6; color: #6b7280; }
+  .badge-grey    { background: #f3f4f6; color: #6b7280; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-info    { background: #eef0fe; color: #4f5de6; }
+
+  /* ── Status Dot ── */
+  .dot-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .dot-on { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+  .dot-off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+
+  /* ── Pagination ── */
+  .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #f3f4f6; }
+  .pagination { display: flex; align-items: center; gap: 4px; }
+  .page-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #e0e2e7; background: #fff; color: #374151; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .page-btn:hover { border-color: #5b6af0; color: #5b6af0; }
+  .page-btn.active { background: #5b6af0; border-color: #5b6af0; color: #fff; }
+  .page-btn.disabled { opacity: .4; cursor: not-allowed; }
+  .total-count { font-size: 12px; color: #9ca3af; }
+  .total-count strong { color: #374151; }
+
+  /* ── Progress Step ── */
+  .step-bar { display: flex; align-items: center; padding: 20px 4px; }
+  .step { flex: 1; position: relative; text-align: center; }
+  .step::after { content: ''; position: absolute; top: 13px; left: 50%; width: 100%; height: 2px; background: #e8eaed; z-index: 0; }
+  .step:last-child::after { display: none; }
+  .step-dot { width: 28px; height: 28px; border-radius: 50%; background: #fff; border: 2px solid #e8eaed; color: #9ca3af; display: inline-flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 600; position: relative; z-index: 1; }
+  .step.done .step-dot { background: #10b981; border-color: #10b981; color: #fff; }
+  .step.done::after { background: #10b981; }
+  .step.current .step-dot { background: #5b6af0; border-color: #5b6af0; color: #fff; box-shadow: 0 0 0 4px rgba(91,106,240,.18); }
+  .step-label { font-size: 12px; color: #6b7280; margin-top: 6px; font-weight: 500; }
+  .step.done .step-label { color: #065f46; }
+  .step.current .step-label { color: #1a1a2e; font-weight: 600; }
+  .step-meta { font-size: 10px; color: #9ca3af; margin-top: 2px; line-height: 1.4; }
+
+  /* ── Detail Grid ── */
+  .detail-grid { display: grid; grid-template-columns: 140px 1fr 140px 1fr; gap: 12px 20px; padding: 16px 20px; }
+  .detail-label { color: #9ca3af; font-size: 12px; }
+  .detail-value { color: #1a1a2e; font-size: 12px; font-weight: 500; }
+  .detail-value.mono { font-family: monospace; color: #4f5de6; font-size: 11px; }
+  .detail-block { padding: 16px 20px; border-top: 1px solid #f3f4f6; }
+  .detail-block:first-child { border-top: none; }
+
+  /* ── Approval ── */
+  .approver-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .approver { border: 1px solid #e8eaed; border-radius: 8px; padding: 12px; background: #fafbff; }
+  .approver.signed { border-color: #a7f3d0; background: linear-gradient(135deg, #ecfdf5, #fff); }
+  .approver.pending { border-color: #fde68a; background: linear-gradient(135deg, #fffbeb, #fff); }
+  .approver-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+  .approver-name { font-size: 12px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 6px; }
+  .approver-meta { font-size: 11px; color: #9ca3af; line-height: 1.6; }
+  .approver-mini-avatar { width: 22px; height: 22px; border-radius: 50%; background: linear-gradient(135deg, #5b6af0, #8b5cf6); color: #fff; font-size: 10px; display: inline-flex; align-items: center; justify-content: center; font-weight: 600; }
+
+  /* ── Switch ── */
+  .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+  .switch input { display: none; }
+  .switch-slider { position: absolute; cursor: pointer; inset: 0; background: #d1d5db; border-radius: 22px; transition: .2s; }
+  .switch-slider::before { content: ''; position: absolute; height: 16px; width: 16px; left: 3px; top: 3px; background: #fff; border-radius: 50%; transition: .2s; }
+  .switch input:checked + .switch-slider { background: #10b981; }
+  .switch input:checked + .switch-slider::before { transform: translateX(18px); }
+
+  /* ── System switches grid ── */
+  .switches-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; padding: 16px 20px; }
+  .switch-card { border: 1px solid #e8eaed; border-radius: 10px; padding: 16px 18px; background: #fff; transition: all .15s; }
+  .switch-card.off { border-color: #fecaca; background: linear-gradient(135deg, #fef2f2, #fff); }
+  .switch-card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .switch-card-name { font-size: 14px; font-weight: 600; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+  .switch-card-icon { width: 30px; height: 30px; border-radius: 8px; background: #eef0fe; color: #5b6af0; display: inline-flex; align-items: center; justify-content: center; font-size: 14px; }
+  .switch-card.off .switch-card-icon { background: #fee2e2; color: #dc2626; }
+  .switch-card-desc { font-size: 12px; color: #6b7280; line-height: 1.6; margin-bottom: 10px; }
+  .switch-card-meta { display: flex; align-items: center; justify-content: space-between; padding-top: 10px; border-top: 1px dashed #e8eaed; font-size: 11px; color: #9ca3af; }
+
+  /* ── Snapshot Calendar ── */
+  .calendar-head { display: flex; align-items: center; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid #f3f4f6; }
+  .calendar-month { font-size: 14px; font-weight: 600; color: #1a1a2e; }
+  .calendar-nav { display: flex; gap: 6px; }
+  .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; padding: 16px 20px; }
+  .cal-weekday { font-size: 11px; color: #9ca3af; text-align: center; padding: 6px 0; }
+  .cal-cell { aspect-ratio: 1; border-radius: 8px; padding: 8px; display: flex; flex-direction: column; justify-content: space-between; border: 1px solid #f3f4f6; cursor: pointer; transition: all .15s; min-height: 64px; }
+  .cal-cell:hover { border-color: #5b6af0; transform: translateY(-1px); box-shadow: 0 4px 10px rgba(91,106,240,.08); }
+  .cal-cell.empty { visibility: hidden; }
+  .cal-date { font-size: 12px; color: #374151; font-weight: 600; }
+  .cal-status { font-size: 10px; padding: 1px 6px; border-radius: 8px; align-self: flex-start; font-weight: 600; }
+  .cal-cell.ok    { background: #ecfdf5; border-color: #a7f3d0; }
+  .cal-cell.ok    .cal-status { background: #10b981; color: #fff; }
+  .cal-cell.warn  { background: #fffbeb; border-color: #fde68a; }
+  .cal-cell.warn  .cal-status { background: #f59e0b; color: #fff; }
+  .cal-cell.fail  { background: #fef2f2; border-color: #fecaca; }
+  .cal-cell.fail  .cal-status { background: #ef4444; color: #fff; }
+  .cal-cell.today { box-shadow: 0 0 0 2px #5b6af0; }
+  .cal-meta { font-size: 9.5px; color: #6b7280; line-height: 1.3; }
+
+  /* ── Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal { background: #fff; border-radius: 12px; width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,.2); transform: translateY(10px); transition: transform .2s; max-height: 90vh; overflow: auto; }
+  .modal.large { width: 560px; }
+  .modal.wide { width: 640px; }
+  .modal-overlay.show .modal { transform: none; }
+  .modal-header { padding: 20px 24px 12px; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid #f3f4f6; }
+  .modal-title { font-size: 15px; font-weight: 700; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+  .modal-title.danger { color: #dc2626; }
+  .modal-close { width: 28px; height: 28px; border-radius: 6px; border: none; background: none; cursor: pointer; color: #9ca3af; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #f3f4f6; color: #374151; }
+  .modal-body { padding: 16px 24px 20px; }
+  .modal-body .form-group { margin-bottom: 12px; }
+  .modal-footer { padding: 12px 24px 20px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #f3f4f6; }
+  .modal-info-row { display: flex; align-items: center; gap: 10px; font-size: 12px; padding: 6px 0; border-bottom: 1px dashed #f3f4f6; }
+  .modal-info-row:last-child { border-bottom: none; }
+  .modal-info-row .lbl { color: #9ca3af; min-width: 80px; }
+  .modal-info-row .val { color: #1a1a2e; font-weight: 500; }
+  .modal-alert { padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.6; margin-bottom: 12px; display: flex; gap: 8px; align-items: flex-start; }
+  .modal-alert.danger { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+  .modal-alert .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── OTP ── */
+  .otp-row { display: flex; gap: 8px; justify-content: center; margin: 14px 0 8px; }
+  .otp-cell { width: 38px; height: 44px; border: 1.5px solid #e0e2e7; border-radius: 8px; text-align: center; font-size: 18px; font-weight: 600; font-family: monospace; color: #1a1a2e; outline: none; background: #fafafa; transition: all .15s; }
+  .otp-cell:focus { border-color: #5b6af0; background: #fff; box-shadow: 0 0 0 3px rgba(91,106,240,.15); }
+
+  /* ── Tabs ── */
+  .tab-bar { display: flex; align-items: center; padding: 0 20px; border-bottom: 1px solid #f3f4f6; background: #fafafa; gap: 0; }
+  .tab { height: 40px; padding: 0 18px; border: none; background: none; font-size: 13px; color: #6b7280; cursor: pointer; border-bottom: 2px solid transparent; transition: all .15s; font-weight: 500; }
+  .tab:hover { color: #374151; }
+  .tab.active { color: #5b6af0; border-bottom-color: #5b6af0; font-weight: 600; }
+  .tab-badge { display: inline-block; background: #eef0fe; color: #5b6af0; font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-left: 5px; font-weight: 600; }
+  .tab.active .tab-badge { background: #5b6af0; color: #fff; }
+
+  /* ── Toast ── */
+  .toast { position: fixed; top: 24px; right: 24px; background: #065f46; color: #fff; padding: 12px 20px; border-radius: 8px; font-size: 13px; z-index: 2000; display: flex; align-items: center; gap: 10px; box-shadow: 0 8px 30px rgba(0,0,0,.3); transform: translateX(120%); transition: transform .3s; max-width: 380px; }
+  .toast.show { transform: none; }
+  .toast.danger { background: #991b1b; }
+  .toast.warn { background: #92400e; }
+
+  /* ── Misc ── */
+  .empty-hint { padding: 40px 20px; text-align: center; color: #9ca3af; font-size: 12px; }
+  .text-mute { color: #9ca3af; }
+  .text-mono { font-family: monospace; }
+  .divider-h { height: 1px; background: #f3f4f6; margin: 14px 0; }
+  .inline-tag { display: inline-block; padding: 1px 6px; background: #f3f4f6; color: #6b7280; border-radius: 4px; font-size: 10px; margin-left: 4px; }
+
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">⛓</div>
+    <div class="logo-text">BOHR 后台<small>安全审计整改 MVP</small></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group-title">6.2 / 6.4 提现审核</div>
+    <div class="nav-item active" data-page="withdraw-list" onclick="switchPage('withdraw-list')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 9.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 8.414V13a1 1 0 11-2 0V8.414L7.707 9.707a1 1 0 01-1.414 0z"/></svg>提币工单<span class="nav-badge">12</span>
+    </div>
+    <div class="nav-item" data-page="withdraw-detail" onclick="switchPage('withdraw-detail')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm3 1a1 1 0 000 2h6a1 1 0 100-2H7zm0 4a1 1 0 100 2h6a1 1 0 100-2H7zm0 4a1 1 0 100 2h4a1 1 0 100-2H7z"/></svg>工单详情·示例
+    </div>
+    <div class="nav-item" data-page="blacklist" onclick="switchPage('blacklist')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M13.477 14.89A6 6 0 015.11 6.524l8.367 8.368zm1.414-1.414L6.524 5.11a6 6 0 018.367 8.367zM18 10a8 8 0 11-16 0 8 8 0 0116 0z"/></svg>地址黑名单
+    </div>
+    <div class="nav-item" data-page="limit-config" onclick="switchPage('limit-config')" style="position:relative;">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/></svg>金额参数配置<span style="margin-left:auto;font-size:10px;background:#fef3c7;color:#92400e;padding:1px 5px;border-radius:3px;font-weight:600;">Owner</span>
+    </div>
+    <div class="nav-item" data-page="auto-channel" onclick="switchPage('auto-channel')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"/></svg>自动通道监控
+    </div>
+
+    <div class="nav-group-title">6.3 算力管控</div>
+    <div class="nav-item" data-page="mining-pending" onclick="switchPage('mining-pending')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9z"/></svg>算力异常工单<span class="nav-badge warn">3</span>
+    </div>
+    <div class="nav-item" data-page="device-detail" onclick="switchPage('device-detail')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z"/></svg>设备详情
+    </div>
+    <div class="nav-item" data-page="hash-archive" onclick="switchPage('hash-archive')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"/></svg>每日 hash 归档
+    </div>
+
+    <div class="nav-group-title">6.12 账本审计</div>
+    <div class="nav-item" data-page="snapshot-calendar" onclick="switchPage('snapshot-calendar')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"/></svg>每日快照日历
+    </div>
+    <div class="nav-item" data-page="diff-alerts" onclick="switchPage('diff-alerts')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8.485 2.495c.673-1.167 2.357-1.167 3.03 0l6.28 10.875c.673 1.167-.17 2.625-1.516 2.625H3.72c-1.347 0-2.189-1.458-1.515-2.625L8.485 2.495zM10 5a.75.75 0 01.75.75v3.5a.75.75 0 11-1.5 0v-3.5A.75.75 0 0110 5zm0 9a1 1 0 100-2 1 1 0 000 2z"/></svg>差异告警<span class="nav-badge">1</span>
+    </div>
+    <div class="nav-item" data-page="change-log" onclick="switchPage('change-log')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"/></svg>变更日志查询
+    </div>
+
+    <div class="nav-group-title">6.13 紧急熔断</div>
+    <div class="nav-item" data-page="system-switches" onclick="switchPage('system-switches')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"/></svg>系统开关总览
+    </div>
+    <div class="nav-item" data-page="circuit-history" onclick="switchPage('circuit-history')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm.75-13a.75.75 0 00-1.5 0v5c0 .2.08.39.22.53l3 3a.75.75 0 101.06-1.06l-2.78-2.78V5z"/></svg>熔断历史日志
+    </div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="avatar">OW</div>
+    <div>
+      <div class="admin-name">Owner</div>
+      <div class="admin-role">最高权限 · 谷歌验证 + 硬件钱包</div>
+    </div>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+  <div class="topbar">
+    <div class="breadcrumb">
+      <span>安全审计整改</span><span class="breadcrumb-sep">/</span>
+      <span class="current" id="topbar-title">提币工单列表</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn-text" onclick="alert('打开审计日志查询（5 年留存）')">
+        <svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"/></svg>
+        审计日志
+      </button>
+      <button class="btn-emergency" onclick="openCircuitModal()">
+        <span class="dot"></span>紧急熔断
+      </button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ══════════ Withdraw List (6.2 + 6.4) ══════════ -->
+    <div class="page active" id="page-withdraw-list">
+      <div class="page-header">
+        <div>
+          <div class="page-title">提币工单列表<span class="tag-module">6.2 / 6.4</span></div>
+          <div class="page-subtitle">金额分层审批 · 全部操作进入审计日志（5 年）</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary"><svg width="13" height="13" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm3.293-7.707a1 1 0 011.414 0L9 10.586V3a1 1 0 112 0v7.586l1.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/></svg>导出</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group"><label class="form-label">工单 ID</label><input class="form-input" placeholder="WD-xxxxx"></div>
+            <div class="form-group"><label class="form-label">用户地址</label><input class="form-input" placeholder="0x..."></div>
+            <div class="form-group">
+              <label class="form-label">金额段</label>
+              <select class="form-select">
+                <option>全部</option>
+                <option>自动（&lt; 100）</option>
+                <option>单审（100–10k）</option>
+                <option>双审（10k–100k）</option>
+                <option>Owner（≥ 100k）</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">状态</label>
+              <select class="form-select">
+                <option>全部</option>
+                <option>待审批</option>
+                <option>审批中</option>
+                <option>签名中</option>
+                <option>已广播</option>
+                <option>已完成</option>
+                <option>失败</option>
+                <option>已撤销</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">审批人</label><input class="form-input" placeholder="运营 1 / 运营 2 / Owner"></div>
+            <div class="filter-actions">
+              <button class="btn btn-secondary">重置</button>
+              <button class="btn btn-primary">搜索</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="tab-bar">
+          <button class="tab active">全部<span class="tab-badge">12</span></button>
+          <button class="tab">待我审批<span class="tab-badge">2</span></button>
+          <button class="tab">双人审批待补签<span class="tab-badge">1</span></button>
+          <button class="tab">异常 / 失败<span class="tab-badge">1</span></button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th>工单 ID</th><th>用户</th><th>目标地址</th><th>金额 (USDT)</th><th>金额段</th>
+              <th>已审批人</th><th>状态</th><th>发起时间</th><th>操作</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td class="td-mono">WD-2026052501</td>
+                <td class="td-address">0x7c22…F3A1</td>
+                <td class="td-address">0x9d2a…B114 <span class="badge badge-info" style="margin-left:4px;">白名单</span></td>
+                <td class="td-num td-blue">50,000.00</td>
+                <td><span class="badge badge-double">双审</span></td>
+                <td>运营 1 ✓ / <span class="text-mute">运营 2 待</span></td>
+                <td><span class="badge badge-process">审批中</span></td>
+                <td class="text-mute">2026-05-25 14:32</td>
+                <td><div class="ops-cell"><button class="btn btn-primary btn-sm" onclick="switchPage('withdraw-detail')">审批</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-mono">WD-2026052502</td>
+                <td class="td-address">0xA1B2…C3D4</td>
+                <td class="td-address">0xff10…E2D3</td>
+                <td class="td-num td-blue">120,000.00</td>
+                <td><span class="badge badge-owner">Owner</span></td>
+                <td>运营 1 ✓ / 运营 2 ✓ / <span class="text-mute">Owner 待</span></td>
+                <td><span class="badge badge-process">审批中</span></td>
+                <td class="text-mute">2026-05-25 14:05</td>
+                <td><div class="ops-cell"><button class="btn btn-primary btn-sm" onclick="switchPage('withdraw-detail')">审批</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-mono">WD-2026052503</td>
+                <td class="td-address">0xD3E4…F5A6</td>
+                <td class="td-address">0x0a52…77F1</td>
+                <td class="td-num">3,200.00</td>
+                <td><span class="badge badge-single">单审</span></td>
+                <td>运营 2 ✓</td>
+                <td><span class="badge badge-signing">签名中</span></td>
+                <td class="text-mute">2026-05-25 13:48</td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-mono">WD-2026052504</td>
+                <td class="td-address">0xB7C8…D9E0</td>
+                <td class="td-address">0x4400…8821</td>
+                <td class="td-num td-red">85.00</td>
+                <td><span class="badge badge-auto">自动</span></td>
+                <td class="text-mute">系统执行</td>
+                <td><span class="badge badge-done">已完成</span></td>
+                <td class="text-mute">2026-05-25 13:30</td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-mono">WD-2026052505</td>
+                <td class="td-address">0xE1F2…0A1B</td>
+                <td class="td-address">0x6612…ABCD <span class="badge badge-warn" style="margin-left:4px;">灰名单</span></td>
+                <td class="td-num">580.00</td>
+                <td><span class="badge badge-single">单审</span></td>
+                <td class="text-mute">—</td>
+                <td><span class="badge badge-pending">待审批</span></td>
+                <td class="text-mute">2026-05-25 13:12</td>
+                <td><div class="ops-cell"><button class="btn btn-primary btn-sm">审批</button><button class="btn btn-secondary btn-sm">详情</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-mono">WD-2026052506</td>
+                <td class="td-address">0xF3A4…B5C6</td>
+                <td class="td-address">0x9911…EE00</td>
+                <td class="td-num">75.00</td>
+                <td><span class="badge badge-auto">自动</span></td>
+                <td class="text-mute">系统执行</td>
+                <td><span class="badge badge-done">已完成</span></td>
+                <td class="text-mute">2026-05-25 12:50</td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-mono">WD-2026052507</td>
+                <td class="td-address">0x2C3D…4E5F</td>
+                <td class="td-address">0xa9c0…6677</td>
+                <td class="td-num td-red">9,500.00</td>
+                <td><span class="badge badge-single">单审</span></td>
+                <td>运营 1 ✓</td>
+                <td><span class="badge badge-fail">失败</span></td>
+                <td class="text-mute">2026-05-25 11:20</td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button><button class="btn btn-warn btn-sm">重试</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span class="total-count">共 <strong>12</strong> 笔</span>
+          <div class="pagination"><button class="page-btn disabled">«</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">»</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ Withdraw Detail (6.2 + 6.4) ══════════ -->
+    <div class="page" id="page-withdraw-detail">
+      <div class="page-header">
+        <div>
+          <div class="page-title">工单详情 · WD-2026052501<span class="tag-module">6.2 / 6.4 · 双审</span></div>
+          <div class="page-subtitle">金额 ≥ 10,000 USDT，需运营 1 + 运营 2 双人审批</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary" onclick="switchPage('withdraw-list')">返回列表</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">审批进度</div></div>
+        <div class="step-bar">
+          <div class="step done">
+            <div class="step-dot">✓</div>
+            <div class="step-label">待审批</div>
+            <div class="step-meta">14:32 用户发起</div>
+          </div>
+          <div class="step current">
+            <div class="step-dot">2</div>
+            <div class="step-label">审批中</div>
+            <div class="step-meta">14:36 运营 1 ✓<br>剩余 18 min</div>
+          </div>
+          <div class="step">
+            <div class="step-dot">3</div>
+            <div class="step-label">签名中</div>
+            <div class="step-meta">待开始</div>
+          </div>
+          <div class="step">
+            <div class="step-dot">4</div>
+            <div class="step-label">已广播</div>
+            <div class="step-meta">—</div>
+          </div>
+          <div class="step">
+            <div class="step-dot">5</div>
+            <div class="step-label">链上确认</div>
+            <div class="step-meta">≥ 12 confirmations</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">基本信息</div></div>
+        <div class="detail-grid">
+          <div class="detail-label">工单 ID</div><div class="detail-value mono">WD-2026052501</div>
+          <div class="detail-label">用户地址</div><div class="detail-value mono">0x7c22…F3A1</div>
+          <div class="detail-label">金额</div><div class="detail-value" style="color:#2563eb;font-weight:600;">50,000.00 USDT</div>
+          <div class="detail-label">金额段</div><div class="detail-value"><span class="badge badge-double">双审（10k–100k）</span></div>
+          <div class="detail-label">目标地址</div><div class="detail-value mono">0x9d2a…B114 <span class="badge badge-info">白名单</span></div>
+          <div class="detail-label">链 / Token</div><div class="detail-value">BSC · USDT (BEP-20)</div>
+          <div class="detail-label">用户提交 IP</div><div class="detail-value">202.108.xx.xx · CN-BJ · UA: Chrome/137 (Win)</div>
+          <div class="detail-label">用户 ID</div><div class="detail-value">U_29348</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">审批人</div></div>
+        <div class="card-body">
+          <div class="approver-list">
+            <div class="approver signed">
+              <div class="approver-head">
+                <div class="approver-name"><span class="approver-mini-avatar">O1</span>运营专员 1</div>
+                <span class="badge badge-done">已签 ✓</span>
+              </div>
+              <div class="approver-meta">
+                时间：2026-05-25 14:36:12<br>
+                IP：10.8.x.x · PC 后台<br>
+                二次确认：谷歌验证码 ●●●●●●<br>
+                备注：客户来源合法，地址白名单已通过
+              </div>
+            </div>
+            <div class="approver pending">
+              <div class="approver-head">
+                <div class="approver-name"><span class="approver-mini-avatar" style="background:#f59e0b;">O2</span>运营专员 2</div>
+                <span class="badge badge-pending">待签</span>
+              </div>
+              <div class="approver-meta">
+                SLA：剩余 18 min（绿色阶段）<br>
+                提醒：站内信 + 邮件已推送<br>
+                <button class="btn btn-primary btn-sm" style="margin-top:8px;" onclick="openApproveModal()">输入谷歌验证码并签</button>
+                <button class="btn btn-secondary btn-sm" style="margin-top:8px;" onclick="openRejectModal()">拒绝</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">审计日志（关联本工单）</div></div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>时间</th><th>操作</th><th>操作人</th><th>IP</th><th>二次确认</th><th>备注</th></tr></thead>
+            <tbody>
+              <tr><td class="text-mute">14:32:01</td><td>工单创建</td><td>用户 U_29348</td><td>202.108.x.x</td><td>—</td><td>App 提交</td></tr>
+<tr><td class="text-mute">14:35:50</td><td>分配至运营 1 / 运营 2</td><td>系统</td><td>—</td><td>—</td><td>站内信 + 邮件推送</td></tr>
+              <tr><td class="text-mute">14:36:12</td><td>第 1 笔签批</td><td>运营 1</td><td>10.8.x.x</td><td>谷歌验证码</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:10px;justify-content:flex-end;">
+        <button class="btn btn-secondary" onclick="switchPage('withdraw-list')">返回</button>
+        <button class="btn btn-warn" onclick="openCancelModal()">撤回工单</button>
+      </div>
+    </div>
+
+    <!-- ══════════ Blacklist (6.2) ══════════ -->
+    <div class="page" id="page-blacklist">
+      <div class="page-header">
+        <div>
+          <div class="page-title">地址黑名单<span class="tag-module">6.2</span></div>
+          <div class="page-subtitle">黑名单地址提币请求将被自动拦截 · 无需人工审批</div>
+        </div>
+        <div>
+          <button class="btn btn-danger" onclick="openAddBlacklistModal()">+ 加入黑名单</button>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card alert"><div class="stat-label">黑名单地址数</div><div class="stat-value" style="color:#dc2626;">24</div></div>
+        <div class="stat-card"><div class="stat-label">今日拦截次数</div><div class="stat-value">7</div></div>
+        <div class="stat-card"><div class="stat-label">本月新增</div><div class="stat-value">3</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group wide"><label class="form-label">地址搜索</label><input class="form-input" placeholder="0x..."></div>
+            <div class="form-group"><label class="form-label">加入人</label><select class="form-select"><option>全部</option><option>运营 1</option><option>运营 2</option><option>Owner</option><option>风险介入员</option></select></div>
+            <div class="form-group"><label class="form-label">加入时间</label><input class="form-input" placeholder="近 30 天"></div>
+            <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th>黑名单地址</th><th>加入原因</th><th>来源</th><th>加入人</th><th>加入时间</th><th>今日拦截</th><th>操作</th>
+            </tr></thead>
+            <tbody>
+              <tr style="background:#fef2f2;">
+                <td class="td-address" style="color:#dc2626;">0x4cba…3322</td>
+                <td>链上黑名单地址（Chainalysis 标记）</td>
+                <td><span class="badge badge-fail">链上黑名单</span></td>
+                <td>风险介入员</td>
+                <td class="text-mute">2026-03-18 10:22</td>
+                <td class="td-num td-red">3</td>
+                <td><div class="ops-cell"><button class="btn btn-success btn-sm" onclick="openUnblockModal()">解除黑名单</button></div></td>
+              </tr>
+              <tr style="background:#fef2f2;">
+                <td class="td-address" style="color:#dc2626;">0xa1b2…9900</td>
+                <td>用户举报欺诈地址，已核实</td>
+                <td><span class="badge badge-fail">人工添加</span></td>
+                <td>运营 1</td>
+                <td class="text-mute">2026-04-05 14:36</td>
+                <td class="td-num td-red">2</td>
+                <td><div class="ops-cell"><button class="btn btn-success btn-sm" onclick="openUnblockModal()">解除黑名单</button></div></td>
+              </tr>
+              <tr style="background:#fef2f2;">
+                <td class="td-address" style="color:#dc2626;">0xd43f…7711</td>
+                <td>混币器关联地址</td>
+                <td><span class="badge badge-fail">链上黑名单</span></td>
+                <td>风险介入员</td>
+                <td class="text-mute">2026-04-18 09:11</td>
+                <td class="td-num">0</td>
+                <td><div class="ops-cell"><button class="btn btn-success btn-sm" onclick="openUnblockModal()">解除黑名单</button></div></td>
+              </tr>
+              <tr style="background:#fef2f2;">
+                <td class="td-address" style="color:#dc2626;">0xb8c9…2288</td>
+                <td>历史提币频率异常，多 IP 刷单</td>
+                <td><span class="badge badge-fail">人工添加</span></td>
+                <td>运营 2</td>
+                <td class="text-mute">2026-05-02 16:45</td>
+                <td class="td-num td-red">2</td>
+                <td><div class="ops-cell"><button class="btn btn-success btn-sm" onclick="openUnblockModal()">解除黑名单</button></div></td>
+              </tr>
+              <tr style="background:#fef2f2;">
+                <td class="td-address" style="color:#dc2626;">0xe0f1…4433</td>
+                <td>链上黑名单地址（Chainalysis 标记）</td>
+                <td><span class="badge badge-fail">链上黑名单</span></td>
+                <td>风险介入员</td>
+                <td class="text-mute">2026-05-20 11:30</td>
+                <td class="td-num">0</td>
+                <td><div class="ops-cell"><button class="btn btn-success btn-sm" onclick="openUnblockModal()">解除黑名单</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span class="total-count">共 <strong>24</strong> 个黑名单地址</span>
+          <div class="pagination"><button class="page-btn disabled">«</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">»</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ Limit Config (6.2 / 6.4) ══════════ -->
+    <div class="page" id="page-limit-config">
+      <div class="page-header">
+        <div>
+          <div class="page-title">金额参数与限制配置<span class="tag-module">6.2 / 6.4</span><span style="margin-left:8px;font-size:12px;background:#fef3c7;color:#92400e;padding:2px 8px;border-radius:4px;font-weight:600;">🔒 仅 Owner 可操作</span></div>
+          <div class="page-subtitle">调整提现金额阈值与风控限额 · 仅 Owner 角色可修改 · 修改需谷歌验证码二次确认</div>
+        </div>
+      </div>
+
+      <div class="modal-alert" style="background:#fffbeb;border-color:#f59e0b;margin-bottom:16px;">
+        <span class="icon" style="color:#f59e0b;">🔒</span>
+        <div>此页面仅 <strong>Owner</strong> 角色可查看和编辑。运营专员、审计等角色无权访问本页配置，尝试访问将被重定向至工单列表。</div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">金额分档阈值</div></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div>
+              <div style="font-size:12px;color:#9ca3af;margin-bottom:10px;">当前分档规则（修改后即时生效，进入审计日志）</div>
+              <table style="width:100%;font-size:12px;border-collapse:collapse;">
+                <thead><tr style="background:#f8f9fd;"><th style="padding:8px 12px;text-align:left;color:#6b7280;font-size:11px;border-bottom:1px solid #e8eaed;">金额段</th><th style="padding:8px 12px;text-align:left;color:#6b7280;font-size:11px;border-bottom:1px solid #e8eaed;">审批要求</th><th style="padding:8px 12px;text-align:left;color:#6b7280;font-size:11px;border-bottom:1px solid #e8eaed;">通道</th></tr></thead>
+                <tbody>
+                  <tr><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;">&lt; <strong id="display-auto">100</strong> USDT</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;">自动通道（无人工）</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;"><span class="badge badge-auto">自动</span></td></tr>
+                  <tr><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;"><strong id="display-auto2">100</strong> – <strong id="display-single">10,000</strong> USDT</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;">运营 1 / 2 任一审批</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;"><span class="badge badge-single">单审</span></td></tr>
+                  <tr><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;"><strong id="display-single2">10,000</strong> – <strong id="display-owner">100,000</strong> USDT</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;">运营 1 + 运营 2 双人审批</td><td style="padding:8px 12px;border-bottom:1px solid #f3f4f6;"><span class="badge badge-double">双审</span></td></tr>
+                  <tr><td style="padding:8px 12px;">≥ <strong id="display-owner2">100,000</strong> USDT</td><td style="padding:8px 12px;">Owner 必参与</td><td style="padding:8px 12px;"><span class="badge badge-owner">Owner</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div>
+              <div style="font-size:12px;color:#9ca3af;margin-bottom:10px;">修改阈值</div>
+              <div class="form-group" style="margin-bottom:10px;">
+                <label class="form-label">自动通道上限 (USDT)</label>
+                <input class="form-input" id="input-auto" value="100" type="number" min="0">
+              </div>
+              <div class="form-group" style="margin-bottom:10px;">
+                <label class="form-label">单审 → 双审 临界值 (USDT)</label>
+                <input class="form-input" id="input-single" value="10000" type="number" min="0">
+              </div>
+              <div class="form-group" style="margin-bottom:10px;">
+                <label class="form-label">双审 → Owner 必参与临界值 (USDT)</label>
+                <input class="form-input" id="input-owner" value="100000" type="number" min="0">
+              </div>
+              <div class="form-group" style="margin-bottom:12px;">
+                <label class="form-label">谷歌验证码</label>
+                <input class="form-input" placeholder="6 位验证码">
+              </div>
+              <button class="btn btn-primary" onclick="saveThresholds()">保存金额分档配置</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">自动通道风控限额</div></div>
+        <div class="card-body">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="form-group"><label class="form-label">自动通道单用户日上限 (USDT)</label><input class="form-input" value="500" type="number"></div>
+              <div class="form-group"><label class="form-label">自动通道单 IP 日上限 (USDT)</label><input class="form-input" value="5000" type="number"></div>
+              <div class="form-group"><label class="form-label">自动通道账户余额上限 (USDT)</label><input class="form-input" value="100000" type="number"></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="form-group"><label class="form-label">每日提现总额上限 (USDT)</label><input class="form-input" value="500000" type="number"></div>
+              <div class="form-group"><label class="form-label">新用户保护期（天）</label><input class="form-input" value="7" type="number"></div>
+              <div class="form-group"><label class="form-label">谷歌验证码</label><input class="form-input" placeholder="6 位验证码"></div>
+            </div>
+          </div>
+          <div style="margin-top:14px;">
+            <button class="btn btn-primary" onclick="showToastMsg('风控限额已更新，进入审计日志')">保存风控限额配置</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">最近 5 次配置变更</div></div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>时间</th><th>变更人</th><th>变更项</th><th>原值</th><th>新值</th></tr></thead>
+            <tbody>
+              <tr><td class="text-mute">2026-05-10 11:22</td><td>Owner</td><td>单审 → 双审 临界值</td><td>20,000 USDT</td><td>10,000 USDT</td></tr>
+              <tr><td class="text-mute">2026-04-20 09:04</td><td>Owner</td><td>自动通道单用户日上限</td><td>200 USDT</td><td>500 USDT</td></tr>
+              <tr><td class="text-mute">2026-03-15 14:38</td><td>Owner</td><td>每日提现总额上限</td><td>300,000 USDT</td><td>500,000 USDT</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ Auto Channel Monitor (6.2 / 6.4) ══════════ -->
+    <div class="page" id="page-auto-channel">
+      <div class="page-header">
+        <div>
+          <div class="page-title">自动通道监控<span class="tag-module">6.2 / 6.4 · &lt; 100 USDT</span></div>
+          <div class="page-subtitle">独立小额账户 · 风控限额受控 · 异常自动降级人工</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary">导出当日报表</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-label">当日笔数</div>
+          <div class="stat-value">187<small>笔</small></div>
+          <div class="stat-trend neutral">≈ 平均 11 笔 / h</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">当日金额</div>
+          <div class="stat-value">12,840<small>USDT</small></div>
+          <div class="stat-trend neutral">距日上限 487,160</div>
+        </div>
+        <div class="stat-card warn">
+          <div class="stat-label">风控拦截升级人工</div>
+          <div class="stat-value">9<small>笔</small></div>
+          <div class="stat-trend up">规则命中：单 IP 累计 5 · 灰名单 4</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">小额账户余额</div>
+          <div class="stat-value">86,200<small>USDT</small></div>
+          <div class="stat-trend neutral">上限 100,000 · 86% 占用</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">参数与硬限额</div></div>
+        <div class="detail-grid">
+          <div class="detail-label">自动通道阈值</div><div class="detail-value">&lt; 100 USDT</div>
+          <div class="detail-label">单用户日上限</div><div class="detail-value">500 USDT</div>
+          <div class="detail-label">单 IP 日上限</div><div class="detail-value">5,000 USDT</div>
+          <div class="detail-label">日总额上限</div><div class="detail-value">500,000 USDT</div>
+          <div class="detail-label">小额账户余额上限</div><div class="detail-value">100,000 USDT（超额自动转回主热钱包）</div>
+          <div class="detail-label">触发降级规则</div><div class="detail-value">新用户 / 单用户累计 / 单 IP 累计 / 黑名单 / 灰名单 / pending 奖励</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">最近 50 笔记录</div></div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>时间</th><th>工单 ID</th><th>用户</th><th>目标地址</th><th>金额</th><th>结果</th><th>耗时</th><th>tx hash</th></tr></thead>
+            <tbody>
+              <tr><td class="text-mute">14:42:01</td><td class="td-mono">WD-2026052520</td><td class="td-address">0x..a1</td><td class="td-address">0x..91</td><td class="td-num">85.00</td><td><span class="badge badge-done">已上链</span></td><td>28s</td><td class="td-mono">0x9d2a…B114</td></tr>
+              <tr style="background:#fffbeb;"><td class="text-mute">14:38:55</td><td class="td-mono">WD-2026052519</td><td class="td-address">0x..b2</td><td class="td-address">0x..82</td><td class="td-num">75.00</td><td><span class="badge badge-warn">降级人工 · 灰名单</span></td><td>—</td><td>—</td></tr>
+              <tr><td class="text-mute">14:35:20</td><td class="td-mono">WD-2026052518</td><td class="td-address">0x..c3</td><td class="td-address">0x..73</td><td class="td-num">99.50</td><td><span class="badge badge-done">已上链</span></td><td>31s</td><td class="td-mono">0xa9c0…6677</td></tr>
+              <tr style="background:#fffbeb;"><td class="text-mute">14:31:10</td><td class="td-mono">WD-2026052517</td><td class="td-address">0x..d4</td><td class="td-address">0x..64</td><td class="td-num">50.00</td><td><span class="badge badge-warn">降级人工 · 单 IP 累计</span></td><td>—</td><td>—</td></tr>
+              <tr><td class="text-mute">14:27:02</td><td class="td-mono">WD-2026052516</td><td class="td-address">0x..e5</td><td class="td-address">0x..55</td><td class="td-num">42.00</td><td><span class="badge badge-done">已上链</span></td><td>26s</td><td class="td-mono">0x4499…AA21</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ Mining Pending (6.3) ══════════ -->
+    <div class="page" id="page-mining-pending">
+      <div class="page-header">
+        <div>
+          <div class="page-title">算力异常工单<span class="tag-module">6.3</span></div>
+          <div class="page-subtitle">服务端 5 道闸门检测 · 异常自动 pending · 风控 4h 内响应</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary" disabled>批量拒绝（选中 0）</button>
+          <button class="btn btn-success" disabled>批量通过（选中 0）</button>
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-card warn"><div class="stat-label">⚠ 当日待处理</div><div class="stat-value">3</div></div>
+        <div class="stat-card"><div class="stat-label">当日已处理</div><div class="stat-value">8</div></div>
+        <div class="stat-card"><div class="stat-label">本月通过率</div><div class="stat-value">31%</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group"><label class="form-label">设备 ID</label><input class="form-input" placeholder="dev_xxx"></div>
+            <div class="form-group"><label class="form-label">用户</label><input class="form-input" placeholder="0x..."></div>
+            <div class="form-group"><label class="form-label">触发闸门</label><select class="form-select"><option>全部</option><option>① 上报限流</option><option>② 设备指纹</option><option>③ 理论上限</option><option>④ 日封顶</option><option>⑤ 异常均值</option></select></div>
+            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>pending</option><option>通过</option><option>拒绝</option></select></div>
+            <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th><input type="checkbox"></th><th>工单 ID</th><th>设备 ID / 型号</th><th>用户</th>
+              <th>原始上报值</th><th>封顶值</th><th>超出比例</th><th>触发闸门</th>
+              <th>SLA</th><th>状态</th><th>操作</th>
+            </tr></thead>
+            <tbody>
+              <tr style="background:#fef2f2;">
+                <td><input type="checkbox"></td>
+                <td class="td-mono">MN-2026052501</td>
+                <td><div class="td-mono">dev_a3f9c1</div><div class="text-mute" style="font-size:11px;">ASIC-S19j Pro</div></td>
+                <td class="td-address">0x7c22…F3A1</td>
+                <td class="td-num td-red">412.0 TH/s</td>
+                <td class="td-num">306.0 TH/s</td>
+                <td class="td-num td-red">+34.6%</td>
+                <td><span class="badge badge-warn">④ 日封顶</span></td>
+                <td class="td-red">剩余 02:14</td>
+                <td><span class="badge badge-pending">pending</span></td>
+                <td><div class="ops-cell"><button class="btn btn-success btn-sm" onclick="openMiningApproveModal()">通过</button><button class="btn btn-danger btn-sm">拒绝</button></div></td>
+              </tr>
+              <tr style="background:#fffbeb;">
+                <td><input type="checkbox"></td>
+                <td class="td-mono">MN-2026052502</td>
+                <td><div class="td-mono">dev_b8e2d4</div><div class="text-mute" style="font-size:11px;">ASIC-M30S++</div></td>
+                <td class="td-address">0xD3E4…F5A6</td>
+                <td class="td-num td-orange">218.5 TH/s</td>
+                <td class="td-num">108.0 TH/s</td>
+                <td class="td-num td-red">+102%</td>
+                <td><span class="badge badge-warn">⑤ 异常均值</span></td>
+                <td class="td-orange">剩余 02:48</td>
+                <td><span class="badge badge-pending">pending</span></td>
+                <td><div class="ops-cell"><button class="btn btn-success btn-sm">通过</button><button class="btn btn-danger btn-sm">拒绝</button></div></td>
+              </tr>
+              <tr style="background:#fffbeb;">
+                <td><input type="checkbox"></td>
+                <td class="td-mono">MN-2026052503</td>
+                <td><div class="td-mono">dev_c1d7e9</div><div class="text-mute" style="font-size:11px;">ASIC-S19 XP</div></td>
+                <td class="td-address">0xB7C8…D9E0</td>
+                <td class="td-num td-orange">98.2 TH/s</td>
+                <td class="td-num">90.0 TH/s</td>
+                <td class="td-num td-orange">+9.1%</td>
+                <td><span class="badge badge-warn">③ 理论上限</span></td>
+                <td class="td-orange">剩余 03:30</td>
+                <td><span class="badge badge-pending">pending</span></td>
+                <td><div class="ops-cell"><button class="btn btn-success btn-sm">通过</button><button class="btn btn-danger btn-sm">拒绝</button></div></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td class="td-mono">MN-2026052401</td>
+                <td><div class="td-mono">dev_x9..</div><div class="text-mute" style="font-size:11px;">ASIC-S19j Pro</div></td>
+                <td class="td-address">0x2C3D…4E5F</td>
+                <td class="td-num">320.0 TH/s</td>
+                <td class="td-num">306.0 TH/s</td>
+                <td class="td-num td-orange">+4.5%</td>
+                <td><span class="badge badge-warn">④ 日封顶</span></td>
+                <td class="text-mute">已处理</td>
+                <td><span class="badge badge-done">通过</span></td>
+                <td class="text-mute">2026-05-24 16:02 · 运营 1</td>
+              </tr>
+              <tr>
+                <td><input type="checkbox"></td>
+                <td class="td-mono">MN-2026052402</td>
+                <td><div class="td-mono">dev_aa..</div><div class="text-mute" style="font-size:11px;">未知型号</div></td>
+                <td class="td-address">0xF3A4…B5C6</td>
+                <td class="td-num td-red">850 TH/s</td>
+                <td class="td-num">110 TH/s</td>
+                <td class="td-num td-red">+672%</td>
+                <td><span class="badge badge-warn">③ 理论上限</span></td>
+                <td class="text-mute">已处理</td>
+                <td><span class="badge badge-fail">拒绝</span></td>
+                <td class="text-mute">2026-05-24 14:30 · Owner</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ Device Detail (6.3) ══════════ -->
+    <div class="page" id="page-device-detail">
+      <div class="page-header">
+        <div>
+          <div class="page-title">设备详情 · dev_a3f9c1<span class="tag-module">6.3</span></div>
+          <div class="page-subtitle">设备运行参数 · 服务端硬封顶配置 · 异常历史</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary" onclick="switchPage('mining-pending')">返回异常工单</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">基本信息</div></div>
+        <div class="detail-grid">
+          <div class="detail-label">设备 ID</div><div class="detail-value mono">dev_a3f9c1</div>
+          <div class="detail-label">所属用户</div><div class="detail-value mono">0x7c22…F3A1</div>
+          <div class="detail-label">型号</div><div class="detail-value">ASIC-S19j Pro</div>
+          <div class="detail-label">核心数</div><div class="detail-value">126</div>
+          <div class="detail-label">注册时间</div><div class="detail-value">2025-12-04 17:36</div>
+          <div class="detail-label">在线状态</div><div class="detail-value"><span style="color:#10b981;">●</span> 在线 · 23h 18m</div>
+          <div class="detail-label">设备指纹哈希</div><div class="detail-value mono">sha256: 7e44…a3b1</div>
+          <div class="detail-label">注册硬件特征</div><div class="detail-value mono">sha256: 7e44…a3b1 <span class="badge badge-done" style="margin-left:4px;">匹配</span></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">封顶参数</div></div>
+        <div class="detail-grid">
+          <div class="detail-label">理论上限</div><div class="detail-value">110 TH/s（型号 × 核心数 × 经验系数）</div>
+          <div class="detail-label">历史中位数</div><div class="detail-value">102 TH/s（滚动 30 天）</div>
+          <div class="detail-label">当日封顶值</div><div class="detail-value" style="color:#f59e0b;font-weight:600;">306 TH/s（中位数 × 3）</div>
+          <div class="detail-label">异常上报阈值</div><div class="detail-value">204 TH/s（均值 × 2）</div>
+          <div class="detail-label">上报频率限制</div><div class="detail-value">1 次 / 5 min</div>
+          <div class="detail-label">冷启动期</div><div class="detail-value">已结束（注册 ≥ 7 天）</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">当日上报情况</div></div>
+        <div class="detail-grid">
+          <div class="detail-label">当日已上报次数</div><div class="detail-value">218 次</div>
+          <div class="detail-label">当日累计算力</div><div class="detail-value">412 TH/s</div>
+          <div class="detail-label">超出封顶</div><div class="detail-value" style="color:#dc2626;font-weight:600;">+106 TH/s (+34.6%)</div>
+          <div class="detail-label">当日异常标记</div><div class="detail-value"><span class="badge badge-warn">是 · ④ 日封顶</span></div>
+          <div class="detail-label">关联 pending 工单</div><div class="detail-value"><a class="btn-link" onclick="switchPage('mining-pending')">MN-2026052501</a></div>
+          <div class="detail-label">最近上报时间</div><div class="detail-value">2026-05-25 14:38:21</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">最近 30 天异常历史</div></div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>日期</th><th>原始上报</th><th>封顶值</th><th>超出 %</th><th>触发闸门</th><th>处理结果</th><th>处理人</th></tr></thead>
+            <tbody>
+              <tr><td>2026-05-25</td><td class="td-num td-red">412 TH/s</td><td class="td-num">306 TH/s</td><td class="td-num td-red">+34.6%</td><td><span class="badge badge-warn">④</span></td><td><span class="badge badge-pending">pending</span></td><td>—</td></tr>
+              <tr><td>2026-05-18</td><td class="td-num td-orange">320 TH/s</td><td class="td-num">306 TH/s</td><td class="td-num td-orange">+4.5%</td><td><span class="badge badge-warn">④</span></td><td><span class="badge badge-done">通过</span></td><td>运营 1</td></tr>
+              <tr><td>2026-05-10</td><td class="td-num td-orange">280 TH/s</td><td class="td-num">204 TH/s</td><td class="td-num td-orange">+37%</td><td><span class="badge badge-warn">⑤</span></td><td><span class="badge badge-done">通过</span></td><td>运营 2</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ Hash Archive (6.3) ══════════ -->
+    <div class="page" id="page-hash-archive">
+      <div class="page-header">
+        <div>
+          <div class="page-title">每日 hash 归档<span class="tag-module">6.3</span></div>
+          <div class="page-subtitle">T+1 04:00 UTC 归档当日所有 (deviceId, period, earnings) 哈希到异地备份</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary">导出归档清单</button>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
+        <div class="stat-card"><div class="stat-label">本月已归档</div><div class="stat-value">25<small>份</small></div></div>
+        <div class="stat-card"><div class="stat-label">归档成功率</div><div class="stat-value" style="color:#10b981;">100%</div></div>
+        <div class="stat-card"><div class="stat-label">总记录数（5 年）</div><div class="stat-value">9.2M</div></div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group"><label class="form-label">日期范围</label><input class="form-input" value="2026-05-01 — 2026-05-25"></div>
+            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>成功</option><option>重试中</option><option>失败</option></select></div>
+            <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>日期</th><th>归档文件名</th><th>hash 摘要 (sha256)</th><th>记录数</th><th>大小</th><th>异地备份</th><th>状态</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr>
+                <td>2026-05-24</td>
+                <td class="td-mono">earnings_2026-05-24_3812.dat</td>
+                <td class="td-mono">8f3a…c92b</td>
+                <td class="td-num">3,812</td>
+                <td>248 KB</td>
+                <td><span class="badge badge-done">✓ S3-异地</span></td>
+                <td><span class="badge badge-done">成功</span></td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">下载</button><button class="btn btn-secondary btn-sm">校验</button></div></td>
+              </tr>
+              <tr>
+                <td>2026-05-23</td>
+                <td class="td-mono">earnings_2026-05-23_3895.dat</td>
+                <td class="td-mono">a14e…d811</td>
+                <td class="td-num">3,895</td>
+                <td>254 KB</td>
+                <td><span class="badge badge-done">✓ S3-异地</span></td>
+                <td><span class="badge badge-done">成功</span></td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">下载</button><button class="btn btn-secondary btn-sm">校验</button></div></td>
+              </tr>
+              <tr style="background:#fffbeb;">
+                <td>2026-05-22</td>
+                <td class="td-mono">earnings_2026-05-22_3902.dat</td>
+                <td class="td-mono">b9f2…1c03</td>
+                <td class="td-num">3,902</td>
+                <td>256 KB</td>
+                <td><span class="badge badge-warn">重试中（2/3）</span></td>
+                <td><span class="badge badge-warn">重试中</span></td>
+                <td><div class="ops-cell"><button class="btn btn-warn btn-sm">立即重试</button><button class="btn btn-secondary btn-sm">校验</button></div></td>
+              </tr>
+              <tr>
+                <td>2026-05-21</td>
+                <td class="td-mono">earnings_2026-05-21_3711.dat</td>
+                <td class="td-mono">6c8d…2f01</td>
+                <td class="td-num">3,711</td>
+                <td>241 KB</td>
+                <td><span class="badge badge-done">✓ S3-异地</span></td>
+                <td><span class="badge badge-done">成功</span></td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">下载</button><button class="btn btn-secondary btn-sm">校验</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-alert" style="margin-top:14px;">
+        <span class="icon">ⓘ</span>
+        <div><strong>MVP 阶段说明：</strong>每日 hash 归档文件保存在 S3 异地存储（独立账号），事后如发现数据差异，可对比文件 hash 证明数据未被改动。<br>Phase 2 将升级为 Oracle 上链锚定 Merkle 根 + 用户挑战流程。</div>
+      </div>
+    </div>
+
+    <!-- ══════════ Snapshot Calendar (6.12) ══════════ -->
+    <div class="page" id="page-snapshot-calendar">
+      <div class="page-header">
+        <div>
+          <div class="page-title">每日快照状态<span class="tag-module">6.12</span></div>
+          <div class="page-subtitle">T+1 04:00 归档 · 08:00 重算比对 · 不一致自动告警</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary">导出当月报表</button>
+        </div>
+      </div>
+
+      <div class="stat-grid" style="grid-template-columns:repeat(4,1fr);">
+        <div class="stat-card"><div class="stat-label">本月已快照</div><div class="stat-value">24</div></div>
+        <div class="stat-card"><div class="stat-label">一致（绿）</div><div class="stat-value" style="color:#10b981;">22</div></div>
+        <div class="stat-card warn"><div class="stat-label">重试（黄）</div><div class="stat-value" style="color:#f59e0b;">1</div></div>
+        <div class="stat-card alert"><div class="stat-label">不一致（红）</div><div class="stat-value" style="color:#ef4444;">1</div></div>
+      </div>
+
+      <div class="card">
+        <div class="calendar-head">
+          <div class="calendar-month">2026 年 5 月</div>
+          <div class="calendar-nav">
+            <button class="btn btn-secondary btn-sm">‹ 上月</button>
+            <button class="btn btn-secondary btn-sm">下月 ›</button>
+          </div>
+        </div>
+        <div class="calendar-grid">
+          <div class="cal-weekday">一</div><div class="cal-weekday">二</div><div class="cal-weekday">三</div><div class="cal-weekday">四</div><div class="cal-weekday">五</div><div class="cal-weekday">六</div><div class="cal-weekday">日</div>
+
+          <div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">1</span><span class="cal-status">一致</span></div><div class="cal-meta">3,420 笔<br>hash 7c2f…</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">2</span><span class="cal-status">一致</span></div><div class="cal-meta">3,602 笔<br>hash a83b…</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">3</span><span class="cal-status">一致</span></div><div class="cal-meta">3,711 笔<br>hash 19fc…</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">4</span><span class="cal-status">一致</span></div><div class="cal-meta">3,580 笔<br>hash 4d92…</div></div>
+
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">5</span><span class="cal-status">一致</span></div><div class="cal-meta">3,690 笔<br>hash 8f2a…</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">6</span><span class="cal-status">一致</span></div><div class="cal-meta">3,825 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">7</span><span class="cal-status">一致</span></div><div class="cal-meta">3,902 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">8</span><span class="cal-status">一致</span></div><div class="cal-meta">3,795 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">9</span><span class="cal-status">一致</span></div><div class="cal-meta">3,712 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">10</span><span class="cal-status">一致</span></div><div class="cal-meta">3,841 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">11</span><span class="cal-status">一致</span></div><div class="cal-meta">3,892 笔</div></div>
+
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">12</span><span class="cal-status">一致</span></div><div class="cal-meta">3,652 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">13</span><span class="cal-status">一致</span></div><div class="cal-meta">3,733 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">14</span><span class="cal-status">一致</span></div><div class="cal-meta">3,801 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">15</span><span class="cal-status">一致</span></div><div class="cal-meta">3,892 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">16</span><span class="cal-status">一致</span></div><div class="cal-meta">3,712 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">17</span><span class="cal-status">一致</span></div><div class="cal-meta">3,841 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">18</span><span class="cal-status">一致</span></div><div class="cal-meta">3,820 笔</div></div>
+
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">19</span><span class="cal-status">一致</span></div><div class="cal-meta">3,711 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">20</span><span class="cal-status">一致</span></div><div class="cal-meta">3,820 笔</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">21</span><span class="cal-status">一致</span></div><div class="cal-meta">3,711 笔</div></div>
+          <div class="cal-cell warn"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">22</span><span class="cal-status">重试</span></div><div class="cal-meta">3,902 笔<br>2/3 重试</div></div>
+          <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">23</span><span class="cal-status">一致</span></div><div class="cal-meta">3,895 笔</div></div>
+          <div class="cal-cell fail"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">24</span><span class="cal-status">不一致</span></div><div class="cal-meta" style="color:#dc2626;font-weight:600;">3,812 笔<br>⚠ 已告警</div></div>
+          <div class="cal-cell today ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">25</span><span class="cal-status">今日</span></div><div class="cal-meta">归档 04:00<br>比对 08:00</div></div>
+
+          <div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">图例</div></div>
+        <div class="card-body" style="display:flex;gap:24px;flex-wrap:wrap;font-size:12px;">
+          <div><span class="dot-status dot-on"></span>一致：hash 比对通过</div>
+          <div><span class="dot-status" style="background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18);"></span>重试中：归档或异地备份重试中</div>
+          <div><span class="dot-status dot-off"></span>不一致：触发差异告警，需人工排查变更日志</div>
+          <div><span style="display:inline-block;width:14px;height:14px;border:2px solid #5b6af0;border-radius:3px;vertical-align:middle;margin-right:4px;"></span>今日</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ Diff Alerts (6.12) ══════════ -->
+    <div class="page" id="page-diff-alerts">
+      <div class="page-header">
+        <div>
+          <div class="page-title">比对差异告警<span class="tag-module">6.12</span></div>
+          <div class="page-subtitle">每日 T+1 08:00 重算 hash 与快照比对 · 不一致即生成告警</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group"><label class="form-label">告警 ID</label><input class="form-input" placeholder="LDG-ALERT-xxx"></div>
+            <div class="form-group"><label class="form-label">日期</label><input class="form-input" placeholder="2026-05-01 ~ 2026-05-25"></div>
+            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待处理</option><option>已排查</option><option>已关闭</option></select></div>
+            <div class="form-group"><label class="form-label">处理人</label><input class="form-input" placeholder="审计 / Owner"></div>
+            <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>告警 ID</th><th>日期</th><th>不一致描述</th><th>触发时间</th><th>状态</th><th>处理人</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr style="background:#fef2f2;">
+                <td class="td-mono">LDG-ALERT-039</td>
+                <td>2026-05-24</td>
+                <td class="td-red">快照 hash (8f3a…c92b) ≠ 重算 hash (8f3a…c93f) · 1 笔记录差异</td>
+                <td class="text-mute">2026-05-25 08:01:22</td>
+                <td><span class="badge badge-pending">待处理</span></td>
+                <td>—</td>
+                <td><div class="ops-cell"><button class="btn btn-danger btn-sm" onclick="openDiffDetailModal()">排查</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-mono">LDG-ALERT-038</td>
+                <td>2026-04-12</td>
+                <td>归档文件 sha256 校验失败（S3 异地备份损坏）</td>
+                <td class="text-mute">2026-04-13 08:02:11</td>
+                <td><span class="badge badge-done">已关闭</span></td>
+                <td>审计</td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
+              </tr>
+              <tr>
+                <td class="td-mono">LDG-ALERT-037</td>
+                <td>2026-03-22</td>
+                <td>异地备份延迟超 24h（S3 区域故障）</td>
+                <td class="text-mute">2026-03-23 09:14:50</td>
+                <td><span class="badge badge-done">已排查</span></td>
+                <td>Owner</td>
+                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-alert danger">
+        <span class="icon">⚠</span>
+        <div><strong>告警处理 SOP：</strong>① 进入「变更日志查询」按日期筛选当日 UPDATE/DELETE 记录 → ② 比对事件流表与应用表 → ③ 定位篡改源（DBA 账号 / 应用代码 / 异常 SQL） → ④ 记录排查结论，必要时上报 Owner / 触发 6.13 熔断</div>
+      </div>
+    </div>
+
+    <!-- ══════════ Change Log (6.12) ══════════ -->
+    <div class="page" id="page-change-log">
+      <div class="page-header">
+        <div>
+          <div class="page-title">变更日志查询<span class="tag-module">6.12</span></div>
+          <div class="page-subtitle">应用表 UPDATE/DELETE 触发器写入 · 5 年留存 · 仅审计 / Owner 可查</div>
+        </div>
+        <div>
+          <button class="btn btn-secondary">导出 CSV</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group"><label class="form-label">表名</label><select class="form-select"><option>全部</option><option>UserWallet</option><option>DeviceUserEarningsRecord</option><option>StakeRecord</option><option>VipRecord</option></select></div>
+            <div class="form-group"><label class="form-label">操作账号</label><input class="form-input" placeholder="dba_xxx / app_service"></div>
+            <div class="form-group"><label class="form-label">操作类型</label><select class="form-select"><option>全部</option><option>UPDATE</option><option>DELETE</option></select></div>
+            <div class="form-group"><label class="form-label">时间范围</label><input class="form-input" value="2026-05-24 00:00 — 2026-05-25 24:00"></div>
+            <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>时间</th><th>表名</th><th>操作</th><th>主键</th><th>操作账号</th><th>来源 IP</th><th>SQL 摘要</th><th>操作</th></tr></thead>
+            <tbody>
+              <tr style="background:#fef2f2;">
+                <td class="text-mute">2026-05-24 23:14:08</td>
+                <td><span class="badge badge-info">DeviceUserEarningsRecord</span></td>
+                <td><span class="badge badge-fail">UPDATE</span></td>
+                <td class="td-mono">id=89412</td>
+                <td><span class="td-red">dba_emergency</span></td>
+                <td class="text-mute">10.0.x.x</td>
+                <td class="td-mono">UPDATE … SET amount=1820.00 WHERE id=89412 -- 原值 18.20</td>
+                <td><button class="btn btn-danger btn-sm" onclick="openSqlDetailModal()">查看完整 SQL</button></td>
+              </tr>
+              <tr>
+                <td class="text-mute">2026-05-25 14:32:01</td>
+                <td><span class="badge badge-info">UserWallet</span></td>
+                <td><span class="badge badge-process">UPDATE</span></td>
+                <td class="td-mono">user_id=29348</td>
+                <td>app_service</td>
+                <td class="text-mute">10.0.x.x</td>
+                <td class="td-mono">UPDATE UserWallet SET balance = balance - 50000 WHERE user_id = 29348</td>
+                <td><button class="btn btn-secondary btn-sm">详情</button></td>
+              </tr>
+              <tr>
+                <td class="text-mute">2026-05-25 13:48:21</td>
+                <td><span class="badge badge-info">UserWallet</span></td>
+                <td><span class="badge badge-process">UPDATE</span></td>
+                <td class="td-mono">user_id=18772</td>
+                <td>app_service</td>
+                <td class="text-mute">10.0.x.x</td>
+                <td class="td-mono">UPDATE UserWallet SET balance = balance - 3200 WHERE user_id = 18772</td>
+                <td><button class="btn btn-secondary btn-sm">详情</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span class="total-count">共 <strong>4,892</strong> 条</span>
+          <div class="pagination"><button class="page-btn disabled">«</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">3</button><button class="page-btn">…</button><button class="page-btn">»</button></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ══════════ System Switches (6.13) ══════════ -->
+    <div class="page" id="page-system-switches">
+      <div class="page-header">
+        <div>
+          <div class="page-title">系统开关总览<span class="tag-module">6.13</span></div>
+          <div class="page-subtitle">4 个模块独立熔断 · 触发 ≤ 30s 全栈生效 · 触发权 Owner / 风险介入员 · 解除权 仅 Owner</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="btn btn-success" onclick="openRecoveryModal()">✓ 恢复正常</button>
+          <button class="btn-emergency" onclick="openCircuitModal()"><span class="dot"></span>紧急一键熔断</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">4 个模块开关</div></div>
+        <div class="switches-grid">
+          <div class="switch-card">
+            <div class="switch-card-head">
+              <div class="switch-card-name"><span class="switch-card-icon">💸</span>提现审批 + 链上签名</div>
+              <label class="switch"><input type="checkbox" checked onchange="toggleSwitch(this, '提现审批')"><span class="switch-slider"></span></label>
+            </div>
+            <div class="switch-card-desc">关停后 <span class="td-mono">/admin/withdrawalRecord/*</span> + 后端签名服务进入只读，所有提币工单暂停广播。</div>
+            <div class="switch-card-meta">
+              <span><span class="dot-status dot-on"></span>当前运行中</span>
+              <span>无变更</span>
+            </div>
+          </div>
+
+          <div class="switch-card">
+            <div class="switch-card-head">
+              <div class="switch-card-name"><span class="switch-card-icon">⛏</span>算力上报接口</div>
+              <label class="switch"><input type="checkbox" checked onchange="toggleSwitch(this, '算力上报')"><span class="switch-slider"></span></label>
+            </div>
+            <div class="switch-card-desc">关停后 <span class="td-mono">/postWorkProof</span> 拒绝新上报，已入队工单继续处理但不发新奖励。</div>
+            <div class="switch-card-meta">
+              <span><span class="dot-status dot-on"></span>当前运行中</span>
+              <span>无变更</span>
+            </div>
+          </div>
+
+          <div class="switch-card">
+            <div class="switch-card-head">
+              <div class="switch-card-name"><span class="switch-card-icon">🎁</span>奖励入账任务</div>
+              <label class="switch"><input type="checkbox" checked onchange="toggleSwitch(this, '奖励入账')"><span class="switch-slider"></span></label>
+            </div>
+            <div class="switch-card-desc">关停 app-job（质押 / 分红 / 团队返佣），定时奖励计算任务暂停。</div>
+            <div class="switch-card-meta">
+              <span><span class="dot-status dot-on"></span>当前运行中</span>
+              <span>无变更</span>
+            </div>
+          </div>
+
+          <div class="switch-card">
+            <div class="switch-card-head">
+              <div class="switch-card-name"><span class="switch-card-icon">💰</span>充值入账接口</div>
+              <label class="switch"><input type="checkbox" checked onchange="toggleSwitch(this, '充值入账')"><span class="switch-slider"></span></label>
+            </div>
+            <div class="switch-card-desc">关停后 <span class="td-mono">/deposit/*</span> 拒绝新充值确认入账（链上已收到的会在恢复后补对账）。</div>
+            <div class="switch-card-meta">
+              <span><span class="dot-status dot-on"></span>当前运行中</span>
+              <span>无变更</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title">最近变更（10 条）</div></div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>时间</th><th>模块</th><th>操作</th><th>操作人</th><th>变更原因</th><th>持续时长</th></tr></thead>
+            <tbody>
+              <tr><td class="text-mute">2026-05-10 18:32</td><td>充值入账</td><td><span class="td-green">↑ 恢复</span></td><td>Owner</td><td>RPC 故障已修复</td><td class="td-mute">3h 12min</td></tr>
+              <tr><td class="text-mute">2026-05-10 15:20</td><td>充值入账</td><td><span class="td-red">↓ 熔断</span></td><td>风险介入员</td><td>BSC RPC 持续超时，怀疑入账不一致</td><td>—</td></tr>
+              <tr><td class="text-mute">2026-04-22 10:08</td><td>提现审批</td><td><span class="td-green">↑ 恢复</span></td><td>Owner</td><td>账户安全核查完成</td><td>2h 30min</td></tr>
+              <tr><td class="text-mute">2026-04-22 07:38</td><td>提现审批</td><td><span class="td-red">↓ 熔断</span></td><td>Owner</td><td>异常大额提币集中，临时停审等待核查</td><td>—</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-alert">
+        <span class="icon">ⓘ</span>
+        <div><strong>设计原则：</strong>触发门槛低（Owner / 风险介入员任一单签即可）+ 解除门槛高（仅 Owner 可解除），保证速度同时防止误解除。<br><strong>MVP 范围：</strong>仅后端层 Redis 配置开关；合约层 <code>Pausable</code> 延后到 Phase 2 单独立项。</div>
+      </div>
+    </div>
+
+    <!-- ══════════ Circuit History (6.13) ══════════ -->
+    <div class="page" id="page-circuit-history">
+      <div class="page-header">
+        <div>
+          <div class="page-title">熔断历史日志<span class="tag-module">6.13</span></div>
+          <div class="page-subtitle">全量记录 · 含触发人 / 范围 / 持续时长 / 解除人</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group"><label class="form-label">日期范围</label><input class="form-input" placeholder="2026-01-01 ~ 2026-05-25"></div>
+            <div class="form-group"><label class="form-label">触发人</label><select class="form-select"><option>全部</option><option>Owner</option><option>风险介入员</option></select></div>
+            <div class="form-group"><label class="form-label">模块</label><select class="form-select"><option>全部</option><option>提现审批</option><option>算力上报</option><option>奖励入账</option><option>充值入账</option></select></div>
+            <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr><th>事件 ID</th><th>熔断时间</th><th>触发方式</th><th>触发人</th><th>范围</th><th>原因摘要</th><th>持续时长</th><th>解除时间</th><th>解除人</th></tr></thead>
+            <tbody>
+              <tr>
+                <td class="td-mono">CB-2026051001</td>
+                <td>2026-05-10 15:20</td>
+                <td>人工 · PC 后台</td>
+                <td>风险介入员</td>
+                <td>充值入账</td>
+                <td>RPC 持续超时</td>
+                <td>3h 12min</td>
+                <td>2026-05-10 18:32</td>
+                <td>Owner</td>
+              </tr>
+              <tr>
+                <td class="td-mono">CB-2026042201</td>
+                <td>2026-04-22 07:38</td>
+                <td>人工 · PC 后台</td>
+                <td>Owner</td>
+                <td>提现审批</td>
+                <td>异常大额提币集中</td>
+                <td>2h 30min</td>
+                <td>2026-04-22 10:08</td>
+                <td>Owner</td>
+              </tr>
+              <tr>
+                <td class="td-mono">CB-2026031801</td>
+                <td>2026-03-18 22:14</td>
+                <td>人工 · PC 后台</td>
+                <td>Owner</td>
+                <td>全部 4 模块</td>
+                <td>季度演练（计划内）</td>
+                <td>15 min</td>
+                <td>2026-03-18 22:29</td>
+                <td>Owner</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span class="total-count">共 <strong>3</strong> 笔</span>
+          <div class="pagination"><button class="page-btn disabled">«</button><button class="page-btn active">1</button><button class="page-btn disabled">»</button></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ Modals ══════════ -->
+
+<!-- 谷歌验证码 审批通过 -->
+<div class="modal-overlay" id="approveModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">输入谷歌验证码完成审批</div>
+      <button class="modal-close" onclick="closeModal('approveModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info-row"><span class="lbl">工单 ID</span><span class="val td-mono">WD-2026052501</span></div>
+      <div class="modal-info-row"><span class="lbl">金额</span><span class="val" style="color:#2563eb;">50,000.00 USDT</span></div>
+      <div class="modal-info-row"><span class="lbl">目标地址</span><span class="val td-mono">0x9d2a…B114</span></div>
+      <div class="modal-info-row"><span class="lbl">已签批</span><span class="val">运营 1 ✓ · 待你（运营 2）签</span></div>
+      <div style="margin-top:14px;font-size:12px;color:#6b7280;">请输入 Google Authenticator 6 位验证码：</div>
+      <div class="otp-row">
+        <input class="otp-cell" maxlength="1" value="3">
+        <input class="otp-cell" maxlength="1" value="8">
+        <input class="otp-cell" maxlength="1" value="4">
+        <input class="otp-cell" maxlength="1" value="9">
+        <input class="otp-cell" maxlength="1" value="2">
+        <input class="otp-cell" maxlength="1" value="1">
+      </div>
+      <div style="text-align:center;font-size:11px;color:#9ca3af;">验证码 5 分钟内有效</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('approveModal')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('approveModal'); showToastMsg('已签批，工单进入签名中...');">确认签批</button>
+    </div>
+  </div>
+</div>
+
+<!-- 拒绝 -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">拒绝该项请求</div>
+      <button class="modal-close" onclick="closeModal('rejectModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">拒绝原因（必填）</label>
+        <textarea class="form-textarea" placeholder="请说明拒绝原因，进入审计日志"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">谷歌验证码</label>
+        <input class="form-input" placeholder="6 位验证码">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('rejectModal')">取消</button>
+      <button class="btn btn-danger" onclick="closeModal('rejectModal'); showToastMsg('已拒绝，记入审计日志');">确认拒绝</button>
+    </div>
+  </div>
+</div>
+
+<!-- 撤回工单 -->
+<div class="modal-overlay" id="cancelModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">撤回工单</div>
+      <button class="modal-close" onclick="closeModal('cancelModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-alert"><span class="icon">⚠</span><div>「待审批」/「审批中」阶段、签名未广播前可撤回。撤回后工单进入「已撤销」状态，可重新发起。</div></div>
+      <div class="form-group">
+        <label class="form-label">撤回原因</label>
+        <textarea class="form-textarea" placeholder="请说明撤回原因"></textarea>
+      </div>
+      <div class="form-group">
+        <label class="form-label">谷歌验证码</label>
+        <input class="form-input" placeholder="6 位验证码">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('cancelModal')">取消</button>
+      <button class="btn btn-warn" onclick="closeModal('cancelModal'); showToastMsg('工单已撤回');">确认撤回</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- 算力工单通过 -->
+<div class="modal-overlay" id="miningApproveModal">
+  <div class="modal large">
+    <div class="modal-header">
+      <div class="modal-title">通过算力异常工单</div>
+      <button class="modal-close" onclick="closeModal('miningApproveModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info-row"><span class="lbl">工单 ID</span><span class="val td-mono">MN-2026052501</span></div>
+      <div class="modal-info-row"><span class="lbl">设备</span><span class="val td-mono">dev_a3f9c1 · ASIC-S19j Pro</span></div>
+      <div class="modal-info-row"><span class="lbl">原始上报</span><span class="val" style="color:#dc2626;">412 TH/s</span></div>
+      <div class="modal-info-row"><span class="lbl">封顶值</span><span class="val">306 TH/s</span></div>
+      <div class="modal-info-row"><span class="lbl">超出</span><span class="val td-red">+106 TH/s (+34.6%)</span></div>
+      <div class="modal-alert"><span class="icon">⚠</span><div>通过后将按 <strong>原始上报值</strong> 增发奖励。如认为是设备故障 / 客户端篡改请改为「拒绝」。</div></div>
+      <div class="form-group">
+        <label class="form-label">放行金额</label>
+        <select class="form-select">
+          <option>按封顶值 306 TH/s 发放（推荐）</option>
+          <option>按原始上报 412 TH/s 发放</option>
+          <option>自定义</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">处理备注（必填）</label><textarea class="form-textarea" placeholder="请说明处理依据"></textarea></div>
+      <div class="form-group"><label class="form-label">谷歌验证码</label><input class="form-input" placeholder="6 位验证码"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('miningApproveModal')">取消</button>
+      <button class="btn btn-success" onclick="closeModal('miningApproveModal'); showToastMsg('工单已通过，增发奖励处理中');">确认通过</button>
+    </div>
+  </div>
+</div>
+
+<!-- 差异告警详情 -->
+<div class="modal-overlay" id="diffDetailModal">
+  <div class="modal wide">
+    <div class="modal-header">
+      <div class="modal-title danger">⚠ 差异告警 · LDG-ALERT-039</div>
+      <button class="modal-close" onclick="closeModal('diffDetailModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info-row"><span class="lbl">日期</span><span class="val">2026-05-24</span></div>
+      <div class="modal-info-row"><span class="lbl">快照 hash</span><span class="val td-mono">sha256: 8f3a…c92b</span></div>
+      <div class="modal-info-row"><span class="lbl">重算 hash</span><span class="val td-mono">sha256: 8f3a…c93f</span></div>
+      <div class="modal-info-row"><span class="lbl">差异条数</span><span class="val" style="color:#dc2626;">1 笔（详见变更日志）</span></div>
+      <div class="modal-info-row"><span class="lbl">触发时间</span><span class="val">2026-05-25 08:01:22</span></div>
+
+      <div class="modal-alert danger" style="margin-top:14px;"><span class="icon">⚠</span><div>系统已自动定位变更：<br><span class="td-mono">UPDATE DeviceUserEarningsRecord SET amount=1820.00 WHERE id=89412 -- 原值 18.20</span><br>操作账号：<strong>dba_emergency</strong> · 来源 IP：10.0.x.x · 时间：2026-05-24 23:14:08</div></div>
+
+      <div class="form-group">
+        <label class="form-label">排查结论</label>
+        <textarea class="form-textarea" placeholder="请填写排查过程与结论"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">处理动作</label>
+        <select class="form-select">
+          <option>标记已排查（无影响）</option>
+          <option>已回滚数据，关闭告警</option>
+          <option>上报 Owner，触发 6.13 提现熔断</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('diffDetailModal')">关闭</button>
+      <button class="btn btn-primary" onclick="closeModal('diffDetailModal'); showToastMsg('告警已记录排查结论');">保存结论</button>
+    </div>
+  </div>
+</div>
+
+<!-- 完整 SQL 详情 -->
+<div class="modal-overlay" id="sqlDetailModal">
+  <div class="modal wide">
+    <div class="modal-header">
+      <div class="modal-title">变更日志 · 完整 SQL</div>
+      <button class="modal-close" onclick="closeModal('sqlDetailModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-info-row"><span class="lbl">时间</span><span class="val">2026-05-24 23:14:08.221</span></div>
+      <div class="modal-info-row"><span class="lbl">表名</span><span class="val">DeviceUserEarningsRecord</span></div>
+      <div class="modal-info-row"><span class="lbl">操作</span><span class="val td-red">UPDATE</span></div>
+      <div class="modal-info-row"><span class="lbl">主键</span><span class="val td-mono">id=89412</span></div>
+      <div class="modal-info-row"><span class="lbl">操作账号</span><span class="val td-red">dba_emergency</span></div>
+      <div class="modal-info-row"><span class="lbl">连接 IP</span><span class="val td-mono">10.0.x.x</span></div>
+      <div class="modal-info-row"><span class="lbl">会话 ID</span><span class="val td-mono">sess_a8f2b3c1</span></div>
+
+      <div style="margin-top:14px;font-size:12px;color:#9ca3af;">完整 SQL：</div>
+      <div style="background:#0f172a;color:#a7f3d0;padding:12px;border-radius:6px;font-family:monospace;font-size:11px;margin-top:6px;line-height:1.6;">UPDATE DeviceUserEarningsRecord<br>SET amount = 1820.00, updated_at = NOW()<br>WHERE id = 89412;<br><br>-- 原值: amount = 18.20<br>-- 修改后: amount = 1820.00<br>-- 差异: +1801.80</div>
+
+      <div class="modal-alert danger" style="margin-top:14px;"><span class="icon">⚠</span><div>检测到该变更未对应任何业务事件流记录（事件流表无此 id）。强烈建议立即冻结 dba_emergency 账号并启动安全审查。</div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('sqlDetailModal')">关闭</button>
+      <button class="btn btn-danger" onclick="closeModal('sqlDetailModal'); showToastMsg('已上报 Owner，请前往系统开关考虑熔断');">上报 Owner</button>
+    </div>
+  </div>
+</div>
+
+<!-- 加入黑名单 -->
+<div class="modal-overlay" id="addBlacklistModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title danger">加入黑名单</div>
+      <button class="modal-close" onclick="closeModal('addBlacklistModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-alert danger"><span class="icon">⚠</span><div>加入黑名单后，该地址的所有提现请求将被自动拦截，无法提款。此操作进入审计日志。</div></div>
+      <div class="form-group"><label class="form-label">目标地址 *</label><input class="form-input" placeholder="0x..."></div>
+      <div class="form-group"><label class="form-label">加入原因</label><input class="form-input" placeholder="如：Chainalysis 黑名单 / 用户举报欺诈 / 混币器关联"></div>
+      <div class="form-group"><label class="form-label">谷歌验证码</label><input class="form-input" placeholder="6 位验证码"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('addBlacklistModal')">取消</button>
+      <button class="btn btn-danger" onclick="closeModal('addBlacklistModal'); showToastMsg('已加入黑名单，该地址提现将被自动拦截', 'danger');">确认加入黑名单</button>
+    </div>
+  </div>
+</div>
+
+<!-- 解除黑名单 -->
+<div class="modal-overlay" id="unblockModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">解除黑名单</div>
+      <button class="modal-close" onclick="closeModal('unblockModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-alert"><span class="icon">⚠</span><div>解除黑名单后，该地址恢复正常提现流程。请确认该地址安全后再操作。</div></div>
+      <div class="modal-info-row"><span class="lbl">地址</span><span class="val td-mono">0x4cba…3322</span></div>
+      <div class="modal-info-row"><span class="lbl">加入原因</span><span class="val">链上黑名单地址（Chainalysis 标记）</span></div>
+      <div class="form-group" style="margin-top:12px;"><label class="form-label">解除原因</label><input class="form-input" placeholder="如：复查确认误判 / 地址已更换所有者"></div>
+      <div class="form-group"><label class="form-label">谷歌验证码</label><input class="form-input" placeholder="6 位验证码"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('unblockModal')">取消</button>
+      <button class="btn btn-success" onclick="closeModal('unblockModal'); showToastMsg('已解除黑名单，地址恢复正常提现');">确认解除</button>
+    </div>
+  </div>
+</div>
+
+<!-- 恢复正常（6.13） -->
+<div class="modal-overlay" id="recoveryModal">
+  <div class="modal wide">
+    <div class="modal-header">
+      <div class="modal-title">✓ 恢复系统正常运行</div>
+      <button class="modal-close" onclick="closeModal('recoveryModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-alert"><span class="icon">ⓘ</span><div>仅 Owner 可执行恢复操作。请确认已完成安全排查后再恢复，防止故障问题仍然存在。</div></div>
+      <div class="form-group">
+        <label class="form-label">恢复范围</label>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox" checked>💸 提现审批 + 链上签名</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox" checked>⛏ 算力上报接口</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox" checked>🎁 奖励入账任务</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox" checked>💰 充值入账接口</label>
+        </div>
+        <div style="text-align:right;margin-top:6px;"><button class="btn-link" onclick="document.querySelectorAll('#recoveryModal input[type=checkbox]').forEach(c=>c.checked=true)">全部恢复</button></div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">谷歌验证码</label>
+        <input class="form-input" placeholder="6 位验证码">
+      </div>
+      <div style="font-size:11px;color:#9ca3af;margin-top:8px;">
+        操作人：Owner · 谷歌验证 + 硬件钱包<br>
+        恢复操作将记录到熔断历史日志
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('recoveryModal')">取消</button>
+      <button class="btn btn-success" onclick="closeModal('recoveryModal'); showToastMsg('系统已恢复正常运行');">确认恢复</button>
+    </div>
+  </div>
+</div>
+
+<!-- 紧急熔断（6.13） -->
+<div class="modal-overlay" id="circuitModal">
+  <div class="modal wide">
+    <div class="modal-header">
+      <div class="modal-title danger">⚠ 紧急熔断</div>
+      <button class="modal-close" onclick="closeModal('circuitModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-alert danger"><span class="icon">⚠</span><div>触发熔断后，所选模块立即（≤ 30s）进入只读，所有相关接口对用户返回维护错误。<br>解除权限仅 Owner 可执行，请慎重操作。</div></div>
+
+      <div class="form-group">
+        <label class="form-label">熔断范围</label>
+        <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:6px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox" checked>💸 提现审批 + 链上签名</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox">⛏ 算力上报接口</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox">🎁 奖励入账任务</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox">💰 充值入账接口</label>
+        </div>
+        <div style="text-align:right;margin-top:6px;"><button class="btn-link" onclick="selectAllCircuit()">全部停机</button></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">谷歌验证码</label>
+        <input class="form-input" placeholder="6 位验证码">
+      </div>
+
+      <div style="font-size:11px;color:#9ca3af;margin-top:8px;">
+        操作人：Owner · 谷歌验证 + 硬件钱包<br>
+        预计生效时延：≤ 30 秒
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('circuitModal')">取消</button>
+      <button class="btn btn-danger" onclick="closeModal('circuitModal'); showToastMsg('紧急熔断已生效，相关模块已进入只读', 'danger');">确认熔断</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ Toast ══════════ -->
+<div class="toast" id="toast">
+  <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
+  <span id="toastMsg">操作成功</span>
+</div>
+
+<script>
+  const pageTitles = {
+    'withdraw-list': '提币工单列表',
+    'withdraw-detail': '工单详情',
+    blacklist: '地址黑名单',
+    'limit-config': '金额参数配置',
+    'auto-channel': '自动通道监控',
+    'mining-pending': '算力异常工单',
+    'device-detail': '设备详情',
+    'hash-archive': '每日 hash 归档',
+    'snapshot-calendar': '每日快照状态',
+    'diff-alerts': '比对差异告警',
+    'change-log': '变更日志查询',
+    'system-switches': '系统开关总览',
+    'circuit-history': '熔断历史日志'
+  };
+
+  function switchPage(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    const navItem = document.querySelector(`.nav-item[data-page="${page}"]`);
+    if (navItem) navItem.classList.add('active');
+    document.getElementById('topbar-title').textContent = pageTitles[page] || '';
+    document.querySelector('.content').scrollTop = 0;
+  }
+
+  function openModal(id) { document.getElementById(id).classList.add('show'); }
+  function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+  function openApproveModal() { openModal('approveModal'); }
+  function openRejectModal() { openModal('rejectModal'); }
+  function openCancelModal() { openModal('cancelModal'); }
+  function openAddWhitelistModal() { openModal('addBlacklistModal'); }
+  function openMiningApproveModal() { openModal('miningApproveModal'); }
+  function openDiffDetailModal() { openModal('diffDetailModal'); }
+  function openSqlDetailModal() { openModal('sqlDetailModal'); }
+  function openCircuitModal() { openModal('circuitModal'); }
+  function openRecoveryModal() { openModal('recoveryModal'); }
+  function openAddBlacklistModal() { openModal('addBlacklistModal'); }
+  function openUnblockModal() { openModal('unblockModal'); }
+
+  function saveThresholds() {
+    const a = document.getElementById('input-auto').value;
+    const s = document.getElementById('input-single').value;
+    const o = document.getElementById('input-owner').value;
+    document.getElementById('display-auto').textContent = Number(a).toLocaleString();
+    document.getElementById('display-auto2').textContent = Number(a).toLocaleString();
+    document.getElementById('display-single').textContent = Number(s).toLocaleString();
+    document.getElementById('display-single2').textContent = Number(s).toLocaleString();
+    document.getElementById('display-owner').textContent = Number(o).toLocaleString();
+    document.getElementById('display-owner2').textContent = Number(o).toLocaleString();
+    showToastMsg('金额分档配置已保存，进入审计日志');
+  }
+
+  function selectAllCircuit() {
+    document.querySelectorAll('#circuitModal input[type=checkbox]').forEach(cb => cb.checked = true);
+  }
+
+  function toggleSwitch(el, name) {
+    const card = el.closest('.switch-card');
+    const isOn = el.checked;
+    card.classList.toggle('off', !isOn);
+    const dot = card.querySelector('.dot-status');
+    if (dot) {
+      dot.classList.toggle('dot-on', isOn);
+      dot.classList.toggle('dot-off', !isOn);
+    }
+    const stateText = card.querySelector('.switch-card-meta span:first-child');
+    if (stateText) stateText.innerHTML = `<span class="dot-status ${isOn ? 'dot-on' : 'dot-off'}"></span>${isOn ? '当前运行中' : '已熔断'}`;
+    if (!isOn) {
+      showToastMsg(`已熔断「${name}」模块，请到熔断历史确认`, 'danger');
+    } else {
+      showToastMsg(`已恢复「${name}」模块`, 'success');
+    }
+  }
+
+  function showToastMsg(msg, type) {
+    const t = document.getElementById('toast');
+    document.getElementById('toastMsg').textContent = msg;
+    t.classList.remove('danger', 'warn');
+    if (type === 'danger') t.classList.add('danger');
+    if (type === 'warn') t.classList.add('warn');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2800);
+  }
+
+  // Click overlay to close
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('show'); });
+  });
+</script>
+
+</body>
+</html>
