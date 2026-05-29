@@ -169,6 +169,30 @@
   .kol-tab-badge { display: inline-block; background: #eef0fe; color: #5b6af0; font-size: 10px; padding: 1px 6px; border-radius: 8px; margin-left: 5px; font-weight: 600; }
   .kol-tab.active .kol-tab-badge { background: #5b6af0; color: #fff; }
 
+  /* ── KOL 头部地址搜索 ── */
+  .kol-search-bar { display: flex; align-items: center; gap: 12px; padding: 10px 20px; border-bottom: 1px solid #f3f4f6; background: #fafafa; }
+  .kol-search-box { position: relative; flex: 1; max-width: 440px; }
+  .kol-search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); width: 14px; height: 14px; color: #9ca3af; pointer-events: none; }
+  .kol-search-input { padding-left: 30px; padding-right: 28px; }
+  .kol-search-clear { position: absolute; right: 7px; top: 50%; transform: translateY(-50%); width: 18px; height: 18px; border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 11px; color: #9ca3af; background: #eceef1; cursor: pointer; }
+  .kol-search-clear:hover { background: #dfe2e7; color: #374151; }
+  .kol-search-clear.show { display: flex; }
+  .kol-search-dropdown { position: absolute; top: calc(100% + 4px); left: 0; right: 0; background: #fff; border: 1px solid #e0e2e7; border-radius: 8px; box-shadow: 0 10px 34px rgba(0,0,0,.14); z-index: 60; max-height: 320px; overflow-y: auto; display: none; }
+  .kol-search-dropdown.show { display: block; }
+  .kol-sd-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; cursor: pointer; border-bottom: 1px solid #f3f4f6; }
+  .kol-sd-item:last-child { border-bottom: none; }
+  .kol-sd-item:hover, .kol-sd-item.active { background: #f0f1fe; }
+  .kol-sd-name { font-size: 12px; font-weight: 600; color: #374151; white-space: nowrap; }
+  .kol-sd-unset { color: #c0c4cc; font-style: italic; font-weight: 400; }
+  .kol-sd-addr { font-family: monospace; font-size: 11px; color: #5b6af0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .kol-sd-meta { margin-left: auto; display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+  .kol-sd-type { font-size: 10px; padding: 1px 7px; border-radius: 8px; font-weight: 600; }
+  .kol-sd-type.studio { background: #eef0fe; color: #5b6af0; }
+  .kol-sd-type.zeroline { background: #fef3c7; color: #92400e; }
+  .kol-sd-dupe { display: inline-block; margin-left: 5px; font-size: 10px; color: #b91c1c; background: #fee2e2; padding: 0 5px; border-radius: 6px; font-weight: 600; }
+  .kol-sd-hl { background: #fde68a; color: #92400e; border-radius: 2px; }
+  .kol-sd-empty { padding: 18px; text-align: center; color: #9ca3af; font-size: 12px; }
+
   /* ── Ledger Tabs ── */
   .ledger-tab { height: 30px; padding: 0 14px; border: none; background: #fff; font-size: 12px; color: #6b7280; cursor: pointer; border-right: 1px solid #e0e2e7; transition: all .15s; }
   .ledger-tab:last-child { border-right: none; }
@@ -360,14 +384,15 @@
           </div>
         </div>
         <div class="field-panel-body open" id="kolPanelBody">
-          <!-- 交易时间筛选 -->
-          <div style="display:flex;align-items:center;gap:10px;padding:10px 20px;border-bottom:1px solid #f3f4f6;background:#fafafa;">
-            <span style="font-size:12px;color:#6b7280;white-space:nowrap;">交易时间：</span>
-            <input class="form-input" type="date" id="kol-date-s" value="2026-01-01" style="width:130px;height:28px;font-size:12px;">
-            <span style="color:#d1d5db;font-size:11px;">—</span>
-            <input class="form-input" type="date" id="kol-date-e" value="2026-05-19" style="width:130px;height:28px;font-size:12px;">
-            <button class="btn btn-primary btn-sm" onclick="filterKolByDate()">筛选</button>
-            <button class="btn btn-secondary btn-sm" onclick="resetKolDate()">重置</button>
+          <!-- 头部地址搜索（模糊搜索：地址 / 备注名称） -->
+          <div class="kol-search-bar">
+            <div class="kol-search-box">
+              <svg class="kol-search-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"/></svg>
+              <input class="form-input kol-search-input" id="kol-search-input" autocomplete="off" placeholder="搜索钱包地址或备注名称（支持模糊搜索）" oninput="onKolSearch()" onfocus="onKolSearch()" onkeydown="onKolSearchKey(event)">
+              <span class="kol-search-clear" id="kol-search-clear" onclick="clearKolSearch()">✕</span>
+              <div class="kol-search-dropdown" id="kol-search-dropdown"></div>
+            </div>
+            <span style="font-size:11px;color:#9ca3af;">输入地址或备注名称，重名时可在下拉中按地址确认</span>
           </div>
           <!-- Tab 切换栏 -->
           <div class="kol-tab-bar">
@@ -1014,33 +1039,136 @@ function loadKol(addr) {
   document.getElementById('drill-nav').scrollIntoView({ behavior: 'smooth', block: 'start' });
   showToastMsg(`已加载 ${addr} 的下级网络`);
 }
-function setDateRangeChip(active) {
-  const chip = document.getElementById('field-date-range-chip');
-  const cb   = document.getElementById('field-date-range-cb');
-  if (active) {
-    chip.classList.add('checked');
-    chip.style.borderStyle = '';
-    chip.style.opacity = '1';
-    cb.checked = true;
+// ── 头部地址搜索（模糊搜索 + 重名下拉确认）──
+let kolIndex = [];
+let kolSearchMatches = [];
+let kolActiveIdx = -1;
+
+function buildKolIndex() {
+  kolIndex = [];
+  [['kol-content-studio', 'studio', '工作室'], ['kol-content-zeroline', 'zeroline', '零线']].forEach(([id, type, label]) => {
+    const container = document.getElementById(id);
+    if (!container) return;
+    container.querySelectorAll('tbody tr').forEach(tr => {
+      const cells = tr.querySelectorAll('td');
+      if (cells.length < 3) return;
+      const addrEl = tr.querySelector('.td-address');
+      const addr = (addrEl ? addrEl.textContent : cells[1].textContent).trim();
+      const rawName = cells[2].textContent.trim();
+      const name = /未设置/.test(rawName) ? '' : rawName;
+      const lvlEl = tr.querySelector('.level-badge');
+      kolIndex.push({ addr, name, level: lvlEl ? lvlEl.textContent.trim() : '', type, typeLabel: label, tr });
+    });
+  });
+}
+
+function kolEsc(s) {
+  return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+}
+function kolFuzzySub(text, q) {
+  let i = 0;
+  for (let j = 0; j < text.length && i < q.length; j++) if (text[j] === q[i]) i++;
+  return i === q.length;
+}
+function kolHighlight(text, q) {
+  const idx = text.toLowerCase().indexOf(q.toLowerCase());
+  if (idx === -1) return kolEsc(text);
+  return kolEsc(text.slice(0, idx)) + '<span class="kol-sd-hl">' + kolEsc(text.slice(idx, idx + q.length)) + '</span>' + kolEsc(text.slice(idx + q.length));
+}
+
+function onKolSearch() {
+  const q = document.getElementById('kol-search-input').value.trim();
+  document.getElementById('kol-search-clear').classList.toggle('show', q.length > 0);
+  const dd = document.getElementById('kol-search-dropdown');
+  kolActiveIdx = -1;
+  if (!q) { kolSearchMatches = []; dd.classList.remove('show'); dd.innerHTML = ''; return; }
+
+  const ql = q.toLowerCase();
+  kolSearchMatches = kolIndex
+    .map(it => {
+      const nameL = it.name.toLowerCase(), addrL = it.addr.toLowerCase();
+      let score = -1;
+      if (it.name && nameL.includes(ql)) score = 0;          // 备注名称子串匹配（最优）
+      else if (addrL.includes(ql)) score = 1;                // 地址子串匹配
+      else if (it.name && kolFuzzySub(nameL, ql)) score = 2; // 备注名称模糊匹配
+      else if (kolFuzzySub(addrL, ql)) score = 3;            // 地址模糊匹配
+      return { it, score };
+    })
+    .filter(x => x.score >= 0)
+    .sort((a, b) => a.score - b.score)
+    .map(x => x.it);
+
+  const nameCount = {};
+  kolSearchMatches.forEach(m => { if (m.name) nameCount[m.name] = (nameCount[m.name] || 0) + 1; });
+
+  if (kolSearchMatches.length === 0) {
+    dd.innerHTML = '<div class="kol-sd-empty">未找到匹配的头部地址</div>';
   } else {
-    chip.classList.remove('checked');
-    chip.style.borderStyle = 'dashed';
-    chip.style.opacity = '0.5';
-    cb.checked = false;
+    dd.innerHTML = kolSearchMatches.map((m, i) => {
+      const dupe = m.name && nameCount[m.name] > 1;
+      const nameHtml = m.name
+        ? kolHighlight(m.name, q) + (dupe ? '<span class="kol-sd-dupe">重名</span>' : '')
+        : '<span class="kol-sd-unset">未设置备注</span>';
+      return `<div class="kol-sd-item" data-i="${i}" onmousedown="event.preventDefault()" onclick="selectKol(${i})">
+        <span class="kol-sd-name">${nameHtml}</span>
+        <span class="kol-sd-addr">${kolHighlight(m.addr, q)}</span>
+        <span class="kol-sd-meta">
+          <span class="kol-sd-type ${m.type}">${m.typeLabel}</span>
+          <span class="level-badge level-${m.level.toLowerCase()}">${m.level}</span>
+        </span>
+      </div>`;
+    }).join('');
   }
-  updateCount();
+  dd.classList.add('show');
 }
-function filterKolByDate() {
-  const s = document.getElementById('kol-date-s').value;
-  const e = document.getElementById('kol-date-e').value;
-  setDateRangeChip(true);
-  showToastMsg(`已按交易时间 ${s} — ${e} 筛选，导出字段已自动勾选「交易时间段」`);
+
+function onKolSearchKey(e) {
+  const dd = document.getElementById('kol-search-dropdown');
+  if (!dd.classList.contains('show') || kolSearchMatches.length === 0) {
+    if (e.key === 'Enter' && kolSearchMatches.length === 1) selectKol(0);
+    return;
+  }
+  if (e.key === 'ArrowDown') { e.preventDefault(); kolActiveIdx = (kolActiveIdx + 1) % kolSearchMatches.length; updateKolActive(); }
+  else if (e.key === 'ArrowUp') { e.preventDefault(); kolActiveIdx = (kolActiveIdx - 1 + kolSearchMatches.length) % kolSearchMatches.length; updateKolActive(); }
+  else if (e.key === 'Enter') { e.preventDefault(); selectKol(kolActiveIdx >= 0 ? kolActiveIdx : 0); }
+  else if (e.key === 'Escape') { dd.classList.remove('show'); }
 }
-function resetKolDate() {
-  document.getElementById('kol-date-s').value = '2026-01-01';
-  document.getElementById('kol-date-e').value = '2026-05-19';
-  setDateRangeChip(false);
-  showToastMsg('时间筛选已重置');
+function updateKolActive() {
+  const items = document.querySelectorAll('#kol-search-dropdown .kol-sd-item');
+  items.forEach((el, i) => el.classList.toggle('active', i === kolActiveIdx));
+  if (kolActiveIdx >= 0 && items[kolActiveIdx]) items[kolActiveIdx].scrollIntoView({ block: 'nearest' });
+}
+
+function selectKol(i) {
+  const m = kolSearchMatches[i];
+  if (!m) return;
+  document.getElementById('kol-search-dropdown').classList.remove('show');
+  document.getElementById('kol-search-input').value = m.name || m.addr;
+  document.getElementById('kol-search-clear').classList.add('show');
+  switchKolTab(m.type);
+  highlightKolRow(m.tr);
+  showToastMsg(`已定位 ${m.name ? m.name + ' · ' : ''}${m.addr}`);
+}
+
+function highlightKolRow(tr) {
+  if (!tr) return;
+  const body = document.getElementById('kolPanelBody');
+  if (!body.classList.contains('open')) toggleKolPanel();
+  tr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const prev = tr.style.background;
+  tr.style.transition = 'background .35s';
+  tr.style.background = '#fff7cc';
+  setTimeout(() => { tr.style.background = prev || ''; }, 1700);
+}
+
+function clearKolSearch() {
+  const input = document.getElementById('kol-search-input');
+  input.value = '';
+  document.getElementById('kol-search-clear').classList.remove('show');
+  const dd = document.getElementById('kol-search-dropdown');
+  dd.classList.remove('show'); dd.innerHTML = '';
+  kolSearchMatches = []; kolActiveIdx = -1;
+  input.focus();
 }
 function switchKolTab(tab) {
   document.getElementById('kol-content-studio').style.display = tab === 'studio' ? '' : 'none';
@@ -1198,6 +1326,15 @@ function resetFilters() {
 // Auto-load on page open
 init();
 renderLedgerTable('power');
+buildKolIndex();
+
+// 点击搜索框外部时关闭下拉
+document.addEventListener('click', e => {
+  const box = document.querySelector('.kol-search-box');
+  if (box && !box.contains(e.target)) {
+    document.getElementById('kol-search-dropdown')?.classList.remove('show');
+  }
+});
 
 // Reorder cards: page-header → 字段选择 → 头部地址 → 筛选条件 → …
 (function() {
