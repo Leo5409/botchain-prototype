@@ -151,6 +151,8 @@
   .badge-grey    { background: #f3f4f6; color: #6b7280; }
   .badge-warn    { background: #fef3c7; color: #92400e; }
   .badge-info    { background: #eef0fe; color: #4f5de6; }
+  .badge-depin   { background: #ccfbf1; color: #0f766e; }
+  .badge-pos     { background: #fce7f3; color: #be185d; }
 
   /* ── Status Dot ── */
   .dot-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
@@ -409,6 +411,14 @@
               </select>
             </div>
             <div class="form-group">
+              <label class="form-label">类型</label>
+              <select class="form-select">
+                <option>全部</option>
+                <option>DePIN 挖矿</option>
+                <option>PoS 挖矿</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label class="form-label">状态</label>
               <select class="form-select">
                 <option>全部</option>
@@ -441,7 +451,7 @@
           <table>
             <thead><tr>
               <th>工单 ID</th><th>用户</th><th>目标地址</th><th>金额 (USDT)</th><th>金额段</th>
-              <th>已审批人</th><th>状态</th><th>发起时间</th><th>操作</th>
+              <th>已审批人</th><th>类型</th><th>状态</th><th>发起时间</th><th>操作</th>
             </tr></thead>
             <tbody>
               <tr>
@@ -451,6 +461,7 @@
                 <td class="td-num td-blue">50,000.00</td>
                 <td><span class="badge badge-double">双审</span></td>
                 <td>运营 1 ✓ / <span class="text-mute">运营 2 待</span></td>
+                <td><span class="badge badge-depin">DePIN 挖矿</span></td>
                 <td><span class="badge badge-process">审批中</span></td>
                 <td class="text-mute">2026-05-25 14:32</td>
                 <td><div class="ops-cell"><button class="btn btn-primary btn-sm" onclick="switchPage('withdraw-detail')">审批</button></div></td>
@@ -462,6 +473,7 @@
                 <td class="td-num td-blue">120,000.00</td>
                 <td><span class="badge badge-owner">Owner</span></td>
                 <td>运营 1 ✓ / 运营 2 ✓ / <span class="text-mute">Owner 待</span></td>
+                <td><span class="badge badge-pos">PoS 挖矿</span></td>
                 <td><span class="badge badge-process">审批中</span></td>
                 <td class="text-mute">2026-05-25 14:05</td>
                 <td><div class="ops-cell"><button class="btn btn-primary btn-sm" onclick="switchPage('withdraw-detail')">审批</button></div></td>
@@ -473,6 +485,7 @@
                 <td class="td-num">3,200.00</td>
                 <td><span class="badge badge-single">单审</span></td>
                 <td>运营 2 ✓</td>
+                <td><span class="badge badge-depin">DePIN 挖矿</span></td>
                 <td><span class="badge badge-signing">签名中</span></td>
                 <td class="text-mute">2026-05-25 13:48</td>
                 <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
@@ -484,6 +497,7 @@
                 <td class="td-num td-red">85.00</td>
                 <td><span class="badge badge-auto">自动</span></td>
                 <td class="text-mute">系统执行</td>
+                <td><span class="badge badge-pos">PoS 挖矿</span></td>
                 <td><span class="badge badge-done">已完成</span></td>
                 <td class="text-mute">2026-05-25 13:30</td>
                 <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
@@ -495,6 +509,7 @@
                 <td class="td-num">580.00</td>
                 <td><span class="badge badge-single">单审</span></td>
                 <td class="text-mute">—</td>
+                <td><span class="badge badge-depin">DePIN 挖矿</span></td>
                 <td><span class="badge badge-pending">待审批</span></td>
                 <td class="text-mute">2026-05-25 13:12</td>
                 <td><div class="ops-cell"><button class="btn btn-primary btn-sm">审批</button><button class="btn btn-secondary btn-sm">详情</button></div></td>
@@ -506,6 +521,7 @@
                 <td class="td-num">75.00</td>
                 <td><span class="badge badge-auto">自动</span></td>
                 <td class="text-mute">系统执行</td>
+                <td><span class="badge badge-pos">PoS 挖矿</span></td>
                 <td><span class="badge badge-done">已完成</span></td>
                 <td class="text-mute">2026-05-25 12:50</td>
                 <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
@@ -517,6 +533,7 @@
                 <td class="td-num td-red">9,500.00</td>
                 <td><span class="badge badge-single">单审</span></td>
                 <td>运营 1 ✓</td>
+                <td><span class="badge badge-depin">DePIN 挖矿</span></td>
                 <td><span class="badge badge-fail">失败</span></td>
                 <td class="text-mute">2026-05-25 11:20</td>
                 <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button><button class="btn btn-warn btn-sm">重试</button></div></td>
@@ -581,6 +598,7 @@
           <div class="detail-label">用户地址</div><div class="detail-value mono">0x7c22…F3A1</div>
           <div class="detail-label">金额</div><div class="detail-value" style="color:#2563eb;font-weight:600;">50,000.00 USDT</div>
           <div class="detail-label">金额段</div><div class="detail-value"><span class="badge badge-double">双审（10k–100k）</span></div>
+          <div class="detail-label">类型</div><div class="detail-value"><span class="badge badge-depin">DePIN 挖矿</span></div>
           <div class="detail-label">目标地址</div><div class="detail-value mono">0x9d2a…B114 <span class="badge badge-info">白名单</span></div>
           <div class="detail-label">链 / Token</div><div class="detail-value">BSC · USDT (BEP-20)</div>
           <div class="detail-label">用户提交 IP</div><div class="detail-value">202.108.xx.xx · CN-BJ · UA: Chrome/137 (Win)</div>
