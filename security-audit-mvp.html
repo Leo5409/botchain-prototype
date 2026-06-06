@@ -429,7 +429,6 @@
                 <option>已完成</option>
                 <option>失败</option>
                 <option>黑名单自动拒绝</option>
-                <option>已撤销</option>
               </select>
             </div>
             <div class="form-group"><label class="form-label">审批人</label><input class="form-input" placeholder="运营 1 / 运营 2 / Owner"></div>
@@ -676,7 +675,6 @@
 
       <div style="display:flex;gap:10px;justify-content:flex-end;">
         <button class="btn btn-secondary" onclick="switchPage('withdraw-list')">返回</button>
-        <button class="btn btn-warn" onclick="openCancelModal()">撤回工单</button>
       </div>
     </div>
 
@@ -1500,29 +1498,6 @@
   </div>
 </div>
 
-<!-- 撤回工单 -->
-<div class="modal-overlay" id="cancelModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">撤回工单</div>
-      <button class="modal-close" onclick="closeModal('cancelModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-alert"><span class="icon">⚠</span><div>「待审批」/「审批中」阶段、签名未广播前可撤回。撤回后工单进入「已撤销」状态，可重新发起。</div></div>
-      <div class="form-group">
-        <label class="form-label">撤回原因</label>
-        <textarea class="form-textarea" placeholder="请说明撤回原因"></textarea>
-      </div>
-      <div style="display:flex;align-items:center;gap:8px;padding:10px 12px;background:#ecfdf5;border-radius:8px;font-size:12px;color:#047857;">
-        <span style="font-size:14px;">🔓</span>会话已验证，操作将记入审计日志
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('cancelModal')">取消</button>
-      <button class="btn btn-warn" onclick="closeModal('cancelModal'); showToastMsg('工单已撤回');">确认撤回</button>
-    </div>
-  </div>
-</div>
 
 
 <!-- 算力工单通过 -->
@@ -1961,7 +1936,6 @@
   function closeModal(id) { document.getElementById(id).classList.remove('show'); }
   function openApproveModal() { openModal('approveModal'); }
   function openRejectModal() { openModal('rejectModal'); }
-  function openCancelModal() { openModal('cancelModal'); }
   function openAddWhitelistModal() { openModal('addBlacklistModal'); }
   function openMiningApproveModal() { openModal('miningApproveModal'); }
   function openDiffDetailModal() { openModal('diffDetailModal'); }
