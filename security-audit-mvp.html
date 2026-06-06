@@ -153,6 +153,7 @@
   .badge-info    { background: #eef0fe; color: #4f5de6; }
   .badge-depin   { background: #ccfbf1; color: #0f766e; }
   .badge-pos     { background: #fce7f3; color: #be185d; }
+  .badge-pos2    { background: #ffedd5; color: #c2410c; }
   .badge-blacklist { background: #7f1d1d; color: #fff; }
 
   /* ── Status Dot ── */
@@ -416,7 +417,8 @@
               <select class="form-select">
                 <option>全部</option>
                 <option>DePIN 挖矿</option>
-                <option>PoS 挖矿</option>
+                <option>PoS · 质押本金提现</option>
+                <option>PoS · 质押收益提现</option>
               </select>
             </div>
             <div class="form-group">
@@ -477,7 +479,7 @@
                 <td class="td-num td-blue">120,000.00</td>
                 <td><span class="badge badge-owner">Owner</span></td>
                 <td>运营 1 ✓ / 运营 2 ✓ / <span class="text-mute">Owner 待</span></td>
-                <td><span class="badge badge-pos">PoS 挖矿</span></td>
+                <td><span class="badge badge-pos">质押本金提现</span></td>
                 <td><span class="badge badge-process">审批中</span></td>
                 <td class="text-mute">2026-05-25 14:05</td>
                 <td><div class="ops-cell"><button class="btn btn-primary btn-sm" onclick="switchPage('withdraw-detail')">审批</button></div></td>
@@ -503,7 +505,7 @@
                 <td class="td-num td-red">85.00</td>
                 <td><span class="badge badge-auto">自动</span></td>
                 <td class="text-mute">系统执行</td>
-                <td><span class="badge badge-pos">PoS 挖矿</span></td>
+                <td><span class="badge badge-pos2">质押收益提现</span></td>
                 <td><span class="badge badge-done">已完成</span></td>
                 <td class="text-mute">2026-05-25 13:30</td>
                 <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
@@ -529,7 +531,7 @@
                 <td class="td-num">75.00</td>
                 <td><span class="badge badge-auto">自动</span></td>
                 <td class="text-mute">系统执行</td>
-                <td><span class="badge badge-pos">PoS 挖矿</span></td>
+                <td><span class="badge badge-pos2">质押收益提现</span></td>
                 <td><span class="badge badge-done">已完成</span></td>
                 <td class="text-mute">2026-05-25 12:50</td>
                 <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
@@ -555,7 +557,7 @@
                 <td class="td-num td-red">4,400.00</td>
                 <td><span class="badge badge-single">单审</span></td>
                 <td class="text-mute">系统拦截</td>
-                <td><span class="badge badge-pos">PoS 挖矿</span></td>
+                <td><span class="badge badge-pos">质押本金提现</span></td>
                 <td><span class="badge badge-blacklist">黑名单自动拒绝</span></td>
                 <td class="text-mute">2026-05-25 10:48</td>
                 <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
@@ -1053,8 +1055,6 @@
           <div class="detail-label">核心数</div><div class="detail-value">126</div>
           <div class="detail-label">注册时间</div><div class="detail-value">2025-12-04 17:36</div>
           <div class="detail-label">在线状态</div><div class="detail-value"><span style="color:#10b981;">●</span> 在线 · 23h 18m</div>
-          <div class="detail-label">设备指纹哈希</div><div class="detail-value mono">sha256: 7e44…a3b1</div>
-          <div class="detail-label">注册硬件特征</div><div class="detail-value mono">sha256: 7e44…a3b1 <span class="badge badge-done" style="margin-left:4px;">匹配</span></div>
         </div>
       </div>
 
@@ -1777,7 +1777,7 @@
               <td class="td-mono">WD-2026052508</td><td class="td-address">0x5dca…9F02</td>
               <td class="td-address" style="color:#dc2626;">0x4cba…3322</td>
               <td class="td-num">17,600.00</td><td class="td-num td-red">4,400.00</td>
-              <td><span class="badge badge-fail">链上黑名单</span></td><td><span class="badge badge-pos">PoS 挖矿</span></td>
+              <td><span class="badge badge-fail">链上黑名单</span></td><td><span class="badge badge-pos">质押本金提现</span></td>
               <td class="text-mute">2026-05-25 10:48</td>
             </tr>
             <tr>
@@ -1791,7 +1791,7 @@
               <td class="td-mono">WD-2026052471</td><td class="td-address">0x3b07…1d44</td>
               <td class="td-address" style="color:#dc2626;">0xb8c9…2288</td>
               <td class="td-num">48,000.00</td><td class="td-num td-blue">12,000.00</td>
-              <td><span class="badge badge-fail">人工添加</span></td><td><span class="badge badge-pos">PoS 挖矿</span></td>
+              <td><span class="badge badge-fail">人工添加</span></td><td><span class="badge badge-pos2">质押收益提现</span></td>
               <td class="text-mute">2026-05-24 16:03</td>
             </tr>
             <tr>
@@ -1805,7 +1805,7 @@
               <td class="td-mono">WD-2026052452</td><td class="td-address">0x5dca…9F02</td>
               <td class="td-address" style="color:#dc2626;">0xd43f…7711</td>
               <td class="td-num">1,200.00</td><td class="td-num">300.00</td>
-              <td><span class="badge badge-fail">链上黑名单</span></td><td><span class="badge badge-pos">PoS 挖矿</span></td>
+              <td><span class="badge badge-fail">链上黑名单</span></td><td><span class="badge badge-pos">质押本金提现</span></td>
               <td class="text-mute">2026-05-23 19:52</td>
             </tr>
           </tbody>
