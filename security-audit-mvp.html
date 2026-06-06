@@ -329,9 +329,6 @@
     <div class="nav-item" data-page="device-detail" onclick="switchPage('device-detail')">
       <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h12a2 2 0 012 2v10a2 2 0 01-2 2H4a2 2 0 01-2-2V5zm3.293 1.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L7.586 10 5.293 7.707a1 1 0 010-1.414zM11 12a1 1 0 100 2h3a1 1 0 100-2h-3z"/></svg>设备详情
     </div>
-    <div class="nav-item" data-page="hash-archive" onclick="switchPage('hash-archive')">
-      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"/><path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z"/></svg>每日 hash 归档
-    </div>
 
     <div class="nav-group-title">6.12 账本审计</div>
     <div class="nav-item" data-page="snapshot-calendar" onclick="switchPage('snapshot-calendar')">
@@ -1094,87 +1091,6 @@
             </tbody>
           </table>
         </div>
-      </div>
-    </div>
-
-    <!-- ══════════ Hash Archive (6.3) ══════════ -->
-    <div class="page" id="page-hash-archive">
-      <div class="page-header">
-        <div>
-          <div class="page-title">每日 hash 归档<span class="tag-module">6.3</span></div>
-          <div class="page-subtitle">T+1 04:00 UTC 归档当日所有 (deviceId, period, earnings) 哈希到异地备份</div>
-        </div>
-        <div>
-          <button class="btn btn-secondary">导出归档清单</button>
-        </div>
-      </div>
-
-      <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);">
-        <div class="stat-card"><div class="stat-label">本月已归档</div><div class="stat-value">25<small>份</small></div></div>
-        <div class="stat-card"><div class="stat-label">归档成功率</div><div class="stat-value" style="color:#10b981;">100%</div></div>
-        <div class="stat-card"><div class="stat-label">总记录数（5 年）</div><div class="stat-value">9.2M</div></div>
-      </div>
-
-      <div class="card">
-        <div class="card-body">
-          <div class="filter-row">
-            <div class="form-group"><label class="form-label">日期范围</label><input class="form-input" value="2026-05-01 — 2026-05-25"></div>
-            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>成功</option><option>重试中</option><option>失败</option></select></div>
-            <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
-          </div>
-        </div>
-        <div class="table-wrapper">
-          <table>
-            <thead><tr><th>日期</th><th>归档文件名</th><th>hash 摘要 (sha256)</th><th>记录数</th><th>大小</th><th>异地备份</th><th>状态</th><th>操作</th></tr></thead>
-            <tbody>
-              <tr>
-                <td>2026-05-24</td>
-                <td class="td-mono">earnings_2026-05-24_3812.dat</td>
-                <td class="td-mono">8f3a…c92b</td>
-                <td class="td-num">3,812</td>
-                <td>248 KB</td>
-                <td><span class="badge badge-done">✓ S3-异地</span></td>
-                <td><span class="badge badge-done">成功</span></td>
-                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">下载</button><button class="btn btn-secondary btn-sm">校验</button></div></td>
-              </tr>
-              <tr>
-                <td>2026-05-23</td>
-                <td class="td-mono">earnings_2026-05-23_3895.dat</td>
-                <td class="td-mono">a14e…d811</td>
-                <td class="td-num">3,895</td>
-                <td>254 KB</td>
-                <td><span class="badge badge-done">✓ S3-异地</span></td>
-                <td><span class="badge badge-done">成功</span></td>
-                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">下载</button><button class="btn btn-secondary btn-sm">校验</button></div></td>
-              </tr>
-              <tr style="background:#fffbeb;">
-                <td>2026-05-22</td>
-                <td class="td-mono">earnings_2026-05-22_3902.dat</td>
-                <td class="td-mono">b9f2…1c03</td>
-                <td class="td-num">3,902</td>
-                <td>256 KB</td>
-                <td><span class="badge badge-warn">重试中（2/3）</span></td>
-                <td><span class="badge badge-warn">重试中</span></td>
-                <td><div class="ops-cell"><button class="btn btn-warn btn-sm">立即重试</button><button class="btn btn-secondary btn-sm">校验</button></div></td>
-              </tr>
-              <tr>
-                <td>2026-05-21</td>
-                <td class="td-mono">earnings_2026-05-21_3711.dat</td>
-                <td class="td-mono">6c8d…2f01</td>
-                <td class="td-num">3,711</td>
-                <td>241 KB</td>
-                <td><span class="badge badge-done">✓ S3-异地</span></td>
-                <td><span class="badge badge-done">成功</span></td>
-                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">下载</button><button class="btn btn-secondary btn-sm">校验</button></div></td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <div class="modal-alert" style="margin-top:14px;">
-        <span class="icon">ⓘ</span>
-        <div><strong>MVP 阶段说明：</strong>每日 hash 归档文件保存在 S3 异地存储（独立账号），事后如发现数据差异，可对比文件 hash 证明数据未被改动。<br>Phase 2 将升级为 Oracle 上链锚定 Merkle 根 + 用户挑战流程。</div>
       </div>
     </div>
 
@@ -2023,7 +1939,6 @@
     'auto-channel': '自动通道监控',
     'mining-pending': '算力异常工单',
     'device-detail': '设备详情',
-    'hash-archive': '每日 hash 归档',
     'snapshot-calendar': '每日快照状态',
     'diff-alerts': '比对差异告警',
     'change-log': '变更日志查询',
