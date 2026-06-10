@@ -375,8 +375,11 @@
     </div>
 
     <div class="nav-group-title">账号安全 · MFA</div>
+    <div class="nav-item" data-page="mfa-bind" onclick="switchPage('mfa-bind')">
+      <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3 4a1 1 0 011-1h3a1 1 0 010 2H5v2a1 1 0 01-2 0V4zM13 3a1 1 0 011-1h2a1 1 0 011 1v3a1 1 0 11-2 0V5h-1a1 1 0 01-1-1zM3 13a1 1 0 011 1v1h1a1 1 0 110 2H4a1 1 0 01-1-1v-2a1 1 0 011-1zM16 13a1 1 0 011 1v2a1 1 0 01-1 1h-2a1 1 0 110-2h1v-1a1 1 0 011-1zM7 7h2v2H7V7zM11 7h2v2h-2V7zM7 11h2v2H7v-2zM11 11h2v2h-2v-2z"/></svg>MFA 绑定向导
+    </div>
     <div class="nav-item" data-page="mfa" onclick="switchPage('mfa')">
-      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>MFA 绑定 / 恢复
+      <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2.166 4.999A11.954 11.954 0 0010 1.944 11.954 11.954 0 0017.834 5c.11.65.166 1.32.166 2.001 0 5.225-3.34 9.67-8 11.317C5.34 16.67 2 12.225 2 7c0-.682.057-1.35.166-2.001zm11.541 3.708a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>MFA 重置 / 恢复
     </div>
   </nav>
   <div class="sidebar-bottom">
@@ -1477,15 +1480,15 @@
     </div>
 
     <!-- ══════════ MFA 账号安全 ══════════ -->
-    <div class="page" id="page-mfa">
+    <div class="page" id="page-mfa-bind">
       <div class="page-header">
         <div>
-          <div class="page-title">账号安全 · MFA（Google Authenticator）<span class="tag-module">通用 · F-06</span></div>
-          <div class="page-subtitle">首次登录强制绑定 · 备份码备份 · 重置与恢复</div>
+          <div class="page-title">MFA 首次登录绑定向导<span class="tag-module">通用 · F-06</span></div>
+          <div class="page-subtitle">首次登录强制绑定 Google Authenticator · 未绑定不可进入后台</div>
         </div>
       </div>
 
-      <!-- 1) 首次登录绑定向导 -->
+      <!-- 首次登录绑定向导 -->
       <div class="card">
         <div class="card-header"><div class="card-title">首次登录绑定向导</div><span style="font-size:11px;color:#9ca3af;">未绑定不可进入后台</span></div>
         <div class="step-bar" style="padding:20px 24px 4px;">
@@ -1572,21 +1575,18 @@
         </div>
       </div>
 
-      <!-- 2) 我的备份码 -->
-      <div class="card">
-        <div class="card-header"><div class="card-title">我的备份码</div><span style="font-size:11px;color:#9ca3af;">状态 <strong style="color:#374151;">未使用</strong></span></div>
-        <div class="card-body">
-          <div class="backup-grid" style="grid-template-columns:1fr;max-width:260px;">
-            <div class="backup-code">8F3A-29KD-7TZB</div>
-          </div>
-          <div style="font-size:12px;color:#6b7280;line-height:1.7;">备份码可使用一次，用后自动作废。以哈希存储，平台不留明文。使用后或遗失时请重新生成。</div>
-          <div class="mfa-actions">
-            <button class="btn btn-secondary" onclick="openModal('mfaRegenModal')">重新生成备份码</button>
-          </div>
+    </div>
+
+    <!-- ══════════ MFA 重置与恢复 ══════════ -->
+    <div class="page" id="page-mfa">
+      <div class="page-header">
+        <div>
+          <div class="page-title">MFA 重置与恢复<span class="tag-module">通用 · F-06</span></div>
+          <div class="page-subtitle">设备 / 备份码丢失后的自助与 Owner 协助恢复</div>
         </div>
       </div>
 
-      <!-- 3) 重置与恢复 -->
+      <!-- 重置与恢复 -->
       <div class="card">
         <div class="card-header"><div class="card-title">重置与恢复</div></div>
         <div class="card-body">
@@ -2126,28 +2126,6 @@
   </div>
 </div>
 
-<!-- 重新生成备份码 -->
-<div class="modal-overlay" id="mfaRegenModal">
-  <div class="modal">
-    <div class="modal-header">
-      <div class="modal-title">重新生成备份码</div>
-      <button class="modal-close" onclick="closeModal('mfaRegenModal')">×</button>
-    </div>
-    <div class="modal-body">
-      <div class="modal-alert"><span class="icon">⚠</span><div>生成新备份码后，<strong>原备份码立即作废</strong>。新备份码仅展示一次，请妥善保存。</div></div>
-      <div class="form-group"><label class="form-label">验证码（TOTP）</label>
-        <div class="otp-row" style="justify-content:flex-start;">
-          <input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1">
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-secondary" onclick="closeModal('mfaRegenModal')">取消</button>
-      <button class="btn btn-primary" onclick="closeModal('mfaRegenModal'); showToastMsg('已生成新备份码，请及时保存');">生成新备份码</button>
-    </div>
-  </div>
-</div>
-
 <!-- ══════════ Toast ══════════ -->
 <div class="toast" id="toast">
   <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"/></svg>
@@ -2168,7 +2146,8 @@
     'change-log': '变更日志查询',
     'system-switches': '系统开关总览',
     'circuit-history': '熔断历史日志',
-    'mfa': 'MFA 绑定 / 恢复'
+    'mfa-bind': 'MFA 绑定向导',
+    'mfa': 'MFA 重置 / 恢复'
   };
 
   function switchPage(page) {
