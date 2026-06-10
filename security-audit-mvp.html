@@ -1559,17 +1559,13 @@
             <div style="display:flex;align-items:center;gap:8px;color:#065f46;font-weight:600;font-size:14px;margin-bottom:6px;">
               <span style="font-size:18px;">✓</span> 绑定成功 · 请妥善保存以下备份码
             </div>
-            <div class="mfa-tip" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af;">备份码用于手机丢失时登录。共 <strong>10 个</strong>，每个仅可使用一次，且<strong>仅此一次明文展示</strong>。请复制或下载后离线保存。</div>
-            <div class="backup-grid" id="backup-grid-new">
-              <div class="backup-code">8F3A-29KD</div><div class="backup-code">B7QX-4M1P</div>
-              <div class="backup-code">K2WE-7TZA</div><div class="backup-code">RJ9C-LD56</div>
-              <div class="backup-code">P0XN-3VHQ</div><div class="backup-code">2G5M-9WKE</div>
-              <div class="backup-code">YD7B-QA48</div><div class="backup-code">6TFC-1NRX</div>
-              <div class="backup-code">M4HE-Z90D</div><div class="backup-code">9CJ2-K7BP</div>
+            <div class="mfa-tip" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af;">备份码用于手机丢失时登录。仅 <strong>1 个</strong>，可使用一次，且<strong>仅此一次明文展示</strong>。请复制或下载后离线保存。</div>
+            <div class="backup-grid" id="backup-grid-new" style="grid-template-columns:1fr;max-width:260px;">
+              <div class="backup-code">8F3A-29KD-7TZB</div>
             </div>
             <div class="mfa-actions">
-              <button class="btn btn-secondary" onclick="copyBackupCodes()">复制全部</button>
-              <button class="btn btn-secondary" onclick="showToastMsg('备份码 backup_codes.txt 已下载')">下载 .txt</button>
+              <button class="btn btn-secondary" onclick="copyBackupCodes()">复制备份码</button>
+              <button class="btn btn-secondary" onclick="showToastMsg('备份码 backup_code.txt 已下载')">下载 .txt</button>
               <button class="btn btn-primary" onclick="showToastMsg('已完成 MFA 绑定，进入后台'); mfaGoStep(2);">我已保存，完成</button>
             </div>
           </div>
@@ -1578,16 +1574,12 @@
 
       <!-- 2) 我的备份码 -->
       <div class="card">
-        <div class="card-header"><div class="card-title">我的备份码</div><span style="font-size:11px;color:#9ca3af;">已用 <strong style="color:#374151;">2</strong> / 10</span></div>
+        <div class="card-header"><div class="card-title">我的备份码</div><span style="font-size:11px;color:#9ca3af;">状态 <strong style="color:#374151;">未使用</strong></span></div>
         <div class="card-body">
-          <div class="backup-grid">
-            <div class="backup-code used">8F3A-29KD</div><div class="backup-code">B7QX-4M1P</div>
-            <div class="backup-code used">K2WE-7TZA</div><div class="backup-code">RJ9C-LD56</div>
-            <div class="backup-code">P0XN-3VHQ</div><div class="backup-code">2G5M-9WKE</div>
-            <div class="backup-code">YD7B-QA48</div><div class="backup-code">6TFC-1NRX</div>
-            <div class="backup-code">M4HE-Z90D</div><div class="backup-code">9CJ2-K7BP</div>
+          <div class="backup-grid" style="grid-template-columns:1fr;max-width:260px;">
+            <div class="backup-code">8F3A-29KD-7TZB</div>
           </div>
-          <div style="font-size:12px;color:#6b7280;line-height:1.7;">已使用的备份码自动作废（划线）。备份码以哈希存储，平台不留明文。剩余不足时建议重新生成。</div>
+          <div style="font-size:12px;color:#6b7280;line-height:1.7;">备份码可使用一次，用后自动作废。以哈希存储，平台不留明文。使用后或遗失时请重新生成。</div>
           <div class="mfa-actions">
             <button class="btn btn-secondary" onclick="openModal('mfaRegenModal')">重新生成备份码</button>
           </div>
@@ -1603,9 +1595,9 @@
               <h4>方式 A · 自助重置 <span class="tag-mini mfa-badge-bound">持备份码</span></h4>
               <ol>
                 <li>登录页点击「无法获取验证码」</li>
-                <li>输入账号 + 1 个一次性备份码</li>
+                <li>输入账号 + 备份码</li>
                 <li>校验通过 → 临时会话</li>
-                <li>强制重新绑定新设备（生成新密钥 + 新备份码，旧的全部作废）</li>
+                <li>强制重新绑定新设备（生成新密钥 + 新备份码，旧的作废）</li>
               </ol>
             </div>
             <div class="mfa-method">
@@ -2142,7 +2134,7 @@
       <button class="modal-close" onclick="closeModal('mfaRegenModal')">×</button>
     </div>
     <div class="modal-body">
-      <div class="modal-alert"><span class="icon">⚠</span><div>生成新备份码后，<strong>原 10 个备份码立即全部作废</strong>。新备份码仅展示一次，请妥善保存。</div></div>
+      <div class="modal-alert"><span class="icon">⚠</span><div>生成新备份码后，<strong>原备份码立即作废</strong>。新备份码仅展示一次，请妥善保存。</div></div>
       <div class="form-group"><label class="form-label">验证码（TOTP）</label>
         <div class="otp-row" style="justify-content:flex-start;">
           <input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1"><input class="otp-cell" maxlength="1">
@@ -2221,7 +2213,7 @@
   function copyBackupCodes() {
     const codes = [...document.querySelectorAll('#backup-grid-new .backup-code')].map(e => e.textContent).join('\n');
     navigator.clipboard && navigator.clipboard.writeText(codes);
-    showToastMsg('10 个备份码已复制');
+    showToastMsg('备份码已复制');
   }
 
   function saveThresholds() {
