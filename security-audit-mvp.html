@@ -1130,10 +1130,10 @@
       <div class="page-header">
         <div>
           <div class="page-title">每日快照状态<span class="tag-module">6.12</span></div>
-          <div class="page-subtitle">T+1 04:00 归档 · 08:00 重算比对 · 不一致自动告警</div>
+          <div class="page-subtitle">T+1 0 点归档 · T+2 0 点对比 · 不一致自动告警</div>
         </div>
         <div>
-          <button class="btn btn-secondary">导出当月报表</button>
+          <button class="btn btn-secondary" onclick="openModal('exportMonthlyModal')">导出当月报表</button>
         </div>
       </div>
 
@@ -1183,7 +1183,7 @@
           <div class="cal-cell warn"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">22</span><span class="cal-status">重试</span></div><div class="cal-meta">3,902 笔<br>2/3 重试</div></div>
           <div class="cal-cell ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">23</span><span class="cal-status">一致</span></div><div class="cal-meta">3,895 笔</div></div>
           <div class="cal-cell fail"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">24</span><span class="cal-status">不一致</span></div><div class="cal-meta" style="color:#dc2626;font-weight:600;">3,812 笔<br>⚠ 已告警</div></div>
-          <div class="cal-cell today ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">25</span><span class="cal-status">今日</span></div><div class="cal-meta">归档 04:00<br>比对 08:00</div></div>
+          <div class="cal-cell today ok"><div style="display:flex;justify-content:space-between;align-items:center;"><span class="cal-date">25</span><span class="cal-status">今日</span></div><div class="cal-meta">归档 00:00<br>对比 次日</div></div>
 
           <div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
         </div>
@@ -1193,7 +1193,7 @@
         <div class="card-header"><div class="card-title">图例</div></div>
         <div class="card-body" style="display:flex;gap:24px;flex-wrap:wrap;font-size:12px;">
           <div><span class="dot-status dot-on"></span>一致：hash 比对通过</div>
-          <div><span class="dot-status" style="background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18);"></span>重试中：归档或异地备份重试中</div>
+          <div><span class="dot-status" style="background:#f59e0b;box-shadow:0 0 0 3px rgba(245,158,11,.18);"></span>重试中：对比不一致重试中</div>
           <div><span class="dot-status dot-off"></span>不一致：触发差异告警，需人工排查变更日志</div>
           <div><span style="display:inline-block;width:14px;height:14px;border:2px solid #5b6af0;border-radius:3px;vertical-align:middle;margin-right:4px;"></span>今日</div>
         </div>
@@ -1205,7 +1205,7 @@
       <div class="page-header">
         <div>
           <div class="page-title">比对差异告警<span class="tag-module">6.12</span></div>
-          <div class="page-subtitle">每日 T+1 08:00 重算 hash 与快照比对 · 不一致即生成告警</div>
+          <div class="page-subtitle">每日 T+2 0 点重算 hash 与快照比对 · 不一致即生成告警</div>
         </div>
       </div>
 
@@ -1214,7 +1214,7 @@
           <div class="filter-row">
             <div class="form-group"><label class="form-label">告警 ID</label><input class="form-input" placeholder="LDG-ALERT-xxx"></div>
             <div class="form-group"><label class="form-label">日期</label><input class="form-input" placeholder="2026-05-01 ~ 2026-05-25"></div>
-            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待处理</option><option>已排查</option><option>已关闭</option></select></div>
+            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待处理</option><option>已关闭</option></select></div>
             <div class="form-group"><label class="form-label">处理人</label><input class="form-input" placeholder="审计 / Owner"></div>
             <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
           </div>
@@ -1239,16 +1239,16 @@
                 <td class="text-mute">2026-04-13 08:02:11</td>
                 <td><span class="badge badge-done">已关闭</span></td>
                 <td>审计</td>
-                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
+                <td><span class="text-mute">已处理</span></td>
               </tr>
               <tr>
                 <td class="td-mono">LDG-ALERT-037</td>
                 <td>2026-03-22</td>
                 <td>异地备份延迟超 24h（S3 区域故障）</td>
                 <td class="text-mute">2026-03-23 09:14:50</td>
-                <td><span class="badge badge-done">已排查</span></td>
+                <td><span class="badge badge-done">已关闭</span></td>
                 <td>Owner</td>
-                <td><div class="ops-cell"><button class="btn btn-secondary btn-sm">详情</button></div></td>
+                <td><span class="text-mute">已处理</span></td>
               </tr>
             </tbody>
           </table>
@@ -1257,7 +1257,7 @@
 
       <div class="modal-alert danger">
         <span class="icon">⚠</span>
-        <div><strong>告警处理 SOP：</strong>① 进入「变更日志查询」按日期筛选当日 UPDATE/DELETE 记录 → ② 比对事件流表与应用表 → ③ 定位篡改源（DBA 账号 / 应用代码 / 异常 SQL） → ④ 记录排查结论，必要时上报 Owner / 触发 6.13 熔断</div>
+        <div><strong>告警处理 SOP：</strong>① 进入「变更日志查询」按日期筛选当日 UPDATE/DELETE 记录 → ② 比对事件流表与应用表 → ③ 定位篡改源（直连 DB / 应用代码 / 异常 SQL） → ④ 标记已处理，必要时触发 6.13 熔断</div>
       </div>
     </div>
 
@@ -1277,7 +1277,7 @@
         <div class="card-body">
           <div class="filter-row">
             <div class="form-group"><label class="form-label">表名</label><select class="form-select"><option>全部</option><option>UserWallet</option><option>DeviceUserEarningsRecord</option><option>StakeRecord</option><option>VipRecord</option></select></div>
-            <div class="form-group"><label class="form-label">操作账号</label><input class="form-input" placeholder="dba_xxx / app_service"></div>
+            <div class="form-group"><label class="form-label">接口</label><input class="form-input" placeholder="/api/... 或 直连 DB"></div>
             <div class="form-group"><label class="form-label">操作类型</label><select class="form-select"><option>全部</option><option>UPDATE</option><option>DELETE</option></select></div>
             <div class="form-group"><label class="form-label">时间范围</label><input class="form-input" value="2026-05-24 00:00 — 2026-05-25 24:00"></div>
             <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
@@ -1285,37 +1285,34 @@
         </div>
         <div class="table-wrapper">
           <table>
-            <thead><tr><th>时间</th><th>表名</th><th>操作</th><th>主键</th><th>操作账号</th><th>来源 IP</th><th>SQL 摘要</th><th>操作</th></tr></thead>
+            <thead><tr><th>时间</th><th>表名</th><th>操作</th><th>主键</th><th>接口</th><th>SQL 摘要</th><th>操作</th></tr></thead>
             <tbody>
               <tr style="background:#fef2f2;">
                 <td class="text-mute">2026-05-24 23:14:08</td>
                 <td><span class="badge badge-info">DeviceUserEarningsRecord</span></td>
                 <td><span class="badge badge-fail">UPDATE</span></td>
                 <td class="td-mono">id=89412</td>
-                <td><span class="td-red">dba_emergency</span></td>
-                <td class="text-mute">10.0.x.x</td>
+                <td><span class="td-red">直连 DB · 无接口</span></td>
                 <td class="td-mono">UPDATE … SET amount=1820.00 WHERE id=89412 -- 原值 18.20</td>
-                <td><button class="btn btn-danger btn-sm" onclick="openSqlDetailModal()">查看完整 SQL</button></td>
+                <td><button class="btn btn-danger btn-sm" onclick="openSqlDetailModal()">查看详情</button></td>
               </tr>
               <tr>
                 <td class="text-mute">2026-05-25 14:32:01</td>
                 <td><span class="badge badge-info">UserWallet</span></td>
                 <td><span class="badge badge-process">UPDATE</span></td>
                 <td class="td-mono">user_id=29348</td>
-                <td>app_service</td>
-                <td class="text-mute">10.0.x.x</td>
+                <td class="td-mono">/api/wallet/withdraw</td>
                 <td class="td-mono">UPDATE UserWallet SET balance = balance - 50000 WHERE user_id = 29348</td>
-                <td><button class="btn btn-secondary btn-sm">详情</button></td>
+                <td><span class="text-mute">已处理</span></td>
               </tr>
               <tr>
                 <td class="text-mute">2026-05-25 13:48:21</td>
                 <td><span class="badge badge-info">UserWallet</span></td>
                 <td><span class="badge badge-process">UPDATE</span></td>
                 <td class="td-mono">user_id=18772</td>
-                <td>app_service</td>
-                <td class="text-mute">10.0.x.x</td>
+                <td class="td-mono">/api/wallet/settle</td>
                 <td class="td-mono">UPDATE UserWallet SET balance = balance - 3200 WHERE user_id = 18772</td>
-                <td><button class="btn btn-secondary btn-sm">详情</button></td>
+                <td><span class="text-mute">已处理</span></td>
               </tr>
             </tbody>
           </table>
@@ -1748,34 +1745,20 @@
       <div class="modal-info-row"><span class="lbl">差异条数</span><span class="val" style="color:#dc2626;">1 笔（详见变更日志）</span></div>
       <div class="modal-info-row"><span class="lbl">触发时间</span><span class="val">2026-05-25 08:01:22</span></div>
 
-      <div class="modal-alert danger" style="margin-top:14px;"><span class="icon">⚠</span><div>系统已自动定位变更：<br><span class="td-mono">UPDATE DeviceUserEarningsRecord SET amount=1820.00 WHERE id=89412 -- 原值 18.20</span><br>操作账号：<strong>dba_emergency</strong> · 来源 IP：10.0.x.x · 时间：2026-05-24 23:14:08</div></div>
-
-      <div class="form-group">
-        <label class="form-label">排查结论</label>
-        <textarea class="form-textarea" placeholder="请填写排查过程与结论"></textarea>
-      </div>
-
-      <div class="form-group">
-        <label class="form-label">处理动作</label>
-        <select class="form-select">
-          <option>标记已排查（无影响）</option>
-          <option>已回滚数据，关闭告警</option>
-          <option>上报 Owner，触发 6.13 提现熔断</option>
-        </select>
-      </div>
+      <div class="modal-alert danger" style="margin-top:14px;"><span class="icon">⚠</span><div>系统已自动定位变更：<br><span class="td-mono">UPDATE DeviceUserEarningsRecord SET amount=1820.00 WHERE id=89412 -- 原值 18.20</span><br>接口：<strong>直连 DB · 无接口</strong> · 时间：2026-05-24 23:14:08</div></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('diffDetailModal')">关闭</button>
-      <button class="btn btn-primary" onclick="closeModal('diffDetailModal'); showToastMsg('告警已记录排查结论');">保存结论</button>
+      <button class="btn btn-primary" onclick="closeModal('diffDetailModal'); showToastMsg('告警已标记为已处理');">已处理</button>
     </div>
   </div>
 </div>
 
-<!-- 完整 SQL 详情 -->
+<!-- 变更日志详情 -->
 <div class="modal-overlay" id="sqlDetailModal">
   <div class="modal wide">
     <div class="modal-header">
-      <div class="modal-title">变更日志 · 完整 SQL</div>
+      <div class="modal-title">变更日志 · 详情</div>
       <button class="modal-close" onclick="closeModal('sqlDetailModal')">×</button>
     </div>
     <div class="modal-body">
@@ -1783,18 +1766,59 @@
       <div class="modal-info-row"><span class="lbl">表名</span><span class="val">DeviceUserEarningsRecord</span></div>
       <div class="modal-info-row"><span class="lbl">操作</span><span class="val td-red">UPDATE</span></div>
       <div class="modal-info-row"><span class="lbl">主键</span><span class="val td-mono">id=89412</span></div>
-      <div class="modal-info-row"><span class="lbl">操作账号</span><span class="val td-red">dba_emergency</span></div>
-      <div class="modal-info-row"><span class="lbl">连接 IP</span><span class="val td-mono">10.0.x.x</span></div>
+      <div class="modal-info-row"><span class="lbl">接口</span><span class="val td-red">直连 DB · 无接口</span></div>
       <div class="modal-info-row"><span class="lbl">会话 ID</span><span class="val td-mono">sess_a8f2b3c1</span></div>
 
-      <div style="margin-top:14px;font-size:12px;color:#9ca3af;">完整 SQL：</div>
-      <div style="background:#0f172a;color:#a7f3d0;padding:12px;border-radius:6px;font-family:monospace;font-size:11px;margin-top:6px;line-height:1.6;">UPDATE DeviceUserEarningsRecord<br>SET amount = 1820.00, updated_at = NOW()<br>WHERE id = 89412;<br><br>-- 原值: amount = 18.20<br>-- 修改后: amount = 1820.00<br>-- 差异: +1801.80</div>
-
-      <div class="modal-alert danger" style="margin-top:14px;"><span class="icon">⚠</span><div>检测到该变更未对应任何业务事件流记录（事件流表无此 id）。强烈建议立即冻结 dba_emergency 账号并启动安全审查。</div></div>
+      <div class="modal-alert danger" style="margin-top:14px;"><span class="icon">⚠</span><div>检测到该变更未经过任何业务接口、且未对应任何业务事件流记录（事件流表无此 id）。强烈建议立即冻结相关 DB 直连账号并启动安全审查。</div></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('sqlDetailModal')">关闭</button>
-      <button class="btn btn-danger" onclick="closeModal('sqlDetailModal'); showToastMsg('已上报 Owner，请前往系统开关考虑熔断');">上报 Owner</button>
+      <button class="btn btn-primary" onclick="closeModal('sqlDetailModal'); showToastMsg('已标记为已处理');">已处理</button>
+    </div>
+  </div>
+</div>
+
+<!-- 导出当月报表 -->
+<div class="modal-overlay" id="exportMonthlyModal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">导出当月报表</div>
+      <button class="modal-close" onclick="closeModal('exportMonthlyModal')">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label class="form-label">报表月份</label>
+        <select class="form-select">
+          <option>2026 年 5 月</option>
+          <option>2026 年 4 月</option>
+          <option>2026 年 3 月</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">报表内容</label>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox" checked>当月快照一致性汇总（一致 / 重试 / 不一致 计数）</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox" checked>每日明细（日期 · 笔数 · 归档 hash · 状态）</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox" checked>差异告警清单（含处理人 / 处理状态）</label>
+          <label style="display:flex;align-items:center;gap:8px;padding:10px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="checkbox">变更日志摘要（UPDATE / DELETE 记录）</label>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">导出格式</label>
+        <div style="display:flex;gap:8px;">
+          <label style="display:flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="radio" name="exportFmt" checked>Excel (.xlsx)</label>
+          <label style="display:flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="radio" name="exportFmt">PDF</label>
+          <label style="display:flex;align-items:center;gap:6px;padding:10px 14px;border:1px solid #e8eaed;border-radius:8px;cursor:pointer;"><input type="radio" name="exportFmt">CSV</label>
+        </div>
+      </div>
+
+      <div class="modal-alert" style="margin-top:4px;"><span class="icon">ℹ</span><div>报表按所选月份与内容生成，导出记录将写入操作日志（操作人 / 时间 / IP）。</div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('exportMonthlyModal')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('exportMonthlyModal'); showToastMsg('当月报表已生成，正在下载…');">导出</button>
     </div>
   </div>
 </div>
