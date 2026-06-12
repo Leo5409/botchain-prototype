@@ -959,7 +959,7 @@
       <div class="page-header">
         <div>
           <div class="page-title">算力异常工单<span class="tag-module">6.3</span></div>
-          <div class="page-subtitle">服务端 5 道闸门检测 · 异常自动 pending · 风控 4h 内响应</div>
+          <div class="page-subtitle">服务端异常均值检测 · 异常自动 pending · 风控 4h 内响应</div>
         </div>
         <div>
           <button class="btn btn-secondary" onclick="openModal('batchRejectModal')">批量拒绝（选中 2）</button>
@@ -978,7 +978,7 @@
           <div class="filter-row">
             <div class="form-group"><label class="form-label">设备 ID</label><input class="form-input" placeholder="dev_xxx"></div>
             <div class="form-group"><label class="form-label">用户</label><input class="form-input" placeholder="0x..."></div>
-            <div class="form-group"><label class="form-label">触发闸门</label><select class="form-select"><option>全部</option><option>② 设备指纹</option><option>③ 理论上限</option><option>④ 日封顶</option><option>⑤ 异常均值</option></select></div>
+            <div class="form-group"><label class="form-label">触发闸门</label><select class="form-select"><option>全部</option><option>异常均值</option></select></div>
             <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>pending</option><option>通过</option><option>拒绝</option></select></div>
             <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
           </div>
@@ -999,7 +999,7 @@
                 <td class="td-num td-red">412.0 TH/s</td>
                 <td class="td-num">306.0 TH/s</td>
                 <td class="td-num td-red">+34.6%</td>
-                <td><span class="badge badge-warn">④ 日封顶</span></td>
+                <td><span class="badge badge-warn">异常均值</span></td>
                 <td class="td-red">剩余 02:14</td>
                 <td><span class="badge badge-pending">pending</span></td>
                 <td class="text-mute">—</td>
@@ -1013,7 +1013,7 @@
                 <td class="td-num td-orange">218.5 TH/s</td>
                 <td class="td-num">108.0 TH/s</td>
                 <td class="td-num td-red">+102%</td>
-                <td><span class="badge badge-warn">⑤ 异常均值</span></td>
+                <td><span class="badge badge-warn">异常均值</span></td>
                 <td class="td-orange">剩余 02:48</td>
                 <td><span class="badge badge-pending">pending</span></td>
                 <td class="text-mute">—</td>
@@ -1027,7 +1027,7 @@
                 <td class="td-num td-orange">98.2 TH/s</td>
                 <td class="td-num">90.0 TH/s</td>
                 <td class="td-num td-orange">+9.1%</td>
-                <td><span class="badge badge-warn">③ 理论上限</span></td>
+                <td><span class="badge badge-warn">异常均值</span></td>
                 <td class="td-orange">剩余 03:30</td>
                 <td><span class="badge badge-pending">pending</span></td>
                 <td class="text-mute">—</td>
@@ -1041,7 +1041,7 @@
                 <td class="td-num">320.0 TH/s</td>
                 <td class="td-num">306.0 TH/s</td>
                 <td class="td-num td-orange">+4.5%</td>
-                <td><span class="badge badge-warn">④ 日封顶</span></td>
+                <td><span class="badge badge-warn">异常均值</span></td>
                 <td class="text-mute">已处理</td>
                 <td><span class="badge badge-done">通过</span></td>
                 <td class="text-mute" style="font-size:12px;">型号封顶内波动，确认正常</td>
@@ -1055,7 +1055,7 @@
                 <td class="td-num td-red">850 TH/s</td>
                 <td class="td-num">110 TH/s</td>
                 <td class="td-num td-red">+672%</td>
-                <td><span class="badge badge-warn">③ 理论上限</span></td>
+                <td><span class="badge badge-warn">异常均值</span></td>
                 <td class="text-mute">已处理</td>
                 <td><span class="badge badge-fail">拒绝</span></td>
                 <td class="text-mute" style="font-size:12px;">算力 +672%，疑似客户端篡改</td>
@@ -1109,7 +1109,7 @@
           <div class="detail-label">当日已上报次数</div><div class="detail-value">218 次</div>
           <div class="detail-label">当日累计算力</div><div class="detail-value">412 TH/s</div>
           <div class="detail-label">超出封顶</div><div class="detail-value" style="color:#dc2626;font-weight:600;">+106 TH/s (+34.6%)</div>
-          <div class="detail-label">当日异常标记</div><div class="detail-value"><span class="badge badge-warn">是 · ④ 日封顶</span></div>
+          <div class="detail-label">当日异常标记</div><div class="detail-value"><span class="badge badge-warn">是 · 异常均值</span></div>
           <div class="detail-label">关联 pending 工单</div><div class="detail-value"><a class="btn-link" onclick="switchPage('mining-pending')">MN-2026052501</a></div>
           <div class="detail-label">最近上报时间</div><div class="detail-value">2026-05-25 14:38:21</div>
         </div>
@@ -1121,9 +1121,9 @@
           <table>
             <thead><tr><th>日期</th><th>原始上报</th><th>封顶值</th><th>超出 %</th><th>触发闸门</th><th>处理结果</th><th>处理人</th></tr></thead>
             <tbody>
-              <tr><td>2026-05-25</td><td class="td-num td-red">412 TH/s</td><td class="td-num">306 TH/s</td><td class="td-num td-red">+34.6%</td><td><span class="badge badge-warn">④</span></td><td><span class="badge badge-pending">pending</span></td><td>—</td></tr>
-              <tr><td>2026-05-18</td><td class="td-num td-orange">320 TH/s</td><td class="td-num">306 TH/s</td><td class="td-num td-orange">+4.5%</td><td><span class="badge badge-warn">④</span></td><td><span class="badge badge-done">通过</span></td><td>运营 1</td></tr>
-              <tr><td>2026-05-10</td><td class="td-num td-orange">280 TH/s</td><td class="td-num">204 TH/s</td><td class="td-num td-orange">+37%</td><td><span class="badge badge-warn">⑤</span></td><td><span class="badge badge-done">通过</span></td><td>运营 2</td></tr>
+              <tr><td>2026-05-25</td><td class="td-num td-red">412 TH/s</td><td class="td-num">306 TH/s</td><td class="td-num td-red">+34.6%</td><td><span class="badge badge-warn">异常均值</span></td><td><span class="badge badge-pending">pending</span></td><td>—</td></tr>
+              <tr><td>2026-05-18</td><td class="td-num td-orange">320 TH/s</td><td class="td-num">306 TH/s</td><td class="td-num td-orange">+4.5%</td><td><span class="badge badge-warn">异常均值</span></td><td><span class="badge badge-done">通过</span></td><td>运营 1</td></tr>
+              <tr><td>2026-05-10</td><td class="td-num td-orange">280 TH/s</td><td class="td-num">204 TH/s</td><td class="td-num td-orange">+37%</td><td><span class="badge badge-warn">异常均值</span></td><td><span class="badge badge-done">通过</span></td><td>运营 2</td></tr>
             </tbody>
           </table>
         </div>
