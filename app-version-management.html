@@ -662,6 +662,8 @@ function openUploadModal(presetPlatform = null, replacingId = null) {
     replacingPlatform = null;
   }
 
+  // 替换流程锁定平台，不允许更改
+  $('u-platform').disabled = !!replacingPlatform;
   onPlatformChange();
   $('u-submit').disabled = true;
   openModal('upload-modal');
