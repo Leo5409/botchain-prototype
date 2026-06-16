@@ -354,12 +354,9 @@
         </div>
 
         <div class="form-group">
-          <label class="form-label">安装包下载链接（专属）</label>
-          <div class="sha-box">
-            <span id="u-dlurl" style="color:#5b6af0;">填写版本号后自动生成</span>
-            <button type="button" class="copy-btn" onclick="copyLink(document.getElementById('u-dlurl').textContent)">复制</button>
-          </div>
-          <div class="form-hint">系统为该版本生成的专属下载链接。请将最新安装包替换至该链接对应的存储位置后保存生效。</div>
+          <label class="form-label">安装包下载链接</label>
+          <input class="form-input" id="u-dlurl-input" placeholder="https://dl.botminer.vip/app/...">
+          <div class="form-hint">由运营人员手动填写该版本安装包的下载链接，用户下载页将指向此链接。</div>
         </div>
 
         <div class="form-group">
@@ -492,6 +489,8 @@ let logs = [];
 function pushLog(releaseId, action, operator, note = '', ip = '10.0.3.21', ts = null) {
   logs.unshift({ id: ++nextId, releaseId, action, operator, ip, ts: ts || nowStr(), note });
 }
+// 演示数据：为既有版本补充下载链接（实际由运营人员手动填写）
+versions.forEach(v => { if (!v.downloadUrl) v.downloadUrl = genDownloadUrl(v.platform, v.version); });
 // 用历史时间戳反推初始日志
 versions.forEach(v => {
   pushLog(v.id, 'upload', v.uploader, `上传 v${v.version}`, v.ip, v.uploadedAt);
@@ -556,7 +555,10 @@ function renderTable() {
     const st = STATUS[v.status];
     const isCurrent = v.status === 'current';
     const statusHtml = `<span class="badge ${st.cls}">${isCurrent ? '<span class="pulse-dot"></span>' : ''}${st.label}</span>`;
-    const url = genDownloadUrl(v.platform, v.version);
+    const url = v.downloadUrl || '';
+    const dlCell = url
+      ? `<div class="dl-cell"><a class="dl-url" href="${url}" target="_blank" title="${url}">${url.replace(/^https?:\/\//,'')}</a><button class="dl-copy" onclick="event.stopPropagation();copyLink('${url}')">复制</button></div>`
+      : `<span style="color:#c0c4cc;">—</span>`;
     return `
       <tr>
         <td><span class="td-version" onclick="openDetail(${v.id})">v${v.version}</span></td>
@@ -564,7 +566,7 @@ function renderTable() {
         <td>${statusHtml}</td>
         <td class="td-mono">${v.uploadedAt}</td>
         <td>${v.uploader}</td>
-        <td><div class="dl-cell"><a class="dl-url" href="${url}" target="_blank" title="${url}">${url.replace('https://','')}</a><button class="dl-copy" onclick="event.stopPropagation();copyLink('${url}')">复制</button></div></td>
+        <td>${dlCell}</td>
         <td><div class="td-ops">${actionButtons(v)}</div></td>
       </tr>
     `;
@@ -599,7 +601,7 @@ function openDetail(id) {
   $('d-uploaded').textContent = v.uploadedAt;
   $('d-archived').textContent = v.archivedAt || '—';
   $('d-archived-row').style.display = v.archivedAt ? '' : 'none';
-  $('d-dlurl').textContent    = genDownloadUrl(v.platform, v.version);
+  $('d-dlurl').textContent    = v.downloadUrl || '—';
   $('d-notes').textContent    = v.notes;
 
   // 时间线（旧→新）
@@ -635,6 +637,7 @@ function openUploadModal(presetPlatform = null, replacingId = null) {
   $('u-platform').value = presetPlatform || 'windows';
   $('u-version').value  = '';
   $('u-notes').value    = '';
+  $('u-dlurl-input').value = '';
   $('u-version-err').textContent = '';
 
   // 替换提示
@@ -663,13 +666,6 @@ function onPlatformChange() {
   validateVersion();
 }
 
-// 根据平台 + 版本号生成专属下载链接
-function updateDlUrl() {
-  const plat = $('u-platform').value;
-  const ver  = $('u-version').value.trim();
-  $('u-dlurl').textContent = ver ? genDownloadUrl(plat, ver) : '填写版本号后自动生成';
-}
-
 function validateVersion() {
   const v = $('u-version').value.trim();
   const err = $('u-version-err');
@@ -681,7 +677,6 @@ function validateVersion() {
   } else {
     err.textContent = '';
   }
-  updateDlUrl();
   refreshSubmit();
 }
 
@@ -709,6 +704,7 @@ function submitUpload() {
     id: ++nextId,
     platform,
     version,
+    downloadUrl: $('u-dlurl-input').value.trim(),
     notes:   $('u-notes').value.trim(),
     status:  'current',
     uploader:'运营人员',
