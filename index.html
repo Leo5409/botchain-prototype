@@ -494,9 +494,9 @@
           <div class="toggle-left">
             <div class="toggle-icon" id="ledgerToggleIcon"></div>
             <span class="toggle-label">流水导出</span>
-            <span class="field-count-badge" style="background:#fef3c7;color:#92400e;">3 种流水类型</span>
+            <span class="field-count-badge" style="background:#fef3c7;color:#92400e;">4 种流水类型</span>
           </div>
-          <span style="font-size:11px;color:#9ca3af;">算力购买 · 节点购买 · 质押仓位，可按时间范围筛选后导出</span>
+          <span style="font-size:11px;color:#9ca3af;">算力购买 · 节点购买 · 质押仓位 · 质押交易，可按时间范围筛选后导出</span>
         </div>
         <div class="field-panel-body" id="ledgerPanelBody">
           <div style="padding:16px 20px;">
@@ -519,6 +519,7 @@
               <button id="tab-power"   class="ledger-tab active"  onclick="switchLedgerTab('power')">算力购买流水</button>
               <button id="tab-node"    class="ledger-tab"         onclick="switchLedgerTab('node')">节点购买流水</button>
               <button id="tab-stake"   class="ledger-tab"         onclick="switchLedgerTab('stake')">质押仓位流水</button>
+              <button id="tab-staketx" class="ledger-tab"         onclick="switchLedgerTab('staketx')">质押交易流水</button>
             </div>
             <!-- 时间范围 -->
             <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
@@ -1233,6 +1234,16 @@ const ledgerConfig = {
       ['204', '0x74d4…f1f', '30天',  '1,000.00', '964.10',    '已结束', '2026-01-01', '2026-01-31'],
       ['305', '0xba11…e2',  '360天', '20,000.00','19,280.00', '收益中', '2026-01-08', '2027-01-08'],
     ]
+  },
+  staketx: {
+    headers: ['ID', '地址', '交易类型', '质押期限', '金额', '交易 Hash', '交易时间'],
+    rows: [
+      ['#STK-9001', '0x307a…066', '质押本金', '90天',  '8,000.00 USDT', '0x3a9f…c21', '2026-01-15 10:02'],
+      ['#STK-9002', '0x307a…066', '收益领取', '30天',  '128.40 CA',     '0x77b2…e4d', '2026-02-20 09:15'],
+      ['#STK-9003', '0xdbc9…74f', '赎回本金', '180天', '3,000.00 USDT', '0x5c10…9af', '2026-03-31 12:30'],
+      ['#STK-9004', '0x74d4…f1f', '质押本金', '30天',  '1,000.00 USDT', '0x21de…b80', '2026-01-01 08:00'],
+      ['#STK-9005', '0xba11…e2',  '收益领取', '360天', '964.00 CA',     '0xe2f6…35d', '2026-03-08 19:48'],
+    ]
   }
 };
 let currentLedgerTab = 'power';
@@ -1247,7 +1258,7 @@ function toggleLedger() {
 
 function switchLedgerTab(type) {
   currentLedgerTab = type;
-  ['power','node','stake'].forEach(t => {
+  ['power','node','stake','staketx'].forEach(t => {
     document.getElementById('tab-'+t).classList.toggle('active', t === type);
   });
   renderLedgerTable(type);
@@ -1268,13 +1279,17 @@ function renderLedgerTable(type) {
         const colors = { '超算节点': '#2563eb', '量子节点': '#7c3aed', '创世节点': '#b45309' };
         return `<td><span style="color:${colors[cell]||'#374151'};font-weight:500;">${cell}</span></td>`;
       }
+      if (type === 'staketx' && i === 2) {
+        const colors = { '质押本金': '#10b981', '赎回本金': '#f59e0b', '收益领取': '#7c3aed' };
+        return `<td><span style="color:${colors[cell]||'#374151'};font-weight:500;">${cell}</span></td>`;
+      }
       return `<td>${cell}</td>`;
     }).join('') + '</tr>'
   ).join('');
 }
 
 function submitLedgerExport() {
-  const labels = { power: '导出算力购买流水', node: '导出节点购买流水', stake: '导出质押仓位流水' };
+  const labels = { power: '导出算力购买流水', node: '导出节点购买流水', stake: '导出质押仓位流水', staketx: '导出质押交易流水' };
   const addr = bcStack.length ? bcStack[bcStack.length - 1].addr : '—';
   openExportModal(labels[currentLedgerTab], addr);
 }
