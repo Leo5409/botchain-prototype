@@ -115,6 +115,8 @@
   .badge-current  { background: #d1fae5; color: #065f46; }
   .badge-archived { background: #f3f4f6; color: #6b7280; }
   .badge-failed   { background: #fef3c7; color: #92400e; }
+  .badge-force    { background: #fee2e2; color: #b91c1c; }
+  .badge-noforce  { background: #f3f4f6; color: #9ca3af; }
   .pulse-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; box-shadow: 0 0 0 0 rgba(16,185,129,.7); animation: pulse 1.6s infinite; }
   @keyframes pulse {
     0%   { box-shadow: 0 0 0 0 rgba(16,185,129,.7); }
@@ -316,6 +318,7 @@
               <th>上传时间</th>
               <th>上传人</th>
               <th>下载链接</th>
+              <th>强制更新</th>
               <th>操作</th>
             </tr>
           </thead>
@@ -362,6 +365,15 @@
         </div>
 
         <div class="form-group">
+          <label class="form-label">是否强制更新</label>
+          <select class="form-input" id="u-force">
+            <option value="no">否 · 提示更新（用户可稍后更新）</option>
+            <option value="yes">是 · 强制更新（必须更新到本版本才能继续使用）</option>
+          </select>
+          <div class="form-hint">可选，默认「否」。选「是」时客户端启动将强制用户更新到该版本。</div>
+        </div>
+
+        <div class="form-group">
           <label class="form-label">Release Notes</label>
           <textarea class="form-input form-textarea" id="u-notes" placeholder="简要描述本次更新内容、修复点、已知问题…（可留空）" oninput="refreshSubmit()"></textarea>
           <div class="form-hint">可选，仅作为后台人员记录。</div>
@@ -391,6 +403,7 @@
           <div class="meta-row"><span class="k">版本号</span><span class="v" id="d-version">—</span></div>
           <div class="meta-row"><span class="k">平台</span><span class="v" id="d-platform">—</span></div>
           <div class="meta-row"><span class="k">状态</span><span class="v" id="d-status">—</span></div>
+          <div class="meta-row"><span class="k">强制更新</span><span class="v" id="d-force">—</span></div>
           <div class="meta-row"><span class="k">上传人</span><span class="v" id="d-uploader">—</span></div>
           <div class="meta-row"><span class="k">上传时间</span><span class="v" id="d-uploaded">—</span></div>
           <div class="meta-row" id="d-archived-row"><span class="k">归档时间</span><span class="v" id="d-archived">—</span></div>
@@ -493,6 +506,10 @@ function pushLog(releaseId, action, operator, note = '', ip = '10.0.3.21', ts = 
 }
 // 演示数据：为既有版本补充下载链接（实际由运营人员手动填写）
 versions.forEach(v => { if (!v.downloadUrl) v.downloadUrl = genDownloadUrl(v.platform, v.version); });
+// 是否强制更新（默认否）；演示：当前 Apple Silicon 版本设为强制更新
+versions.forEach(v => { if (v.forceUpdate === undefined) v.forceUpdate = false; });
+const _armCurrent = versions.find(v => v.platform === 'macos_arm' && v.status === 'current');
+if (_armCurrent) _armCurrent.forceUpdate = true;
 // 用历史时间戳反推初始日志
 versions.forEach(v => {
   pushLog(v.id, 'upload', v.uploader, `上传 v${v.version}`, v.ip, v.uploadedAt);
@@ -556,7 +573,7 @@ function renderTable() {
   const tbody = $('version-tbody');
 
   if (rows.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7"><div class="empty-state">没有匹配的版本记录</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8"><div class="empty-state">没有匹配的版本记录</div></td></tr>`;
     return;
   }
 
@@ -568,6 +585,9 @@ function renderTable() {
     const dlCell = url
       ? `<div class="dl-cell"><a class="dl-url" href="${url}" target="_blank" title="${url}">${url.replace(/^https?:\/\//,'')}</a><button class="dl-copy" onclick="event.stopPropagation();copyLink('${url}')">复制</button></div>`
       : `<span style="color:#c0c4cc;">—</span>`;
+    const forceCell = v.forceUpdate
+      ? `<span class="badge badge-force">是</span>`
+      : `<span class="badge badge-noforce">否</span>`;
     return `
       <tr>
         <td><span class="td-version" onclick="openDetail(${v.id})">v${v.version}</span></td>
@@ -576,6 +596,7 @@ function renderTable() {
         <td class="td-mono">${v.uploadedAt}</td>
         <td>${v.uploader}</td>
         <td>${dlCell}</td>
+        <td>${forceCell}</td>
         <td><div class="td-ops">${actionButtons(v)}</div></td>
       </tr>
     `;
@@ -606,6 +627,7 @@ function openDetail(id) {
   $('d-version').innerHTML  = `<span class="td-version">v${v.version}</span>`;
   $('d-platform').innerHTML = `<span class="platform-pill ${v.platform}">${PLATFORMS[v.platform]}</span>`;
   $('d-status').innerHTML   = `<span class="badge ${st.cls}">${v.status==='current'?'<span class="pulse-dot"></span>':''}${st.label}</span>`;
+  $('d-force').innerHTML    = v.forceUpdate ? `<span class="badge badge-force">是 · 强制更新</span>` : `<span class="badge badge-noforce">否 · 提示更新</span>`;
   $('d-uploader').textContent = v.uploader;
   $('d-uploaded').textContent = v.uploadedAt;
   $('d-archived').textContent = v.archivedAt || '—';
@@ -647,6 +669,7 @@ function openUploadModal(presetPlatform = null, replacingId = null) {
   $('u-version').value  = '';
   $('u-notes').value    = '';
   $('u-dlurl-input').value = '';
+  $('u-force').value    = 'no';
   $('u-version-err').textContent = '';
 
   // 替换提示
@@ -655,6 +678,7 @@ function openUploadModal(presetPlatform = null, replacingId = null) {
     $('u-modal-title').textContent = '替换当前版本';
     $('u-replace-hint').style.display = '';
     $('u-replace-hint').innerHTML = `当前 <strong>${PLATFORMS[v.platform]}</strong> 生效版本为 <strong>v${v.version}</strong>。保存后将自动归档为只读历史。`;
+    $('u-force').value = v.forceUpdate ? 'yes' : 'no';
     replacingPlatform = v.platform;
   } else {
     $('u-modal-title').textContent = '上传新版本';
@@ -717,6 +741,7 @@ function submitUpload() {
     platform,
     version,
     downloadUrl: $('u-dlurl-input').value.trim(),
+    forceUpdate: $('u-force').value === 'yes',
     notes:   $('u-notes').value.trim(),
     status:  'current',
     uploader:'运营人员',
