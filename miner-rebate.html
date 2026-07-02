@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CaryPact · 矿机 — 销售返佣 / 返佣规则</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#08090c; --panel:#111318; --panel2:#171a21; --border:#242833;
+    --text:#f2f3f7; --text2:#9aa0ad; --muted:#5f6573;
+    --purple:#7c5cff; --pg:linear-gradient(135deg,#8b5cf6,#6d5cf7);
+    --pink:#ff5277; --green:#22c55e; --bot:#a78bfa; --usdt:#2dd4bf;
+  }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#e7e9f0; color:var(--text); padding:34px 28px 60px; }
+  .gallery-head { text-align:center; margin-bottom:28px; color:#1a1a2e; }
+  .gallery-head h1 { font-size:22px; font-weight:800; }
+  .gallery-head p { font-size:13px; color:#6b7280; margin-top:6px; line-height:1.6; }
+
+  .gallery { display:flex; flex-wrap:wrap; gap:34px 30px; align-items:flex-start; justify-content:center; }
+  .slide { width:340px; }
+  .slide-label { display:flex; align-items:center; gap:8px; justify-content:center; margin-bottom:12px; }
+  .slide-label .no { width:24px; height:24px; border-radius:50%; background:var(--pg); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .slide-label .nm { font-size:13.5px; font-weight:700; color:#374151; }
+
+  /* ── Phone ── */
+  .phone { width:340px; min-height:560px; background:var(--bg); border-radius:40px; box-shadow:0 20px 50px rgba(10,11,16,.32), 0 0 0 9px #0b0c10, 0 0 0 10px #2a2d45;
+           position:relative; overflow:hidden; display:flex; flex-direction:column; }
+  .notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:126px; height:26px; background:#0b0c10; border-radius:0 0 16px 16px; z-index:60; }
+  .statusbar { height:36px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 24px; font-size:12px; font-weight:600; color:#fff; }
+  .statusbar .right { display:flex; gap:6px; font-size:10.5px; opacity:.85; }
+
+  /* top bar */
+  .topbar { height:50px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; }
+  .logo { display:flex; align-items:center; gap:7px; font-size:15px; font-weight:800; }
+  .logo .mark { width:22px; height:22px; border-radius:50%; background:conic-gradient(from 210deg,#3b82f6,#7873f5,#21d4fd,#3b82f6); box-shadow:0 0 8px rgba(124,92,255,.5); }
+  .top-actions { display:flex; align-items:center; gap:7px; }
+  .wallet { display:flex; align-items:center; gap:5px; background:var(--pg); color:#fff; border:none; height:30px; padding:0 11px; border-radius:16px; font-size:11px; font-weight:700; box-shadow:0 4px 14px rgba(124,92,255,.4); }
+  .iconbtn { width:30px; height:30px; border-radius:50%; background:#1c1f27; border:1px solid #2a2e3a; color:#cdd0db; font-size:13px; display:flex; align-items:center; justify-content:center; }
+
+  /* sub bar (← 返回 Title) */
+  .subbar { height:48px; flex-shrink:0; display:flex; align-items:center; position:relative; padding:0 14px; }
+  .subbar .bk { position:absolute; left:14px; color:#e7e9f2; font-size:14px; display:flex; align-items:center; gap:6px; }
+  .subbar .tt { flex:1; text-align:center; font-size:16px; font-weight:700; color:#fff; }
+
+  /* content */
+  .content { flex:1; padding:6px 16px 22px; }
+  .sect { font-size:17px; font-weight:800; color:#fff; margin:18px 2px 12px; }
+
+  /* hero */
+  .hero { background:var(--pg); border-radius:20px; padding:18px 18px 20px; box-shadow:0 14px 30px rgba(124,92,255,.34); position:relative; overflow:hidden; }
+  .hero .h-lbl { font-size:12.5px; opacity:.9; }
+  .hero .h-big { font-size:30px; font-weight:800; margin-top:5px; letter-spacing:.5px; } .hero .h-big small { font-size:14px; font-weight:600; opacity:.85; margin-left:5px; }
+  .hero .h-row { display:flex; gap:9px; margin-top:16px; }
+  .hero .h-cell { flex:1; background:rgba(255,255,255,.15); border-radius:12px; padding:9px 8px; }
+  .hero .h-cell .c-l { font-size:10.5px; opacity:.9; } .hero .h-cell .c-v { font-size:15px; font-weight:800; margin-top:3px; }
+
+  /* cards / rows */
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:14px 16px; margin-bottom:14px; }
+  .card-t { font-size:14px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+  .card-t .more { font-size:12px; color:var(--purple); font-weight:600; }
+  .rules-list { counter-reset:r; list-style:none; }
+  .rules-list li { counter-increment:r; position:relative; padding:9px 0 9px 26px; font-size:12.5px; color:#dfe1ea; line-height:1.55; border-bottom:1px solid var(--border); }
+  .rules-list li:last-child { border-bottom:none; }
+  .rules-list li::before { content:counter(r); position:absolute; left:0; top:9px; width:18px; height:18px; border-radius:50%; background:#241f3a; color:var(--bot); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; }
+  .rules-list li b { color:#fff; }
+  .hl { color:#c4b5fd; font-weight:700; }
+  .row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .row:last-child { border-bottom:none; }
+  .row .ic { width:38px; height:38px; border-radius:11px; background:#241f3a; color:var(--bot); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .row .ic.green { background:#10301f; color:#34d399; } .row .ic.amber { background:#3a2c12; color:#fbbf24; }
+  .row .rmain { flex:1; min-width:0; }
+  .row .rtitle { font-size:13px; font-weight:600; color:#fff; }
+  .row .rsub { font-size:11px; color:var(--text2); margin-top:3px; line-height:1.4; }
+  .row .rright { text-align:right; flex-shrink:0; }
+  .row .rval { font-size:15px; font-weight:800; }
+  .row .rval.usdt { color:var(--usdt); } .row .rval.bot { color:var(--bot); } .row .rval.freeze { color:#7da2ff; }
+  .row .rdate { font-size:10.5px; color:var(--muted); margin-top:3px; }
+  .chev { color:#4b4f5e; font-size:16px; flex-shrink:0; }
+
+  .b { display:inline-flex; align-items:center; padding:1px 7px; border-radius:8px; font-size:10.5px; font-weight:700; }
+  .b-done { background:#10301f; color:#34d399; } .b-wait { background:#3a2c12; color:#fbbf24; }
+  .b-freeze { background:#182036; color:#7da2ff; } .b-sale { background:#301a2a; color:#ff8fb0; }
+  .b-usdt { background:#0e2e2b; color:var(--usdt); } .b-bot { background:#241f3a; color:var(--bot); } .b-info { background:#1c2440; color:#7da2ff; }
+  .pill { display:inline-block; padding:0 7px; border-radius:6px; font-size:11px; font-weight:700; background:#1c2440; color:#8fb0ff; }
+
+  /* note */
+  .note { background:#1a1726; border:1px solid #2e2942; border-radius:12px; padding:10px 12px; font-size:11px; color:#b9a8e8; line-height:1.6; margin-bottom:14px; display:flex; gap:7px; }
+  .note.warn { background:#241a10; border-color:#3d2c12; color:#e7b667; }
+
+  .kv { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px dashed var(--border); font-size:13px; }
+  .kv:last-child { border-bottom:none; } .kv .k { color:var(--text2); } .kv .v { font-weight:700; color:#fff; }
+
+  /* level table */
+  .ttab { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  .ttab th { background:#171a21; color:var(--text2); font-weight:700; padding:7px 8px; text-align:left; font-size:11px; }
+  .ttab td { padding:7px 8px; border-bottom:1px solid var(--border); color:#dfe1ea; }
+  .ttab tfoot td { background:#171a21; font-weight:800; color:#fff; border-top:2px solid #2e313c; }
+  .ttab tr.me td { background:#1a1726; color:#fff; font-weight:700; }
+  .tnum { text-align:right; } .tg { color:#34d399; font-weight:700; } .tp { color:#c4b5fd; font-weight:700; }
+
+  /* menu (drawer content) */
+  .menu-logo { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:800; padding:16px 20px 12px; border-bottom:1px solid #1b1e26; }
+  .menu-logo .mark { width:22px; height:22px; border-radius:50%; background:conic-gradient(from 210deg,#3b82f6,#7873f5,#21d4fd,#3b82f6); }
+  .menu-item { padding:12px 20px; font-size:14px; color:#c7cad4; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+  .menu-item.dim { color:#6b7180; }
+  .menu-item.active { color:var(--pink); font-weight:700; }
+  .menu-cap { font-size:10.5px; letter-spacing:1px; color:#565b69; padding:12px 20px 4px; text-transform:uppercase; }
+  .menu-sep { height:1px; background:#1b1e26; margin:6px 16px; }
+  .dot-badge { background:#ef4444; color:#fff; font-size:10px; padding:0 6px; border-radius:9px; font-weight:700; }
+
+  /* ── live overrides ── */
+  .live-head { text-align:center; margin:72px auto 22px; color:#1a1a2e; }
+  .live-head h2 { font-size:20px; font-weight:800; } .live-head p { font-size:12.5px; color:#6b7280; margin-top:6px; }
+  .live-wrap { display:flex; justify-content:center; }
+  .live .phone { width:390px; height:844px; min-height:0; overflow:hidden; }
+  .live .content { flex:1; overflow-y:auto; } .live .content::-webkit-scrollbar { width:0; }
+  .live .page { display:none; } .live .page.active { display:block; }
+  .live .menu-item, .live .row, .live .wallet, .live .iconbtn, .live .more, .live .chev, .live .sheet-x, .live .subbar .bk { cursor:pointer; }
+  .drawer-mask { position:absolute; inset:0; background:rgba(0,0,0,.55); z-index:90; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .drawer-mask.show { opacity:1; pointer-events:all; }
+  .drawer { position:absolute; top:0; left:0; bottom:0; width:250px; background:#0d0e13; border-right:1px solid #20222c; z-index:91; transform:translateX(-100%); transition:transform .26s cubic-bezier(.4,1,.5,1); display:flex; flex-direction:column; }
+  .drawer.show { transform:none; } .drawer .menu { flex:1; overflow-y:auto; padding:6px 0; } .drawer .menu::-webkit-scrollbar { width:0; }
+  .sheet-mask { position:absolute; inset:0; background:rgba(0,0,0,.6); z-index:100; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .sheet-mask.show { opacity:1; pointer-events:all; }
+  .sheet { position:absolute; left:0; right:0; bottom:0; background:#12141a; border-top:1px solid #262a34; border-radius:22px 22px 0 0; z-index:101; transform:translateY(100%); transition:transform .28s cubic-bezier(.4,1.2,.5,1); max-height:86%; display:flex; flex-direction:column; }
+  .sheet.show { transform:none; }
+  .sheet-h { padding:16px 18px 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+  .sheet-h .st { font-size:16px; font-weight:800; color:#fff; } .sheet-x { font-size:22px; color:var(--muted); }
+  .sheet-b { padding:14px 18px; overflow-y:auto; }
+  .grab { width:38px; height:4px; background:#33353f; border-radius:3px; margin:8px auto 0; }
+  .mtoast { position:absolute; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:#2a2c38; color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; z-index:200; opacity:0; transition:all .25s; white-space:nowrap; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #393b48; }
+  .mtoast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="gallery-head">
+  <h1>CaryPact · 矿机返佣模块（销售返佣 / 返佣规则）</h1>
+  <p>CA 已有等级制度与团队信息，本模块新增矿机的销售返佣、返佣规则（团队分润需求暂缓）· 深色紫主题与 CA 统一<br>返佣 = 等级佣金 + 级差佣金；上方多屏走查便于讲解，页面底部为可交互动态原型</p>
+</div>
+
+<div class="gallery">
+
+  <!-- ① 侧边栏入口 -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">1</span><span class="nm">侧边栏入口（矿机返佣组）</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="menu-logo"><span class="mark"></span>CaryPact</div>
+      <div class="content" style="padding:6px 0;">
+        <div class="menu-cap">CA 已有</div>
+        <div class="menu-item dim">首页</div>
+        <div class="menu-item dim">等级规则</div>
+        <div class="menu-item dim">算力服务器预售</div>
+        <div class="menu-item dim">个人中心</div>
+        <div class="menu-sep"></div>
+        <div class="menu-cap">矿机返佣（本次新增）</div>
+        <div class="menu-item active">销售返佣</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ② 销售返佣 -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">2</span><span class="nm">销售返佣（等级佣金 + 级差佣金 · USDT）</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>CaryPact</div>
+        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">◑</button><button class="iconbtn">☰</button></div>
+      </div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">销售返佣</span></div>
+      <div class="content">
+        <div class="hero">
+          <div class="h-lbl">累计销售返佣</div>
+          <div class="h-big">8,420.00 <small>USDT</small></div>
+          <div class="h-row">
+            <div class="h-cell"><div class="c-l">已分发</div><div class="c-v">1,030 U</div></div>
+            <div class="h-cell"><div class="c-l">待分发</div><div class="c-v">1,380 U</div></div>
+            <div class="h-cell"><div class="c-l">算力奖励</div><div class="c-v">1000 T/H</div></div>
+          </div>
+        </div>
+        <div class="sect" style="display:flex;align-items:center;justify-content:space-between;">返佣明细<span style="font-size:12px;font-weight:600;color:var(--purple);">返佣规则 ›</span></div>
+        <div class="card" style="padding:2px 16px;">
+          <div class="row"><div class="ic green">💰</div><div class="rmain"><div class="rtitle">邀请 0x6a1f…0c2 <span class="pill">V6</span></div><div class="rsub">原价矿机 · 等级佣金 930 + 级差 100 · 送 1000 T/H</div></div><div class="rright"><div class="rval usdt">+1,030</div><div class="rdate"><span class="b b-wait">待分发</span></div></div></div>
+          <div class="row"><div class="ic green">💰</div><div class="rmain"><div class="rtitle">邀请 0x93cd…7a1 <span class="pill">V0</span></div><div class="rsub">原价矿机 · 等级佣金 930 + 级差 550 · 送 1000 T/H</div></div><div class="rright"><div class="rval usdt">+1,480</div><div class="rdate"><span class="b b-done">已分发</span></div></div></div>
+          <div class="row"><div class="ic amber">🏷</div><div class="rmain"><div class="rtitle">邀请 0x74d4…f1f <span class="pill">V3</span> <span class="b b-sale">特价</span></div><div class="rsub">特价矿机 · (930+250)÷2 · 算力减半 500 T/H</div></div><div class="rright"><div class="rval usdt">+590</div><div class="rdate"><span class="b b-done">已分发</span></div></div></div>
+          <div class="row"><div class="ic">❄️</div><div class="rmain"><div class="rtitle">邀请 0xba11…e2 <span class="pill">V1</span></div><div class="rsub">原价矿机 · 等级 930 + 级差 450 · 邀请人入金 &lt; 100U</div></div><div class="rright"><div class="rval freeze">1,380</div><div class="rdate"><span class="b b-freeze">冻结</span></div></div></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>返佣 = 等级佣金 + 级差佣金，覆盖算力购买与矿机购买（USDT，一次性）。邀请人有效入金需 &gt; 100U 方可解冻；特价矿机返佣与算力奖励均减半。点任一笔看逐级演算。</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ③ 返佣溯源 -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">3</span><span class="nm">返佣溯源 · 等级佣金 + 级差佣金</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">返佣溯源</span></div>
+      <div class="content">
+        <div class="kv"><span class="k">场景</span><span class="v">我(V6) 邀请 V0 · 原价矿机</span></div>
+        <div class="kv"><span class="k">邀请人入金</span><span class="v" style="color:#34d399;">&gt; 100U（有效，可发放）</span></div>
+        <table class="ttab">
+          <thead><tr><th>项目</th><th class="tnum">计算</th><th class="tnum">金额 (U)</th></tr></thead>
+          <tbody>
+            <tr><td>等级佣金</td><td class="tnum">我 V6 返佣</td><td class="tnum tg">830</td></tr>
+            <tr><td>级差佣金</td><td class="tnum">830 − 380(V0)</td><td class="tnum tg">450</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="2">合计佣金</td><td class="tnum">1,280</td></tr></tfoot>
+        </table>
+        <div class="kv" style="margin-top:12px;"><span class="k">额外矿机算力</span><span class="v" style="color:#a78bfa;">+1,000 T/H</span></div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>官方示例：<b style="color:#c4b5fd;">V3 邀请 V1 → 680 + (680−480) = 880</b>。<br>特价矿机：返佣与算力奖励均减半。邀请人有效入金 &lt; 100U 时佣金冻结。</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ④ 返佣规则 -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">4</span><span class="nm">返佣规则（引入矿机购买）</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">返佣规则</span></div>
+      <div class="content">
+        <div class="card">
+          <div class="card-t">返佣体系（引入矿机购买）</div>
+          <ol class="rules-list">
+            <li>根据用户<b>等级</b>给予对应的返佣金额。</li>
+            <li>邀请人需<b>有效入金 &gt; 100U</b>（算力购买及矿机购买）才可获得佣金，否则<span class="hl">冻结佣金</span>。</li>
+            <li>佣金 = <b>等级佣金 + 级差佣金</b> 之和。<br>例：<span class="hl">V3 邀请 V1 → 680 + (680−480) = 880</span>。</li>
+            <li>邀请人额外获得矿机算力 <span class="hl">1000 T/H</span>。</li>
+            <li><b>特价矿机</b>：返佣奖励减半、矿机算力奖励减半（500 T/H）。</li>
+          </ol>
+        </div>
+        <div class="card">
+          <div class="card-t">价格（单台 / 一组18台 / 一集群90台）</div>
+          <div class="kv"><span class="k">原价</span><span class="v">3,980 / 69,300 / 342,000</span></div>
+          <div class="kv"><span class="k">特价</span><span class="v" style="color:#ff8fb0;">2,980 / 48,240 / 223,200</span></div>
+        </div>
+        <div class="sect" style="font-size:15px;">等级返佣金额对照</div>
+        <table class="ttab">
+          <thead><tr><th>级别</th><th class="tnum">原价返佣</th><th class="tnum">特价(减半)</th></tr></thead>
+          <tbody>
+            <tr><td>V0 直推</td><td class="tnum tg">380</td><td class="tnum tp">190</td></tr>
+            <tr><td>V1</td><td class="tnum tg">480</td><td class="tnum tp">240</td></tr>
+            <tr><td>V2</td><td class="tnum tg">580</td><td class="tnum tp">290</td></tr>
+            <tr><td>V3</td><td class="tnum tg">680</td><td class="tnum tp">340</td></tr>
+            <tr><td>V4</td><td class="tnum tg">730</td><td class="tnum tp">365</td></tr>
+            <tr><td>V5</td><td class="tnum tg">780</td><td class="tnum tp">390</td></tr>
+            <tr><td>V6</td><td class="tnum tg">830</td><td class="tnum tp">415</td></tr>
+            <tr><td>V7</td><td class="tnum tg">880</td><td class="tnum tp">440</td></tr>
+            <tr class="me"><td>V8（我）</td><td class="tnum tg">930</td><td class="tnum tp">465</td></tr>
+            <tr><td>V9</td><td class="tnum tg">960</td><td class="tnum tp">480</td></tr>
+            <tr><td>V10</td><td class="tnum tg">980</td><td class="tnum tp">490</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px;color:var(--text2);margin-top:6px;">等级佣金取本级返佣；级差佣金 = 本级返佣 − 被邀请人级别返佣。</div>
+        <div class="note warn" style="margin-top:14px;"><span>⚠</span><span>挖矿收益随全网算力与币价浮动，不构成保本或固定回报承诺。</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- LIVE START -->
+<div class="live-head">
+  <h2>高保真动态原型（可交互）</h2>
+  <p>点右上 ☰ 打开侧边栏，在 销售返佣 / 返佣规则 间切换 · 点返佣明细看等级/级差演算</p>
+</div>
+<div class="live-wrap"><div class="live">
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+    <div class="topbar">
+      <div class="logo"><span class="mark"></span>CaryPact</div>
+      <div class="top-actions">
+        <button class="wallet" onclick="showT('钱包已连接')">0x2236…dEF2 ↩</button>
+        <button class="iconbtn" onclick="showT('已刷新')">◑</button>
+        <button class="iconbtn" onclick="openDrawer()">☰</button>
+      </div>
+    </div>
+    <div class="subbar"><span class="bk" onclick="showT('返回 CA 上级页面')">← 返回</span><span class="tt" id="lvTitle">销售返佣</span></div>
+    <div class="content" id="lvContent">
+
+      <!-- 销售返佣 -->
+      <div class="page active" id="p-rebate">
+        <div class="hero">
+          <div class="h-lbl">累计销售返佣</div>
+          <div class="h-big">8,420.00 <small>USDT</small></div>
+          <div class="h-row">
+            <div class="h-cell"><div class="c-l">已分发</div><div class="c-v">1,030 U</div></div>
+            <div class="h-cell"><div class="c-l">待分发</div><div class="c-v">1,380 U</div></div>
+            <div class="h-cell"><div class="c-l">算力奖励</div><div class="c-v">1000 T/H</div></div>
+          </div>
+        </div>
+        <div class="sect" style="display:flex;align-items:center;justify-content:space-between;">返佣明细<span class="more" style="font-size:12px;" onclick="goPage('rules','返佣规则')">返佣规则 ›</span></div>
+        <div class="card" style="padding:2px 16px;">
+          <div class="row" onclick="openSheet('rebateSheet')"><div class="ic green">💰</div><div class="rmain"><div class="rtitle">邀请 0x6a1f…0c2 <span class="pill">V6</span></div><div class="rsub">原价矿机 · 等级佣金 930 + 级差 100 · 送 1000 T/H</div></div><div class="rright"><div class="rval usdt">+1,030</div><div class="rdate"><span class="b b-wait">待分发</span></div></div></div>
+          <div class="row" onclick="openSheet('rebateSheet')"><div class="ic green">💰</div><div class="rmain"><div class="rtitle">邀请 0x93cd…7a1 <span class="pill">V0</span></div><div class="rsub">原价矿机 · 等级佣金 930 + 级差 550 · 送 1000 T/H</div></div><div class="rright"><div class="rval usdt">+1,480</div><div class="rdate"><span class="b b-done">已分发</span></div></div></div>
+          <div class="row" onclick="openSheet('rebateSheet')"><div class="ic amber">🏷</div><div class="rmain"><div class="rtitle">邀请 0x74d4…f1f <span class="pill">V3</span> <span class="b b-sale">特价</span></div><div class="rsub">特价矿机 · (930+250)÷2 · 算力减半 500 T/H</div></div><div class="rright"><div class="rval usdt">+590</div><div class="rdate"><span class="b b-done">已分发</span></div></div></div>
+          <div class="row" onclick="openSheet('rebateSheet')"><div class="ic">❄️</div><div class="rmain"><div class="rtitle">邀请 0xba11…e2 <span class="pill">V1</span></div><div class="rsub">原价矿机 · 等级 930 + 级差 450 · 邀请人入金 &lt; 100U</div></div><div class="rright"><div class="rval freeze">1,380</div><div class="rdate"><span class="b b-freeze">冻结</span></div></div></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>返佣 = 等级佣金 + 级差佣金，覆盖算力购买与矿机购买（USDT，一次性）。邀请人有效入金需 &gt; 100U 方可解冻；特价矿机返佣与算力奖励均减半。点任一笔看演算。</span></div>
+      </div>
+
+      <!-- 返佣规则 -->
+      <div class="page" id="p-rules">
+        <div class="card">
+          <div class="card-t">返佣体系（引入矿机购买）</div>
+          <ol class="rules-list">
+            <li>根据用户<b>等级</b>给予对应的返佣金额。</li>
+            <li>邀请人需<b>有效入金 &gt; 100U</b>（算力购买及矿机购买）才可获得佣金，否则<span class="hl">冻结佣金</span>。</li>
+            <li>佣金 = <b>等级佣金 + 级差佣金</b> 之和。<br>例：<span class="hl">V3 邀请 V1 → 680 + (680−480) = 880</span>。</li>
+            <li>邀请人额外获得矿机算力 <span class="hl">1000 T/H</span>。</li>
+            <li><b>特价矿机</b>：返佣奖励减半、矿机算力奖励减半（500 T/H）。</li>
+          </ol>
+        </div>
+        <div class="card">
+          <div class="card-t">价格（单台 / 一组18台 / 一集群90台）</div>
+          <div class="kv"><span class="k">原价</span><span class="v">3,980 / 69,300 / 342,000</span></div>
+          <div class="kv"><span class="k">特价</span><span class="v" style="color:#ff8fb0;">2,980 / 48,240 / 223,200</span></div>
+        </div>
+        <div class="sect" style="font-size:15px;">等级返佣金额对照</div>
+        <table class="ttab">
+          <thead><tr><th>级别</th><th class="tnum">原价返佣</th><th class="tnum">特价(减半)</th></tr></thead>
+          <tbody>
+            <tr><td>V0 直推</td><td class="tnum tg">380</td><td class="tnum tp">190</td></tr>
+            <tr><td>V1</td><td class="tnum tg">480</td><td class="tnum tp">240</td></tr>
+            <tr><td>V2</td><td class="tnum tg">580</td><td class="tnum tp">290</td></tr>
+            <tr><td>V3</td><td class="tnum tg">680</td><td class="tnum tp">340</td></tr>
+            <tr><td>V4</td><td class="tnum tg">730</td><td class="tnum tp">365</td></tr>
+            <tr><td>V5</td><td class="tnum tg">780</td><td class="tnum tp">390</td></tr>
+            <tr><td>V6</td><td class="tnum tg">830</td><td class="tnum tp">415</td></tr>
+            <tr><td>V7</td><td class="tnum tg">880</td><td class="tnum tp">440</td></tr>
+            <tr class="me"><td>V8（我）</td><td class="tnum tg">930</td><td class="tnum tp">465</td></tr>
+            <tr><td>V9</td><td class="tnum tg">960</td><td class="tnum tp">480</td></tr>
+            <tr><td>V10</td><td class="tnum tg">980</td><td class="tnum tp">490</td></tr>
+          </tbody>
+        </table>
+        <div style="font-size:11px;color:var(--text2);margin-top:6px;">等级佣金取本级返佣；级差佣金 = 本级返佣 − 被邀请人级别返佣。</div>
+        <div class="note warn" style="margin-top:14px;"><span>⚠</span><span>挖矿收益随全网算力与币价浮动，不构成保本或固定回报承诺。</span></div>
+      </div>
+
+    </div><!-- /content -->
+
+    <!-- DRAWER -->
+    <div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
+    <aside class="drawer" id="drawer">
+      <div class="menu-logo"><span class="mark"></span>CaryPact</div>
+      <nav class="menu">
+        <div class="menu-cap">CA 已有</div>
+        <div class="menu-item dim" onclick="showT('CA 既有模块，已实现')">首页</div>
+        <div class="menu-item dim" onclick="showT('CA 既有：等级规则 / 社区概况 / 推荐列表')">等级规则</div>
+        <div class="menu-item dim" onclick="showT('CA 既有模块，已实现')">算力服务器预售</div>
+        <div class="menu-item dim" onclick="showT('CA 既有模块，已实现')">个人中心</div>
+        <div class="menu-sep"></div>
+        <div class="menu-cap">矿机返佣（本次新增）</div>
+        <div class="menu-item active" data-page="rebate" onclick="goPage('rebate','销售返佣')">销售返佣</div>
+      </nav>
+    </aside>
+
+    <!-- SHEETS -->
+    <div class="sheet-mask" id="mask" onclick="closeSheets()"></div>
+
+    <div class="sheet" id="rebateSheet">
+      <div class="grab"></div>
+      <div class="sheet-h"><span class="st">💰 返佣溯源 · 等级 + 级差</span><span class="sheet-x" onclick="closeSheets()">×</span></div>
+      <div class="sheet-b">
+        <div class="kv"><span class="k">场景</span><span class="v">我(V6) 邀请 V0 · 原价矿机</span></div>
+        <div class="kv"><span class="k">邀请人入金</span><span class="v" style="color:#34d399;">&gt; 100U（有效，可发放）</span></div>
+        <table class="ttab">
+          <thead><tr><th>项目</th><th class="tnum">计算</th><th class="tnum">金额 (U)</th></tr></thead>
+          <tbody>
+            <tr><td>等级佣金</td><td class="tnum">我 V6 返佣</td><td class="tnum tg">830</td></tr>
+            <tr><td>级差佣金</td><td class="tnum">830 − 380(V0)</td><td class="tnum tg">450</td></tr>
+          </tbody>
+          <tfoot><tr><td colspan="2">合计佣金</td><td class="tnum">1,280</td></tr></tfoot>
+        </table>
+        <div class="kv" style="margin-top:12px;"><span class="k">额外矿机算力</span><span class="v" style="color:#a78bfa;">+1,000 T/H</span></div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>官方示例：<b style="color:#c4b5fd;">V3 邀请 V1 → 680 + (680−480) = 880</b>。特价矿机返佣与算力奖励均减半；邀请人有效入金 &lt; 100U 时佣金冻结。</span></div>
+      </div>
+    </div>
+
+    <div class="mtoast" id="mtoast">操作成功</div>
+  </div>
+</div></div>
+
+<script>
+  function openDrawer(){ document.getElementById('drawerMask').classList.add('show'); document.getElementById('drawer').classList.add('show'); }
+  function closeDrawer(){ document.getElementById('drawerMask').classList.remove('show'); document.getElementById('drawer').classList.remove('show'); }
+  function goPage(page, title){
+    document.querySelectorAll('.live .page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('p-'+page).classList.add('active');
+    document.querySelectorAll('.live .menu-item').forEach(function(m){ if(!m.classList.contains('dim')){ m.classList.toggle('active', m.getAttribute('data-page')===page); } });
+    document.getElementById('lvTitle').textContent = title;
+    closeDrawer();
+    document.getElementById('lvContent').scrollTop = 0;
+  }
+  function openSheet(id){ if(window.event && window.event.stopPropagation){ window.event.stopPropagation(); } document.getElementById('mask').classList.add('show'); document.getElementById(id).classList.add('show'); }
+  function closeSheets(){ document.getElementById('mask').classList.remove('show'); document.querySelectorAll('.sheet').forEach(function(s){ s.classList.remove('show'); }); }
+  var toastTimer;
+  function showT(msg){ var t=document.getElementById('mtoast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2200); }
+</script>
+<!-- LIVE END -->
+</body>
+</html>
