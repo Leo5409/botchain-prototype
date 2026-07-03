@@ -151,6 +151,11 @@
   .cmodal.show { opacity:1; pointer-events:all; }
   .cmodal .cbox { width:100%; max-width:330px; max-height:74%; background:#12141a; border:1px solid #262a34; border-radius:20px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.6); transform:scale(.92); transition:transform .22s; }
   .cmodal.show .cbox { transform:none; }
+  /* miner id chips (编号详情) */
+  .idwrap { display:flex; flex-wrap:wrap; gap:8px; }
+  .idchip { background:#171a21; border:1px solid var(--border); border-radius:8px; padding:5px 10px; font-size:12.5px; color:#dfe1ea; font-weight:600; }
+  .idsub { font-size:11.5px; color:var(--muted); padding:2px 0 12px; }
+  .idlink { font-size:11px; color:#8fb0ff; margin-top:3px; }
   .mtoast { position:absolute; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:#2a2c38; color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; z-index:200; opacity:0; transition:all .25s; white-space:nowrap; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #393b48; }
   .mtoast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
@@ -391,9 +396,44 @@
           <div style="width:100%;max-width:300px;background:#12141a;border:1px solid #262a34;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);">
             <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x">×</span></div>
             <div class="sheet-b">
-              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">编号 #100201–#100218 · 接收 0x9f2c…a1b · 2026-06-25</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">编号 #100219–#100225 · 接收 0x33de…7c0 · 2026-06-20</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-              <div class="row"><div class="ic red">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">编号 #100226–#100227 · 接收 0x71a8…e3f · 2026-07-01</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">接收 0x9f2c…a1b · 2026-06-25</div><div class="idlink">编号 #100201–#100210、#100221 等 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">接收 0x33de…7c0 · 2026-06-20</div><div class="idlink">编号 #100211–#100217 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+              <div class="row"><div class="ic red">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">接收 0x71a8…e3f · 2026-07-01</div><div class="idlink">编号 #100218–#100219 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑩ 转赠编号详情（居中弹框 · 区间压缩支持不连续设备号） -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">10</span><span class="nm">转赠编号详情（点记录查看 · 区间压缩支持不连续）</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>CaryPact</div>
+        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">◑</button><button class="iconbtn">☰</button></div>
+      </div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机转赠</span></div>
+      <div class="content" style="position:relative;overflow:hidden;min-height:560px;padding-bottom:0;">
+        <div class="hero" style="opacity:.28;">
+          <div class="h-lbl">我的矿机 · 可转赠</div>
+          <div class="h-big">65 <small>台</small></div>
+        </div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.6);"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 18px;">
+          <div style="width:100%;max-width:300px;background:#12141a;border:1px solid #262a34;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);">
+            <div class="sheet-h"><span class="st">转赠编号（18 台）</span><span class="sheet-x">×</span></div>
+            <div class="sheet-b">
+              <div class="idsub">连续编号已合并为区间，共 4 段 / 18 台（不连续设备号也能干净展示）</div>
+              <div class="idwrap">
+                <span class="idchip">#100201–#100210</span>
+                <span class="idchip">#100221</span>
+                <span class="idchip">#100223</span>
+                <span class="idchip">#100240–#100245</span>
+              </div>
             </div>
           </div>
         </div>
@@ -570,10 +610,17 @@
     <div class="cmodal" id="transferRecSheet" onclick="closeSheets()">
       <div class="cbox" onclick="event.stopPropagation()">
         <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x" onclick="closeSheets()">×</span></div>
+        <div class="sheet-b" id="transferRecList"></div>
+      </div>
+    </div>
+
+    <!-- 转赠编号详情（居中弹框，叠加于转赠记录之上） -->
+    <div class="cmodal" id="idModal" style="z-index:112;background:rgba(0,0,0,.55);" onclick="closeIdModal()">
+      <div class="cbox" onclick="event.stopPropagation()">
+        <div class="sheet-h"><span class="st" id="idModalTitle">转赠编号</span><span class="sheet-x" onclick="closeIdModal()">×</span></div>
         <div class="sheet-b">
-          <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">编号 #100201–#100218 · 接收 0x9f2c…a1b · 2026-06-25</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-          <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">编号 #100219–#100225 · 接收 0x33de…7c0 · 2026-06-20</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-          <div class="row"><div class="ic red">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">编号 #100226–#100227 · 接收 0x71a8…e3f · 2026-07-01</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+          <div class="idsub" id="idModalSub"></div>
+          <div id="idModalBody"></div>
         </div>
       </div>
     </div>
@@ -630,6 +677,50 @@
     if(n===0){ showT('请先勾选要转赠的矿机'); return; }
     showT('已提交转赠 ' + n + ' 台矿机');
   }
+  // ── 转赠记录 + 编号区间压缩（支持不连续设备号）──
+  function idRange(a,b){ var r=[]; for(var i=a;i<=b;i++) r.push(i); return r; }
+  var transferRecords = [
+    { n:18, addr:'0x9f2c…a1b', date:'2026-06-25', ok:true,
+      ids: idRange(100201,100210).concat([100221,100223]).concat(idRange(100240,100245)) },
+    { n:7,  addr:'0x33de…7c0', date:'2026-06-20', ok:true,  ids: idRange(100211,100217) },
+    { n:2,  addr:'0x71a8…e3f', date:'2026-07-01', ok:false, ids: [100218,100219] }
+  ];
+  function compressIds(ids){
+    ids = ids.slice().sort(function(a,b){ return a-b; });
+    var segs=[], i=0;
+    while(i<ids.length){
+      var s=ids[i], e=ids[i];
+      while(i+1<ids.length && ids[i+1]===e+1){ e=ids[++i]; }
+      segs.push(s===e ? ('#'+s) : ('#'+s+'–#'+e));
+      i++;
+    }
+    return segs;
+  }
+  function renderTransferRecords(){
+    var el=document.getElementById('transferRecList'); if(!el) return;
+    el.innerHTML = transferRecords.map(function(r,idx){
+      var segs=compressIds(r.ids);
+      var preview=segs.slice(0,2).join('、') + (segs.length>2 ? ' 等' : '');
+      var icls=r.ok?'green':'red';
+      var badge=r.ok?'<span class="b b-done">成功</span>':'<span class="b b-fail">失败</span>';
+      return '<div class="row" onclick="openIdModal('+idx+')">'
+        + '<div class="ic '+icls+'">📤</div>'
+        + '<div class="rmain"><div class="rtitle">转赠 '+r.n+' 台</div>'
+        + '<div class="rsub">接收 '+r.addr+' · '+r.date+'</div>'
+        + '<div class="idlink">编号 '+preview+' · 查看全部 ›</div></div>'
+        + '<div class="rright"><div class="rdate">'+badge+'</div></div></div>';
+    }).join('');
+  }
+  function openIdModal(idx){
+    if(window.event && window.event.stopPropagation){ window.event.stopPropagation(); }
+    var r=transferRecords[idx], segs=compressIds(r.ids);
+    document.getElementById('idModalTitle').textContent='转赠编号（'+r.n+' 台）';
+    document.getElementById('idModalSub').textContent='连续编号已合并为区间，共 '+segs.length+' 段 / '+r.n+' 台';
+    document.getElementById('idModalBody').innerHTML='<div class="idwrap">'+segs.map(function(s){ return '<span class="idchip">'+s+'</span>'; }).join('')+'</div>';
+    document.getElementById('idModal').classList.add('show');
+  }
+  function closeIdModal(){ document.getElementById('idModal').classList.remove('show'); }
+  renderTransferRecords();
   var toastTimer;
   function showT(msg){ var t=document.getElementById('mtoast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2200); }
 </script>
