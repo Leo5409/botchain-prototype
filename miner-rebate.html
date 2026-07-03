@@ -135,15 +135,15 @@
 <body>
 
 <div class="gallery-head">
-  <h1>CaryPact · 矿机销售奖励模块（销售奖励 / 提币 / 奖励规则）</h1>
-  <p>CA 已有等级与团队信息；本模块新增：个人中心内「销售奖励」入口、销售奖励明细、奖励提币与提币记录、奖励规则（团队分润暂缓）<br>术语统一为「奖励」；上方多屏走查便于讲解，页面底部为可交互动态原型</p>
+  <h1>CaryPact · 矿机模块（销售奖励 / 提币 / 奖励规则 / 矿机转赠）</h1>
+  <p>CA 已有等级与团队信息；本模块新增：个人中心内「销售奖励」入口（明细/提币/提币记录/奖励规则）+ 侧边栏「矿机转赠」（集资购机后按出资分配到各地址）· 团队分润暂缓<br>上方多屏走查便于讲解，页面底部为可交互动态原型</p>
 </div>
 
 <div class="gallery">
 
   <!-- ① 侧边栏入口（个人中心） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">1</span><span class="nm">侧边栏 · 入口在「个人中心」</span></div>
+    <div class="slide-label"><span class="no">1</span><span class="nm">侧边栏 · 个人中心 / 矿机转赠</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -153,7 +153,10 @@
         <div class="menu-item dim">首页</div>
         <div class="menu-item dim">等级规则</div>
         <div class="menu-item dim">算力服务器预售</div>
-        <div class="menu-item active">个人中心 ← 销售奖励入口</div>
+        <div class="menu-item">个人中心 · 销售奖励入口</div>
+        <div class="menu-sep"></div>
+        <div class="menu-cap">矿机（本次新增）</div>
+        <div class="menu-item active">矿机转赠</div>
       </div>
     </div>
   </div>
@@ -284,6 +287,61 @@
     </div>
   </div>
 
+  <!-- ⑦ 矿机转赠 -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">7</span><span class="nm">矿机转赠（集资分配到多地址）</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>CaryPact</div>
+        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">◑</button><button class="iconbtn">☰</button></div>
+      </div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机转赠</span></div>
+      <div class="content">
+        <div class="hero">
+          <div class="h-lbl">我的矿机 · 可转赠</div>
+          <div class="h-big">65 <small>台</small></div>
+          <div class="h-row">
+            <div class="h-cell"><div class="c-l">累计购买</div><div class="c-v">90 台</div></div>
+            <div class="h-cell"><div class="c-l">已转赠</div><div class="c-v">25 台</div></div>
+            <div class="h-cell"><div class="c-l">当前持有</div><div class="c-v">65 台</div></div>
+          </div>
+        </div>
+        <div class="note"><span>👥</span><span>集资场景：多人集资到一个地址购买矿机后，由持有人按出资把矿机<b style="color:#c4b5fd;">转赠</b>到各自地址；转赠后对应算力与收益归属一并转移。</span></div>
+        <div class="card">
+          <div class="card-t">转赠矿机</div>
+          <div style="font-size:12px;color:var(--text2);margin:4px 2px;">接收地址</div>
+          <input class="input" placeholder="输入接收方地址 0x…">
+          <div style="font-size:12px;color:var(--text2);margin:6px 2px 0;">转赠数量</div>
+          <input class="input" placeholder="输入台数（≤ 65 台）">
+          <div class="wbtn-row" style="margin-top:6px;">
+            <button class="wbtn">确认转赠</button>
+            <button class="wbtn ghost">转赠记录</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑧ 转赠记录 -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">8</span><span class="nm">转赠记录</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">转赠记录</span></div>
+      <div class="content">
+        <div class="card" style="padding:2px 16px;">
+          <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">接收 0x9f2c…a1b · 2026-06-25</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+          <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 5 台</div><div class="rsub">接收 0x33de…7c0 · 2026-06-20</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+          <div class="row"><div class="ic amber">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">接收 0x71a8…e3f · 2026-07-01</div></div><div class="rright"><div class="rdate"><span class="b b-wait">处理中</span></div></div></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>转赠成功后，接收地址即获得对应台数矿机及其算力/收益权益。</span></div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- LIVE START -->
@@ -364,6 +422,31 @@
         <div class="note warn" style="margin-top:14px;"><span>⚠</span><span>收益随全网算力与币价浮动，不构成保本或固定回报承诺。</span></div>
       </div>
 
+      <!-- 矿机转赠 -->
+      <div class="page" id="p-transfer">
+        <div class="hero">
+          <div class="h-lbl">我的矿机 · 可转赠</div>
+          <div class="h-big">65 <small>台</small></div>
+          <div class="h-row">
+            <div class="h-cell"><div class="c-l">累计购买</div><div class="c-v">90 台</div></div>
+            <div class="h-cell"><div class="c-l">已转赠</div><div class="c-v">25 台</div></div>
+            <div class="h-cell"><div class="c-l">当前持有</div><div class="c-v">65 台</div></div>
+          </div>
+        </div>
+        <div class="note"><span>👥</span><span>集资场景：多人集资到一个地址购买矿机后，由持有人按出资把矿机<b style="color:#c4b5fd;">转赠</b>到各自地址；转赠后对应算力与收益归属一并转移。</span></div>
+        <div class="card">
+          <div class="card-t">转赠矿机</div>
+          <div style="font-size:12px;color:var(--text2);margin:4px 2px;">接收地址</div>
+          <input class="input" placeholder="输入接收方地址 0x…">
+          <div style="font-size:12px;color:var(--text2);margin:6px 2px 0;">转赠数量</div>
+          <input class="input" placeholder="输入台数（≤ 65 台）">
+          <div class="wbtn-row" style="margin-top:6px;">
+            <button class="wbtn" onclick="showT('转赠已提交 · 处理中')">确认转赠</button>
+            <button class="wbtn ghost" onclick="openSheet('transferRecSheet')">转赠记录</button>
+          </div>
+        </div>
+      </div>
+
     </div><!-- /content -->
 
     <!-- DRAWER -->
@@ -376,6 +459,9 @@
         <div class="menu-item dim" onclick="showT('CA 既有：等级规则 / 社区概况 / 推荐列表')">等级规则</div>
         <div class="menu-item dim" onclick="showT('CA 既有模块，已实现')">算力服务器预售</div>
         <div class="menu-item active" data-page="member" onclick="goPage('member','个人中心')">个人中心</div>
+        <div class="menu-sep"></div>
+        <div class="menu-cap">矿机（本次新增）</div>
+        <div class="menu-item" data-page="transfer" onclick="goPage('transfer','矿机转赠')">矿机转赠</div>
       </nav>
     </aside>
 
@@ -405,6 +491,18 @@
         <div class="row"><div class="ic amber">↗</div><div class="rmain"><div class="rtitle">提币 500 USDT</div><div class="rsub">2026-07-02 09:10</div></div><div class="rright"><div class="rdate"><span class="b b-wait">处理中</span></div></div></div>
         <div class="row"><div class="ic red">↗</div><div class="rmain"><div class="rtitle">提币 800 USDT</div><div class="rsub">2026-06-18 15:33</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
         <div class="note" style="margin-top:12px;"><span>ℹ</span><span>提币从「可提余额」扣除；冻结奖励解冻后方进入可提余额。</span></div>
+      </div>
+    </div>
+
+    <!-- 转赠记录 -->
+    <div class="sheet" id="transferRecSheet">
+      <div class="grab"></div>
+      <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x" onclick="closeSheets()">×</span></div>
+      <div class="sheet-b">
+        <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">接收 0x9f2c…a1b · 2026-06-25</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+        <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 5 台</div><div class="rsub">接收 0x33de…7c0 · 2026-06-20</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+        <div class="row"><div class="ic amber">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">接收 0x71a8…e3f · 2026-07-01</div></div><div class="rright"><div class="rdate"><span class="b b-wait">处理中</span></div></div></div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>转赠成功后，接收地址即获得对应台数矿机及其算力/收益权益。</span></div>
       </div>
     </div>
 
