@@ -71,12 +71,13 @@
   .row .ic { width:38px; height:38px; border-radius:11px; background:#241f3a; color:var(--bot); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
   .row .ic.green { background:#10301f; color:#34d399; } .row .ic.amber { background:#3a2c12; color:#fbbf24; } .row .ic.red { background:#3a1620; color:#fb7185; }
   .row .rmain { flex:1; min-width:0; }
-  .row .rtitle { font-size:13.5px; font-weight:600; color:#fff; display:flex; align-items:center; }
+  .row .rtitle { font-size:14px; font-weight:600; color:#fff; display:flex; align-items:center; }
   .row .rsub { font-size:11px; color:var(--text2); margin-top:3px; line-height:1.4; }
   .row .rright { text-align:right; flex-shrink:0; }
   .row .rval { font-size:15px; font-weight:800; }
   .row .rval.usdt { color:var(--usdt); }
   .row .rdate { font-size:10.5px; color:var(--muted); margin-top:3px; }
+  .row .rtag { font-size:12px; color:var(--text2); display:flex; align-items:center; gap:5px; }
   .chev { color:#4b4f5e; font-size:16px; flex-shrink:0; }
 
   .b { display:inline-flex; align-items:center; padding:1px 7px; border-radius:8px; font-size:10.5px; font-weight:700; }
@@ -87,7 +88,6 @@
   /* note */
   .note { background:#1a1726; border:1px solid #2e2942; border-radius:12px; padding:10px 12px; font-size:11px; color:#b9a8e8; line-height:1.6; margin-bottom:14px; display:flex; gap:7px; }
   .note.warn { background:#241a10; border-color:#3d2c12; color:#e7b667; }
-  .note.ice { background:#101a2a; border-color:#1e2f4a; color:#8fb0ff; }
 
   .kv { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px dashed var(--border); font-size:13px; }
   .kv:last-child { border-bottom:none; } .kv .k { color:var(--text2); } .kv .v { font-weight:700; color:#fff; }
@@ -100,6 +100,12 @@
   .tnum { text-align:right; } .tg { color:#34d399; font-weight:700; }
   .ttab.t4 th, .ttab.t4 td { padding:7px 6px; font-size:11px; }
   .ttab.t4 .lv { font-weight:700; color:#fff; }
+
+  /* block page (未入金拦截，另开一页) */
+  .blockp { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:430px; padding:0 22px; }
+  .blockp .bic { width:66px; height:66px; border-radius:50%; background:#101a2a; color:#7da2ff; display:flex; align-items:center; justify-content:center; font-size:30px; }
+  .blockp .bt { font-size:18px; font-weight:800; color:#fff; margin-top:16px; }
+  .blockp .bx { font-size:13.5px; color:var(--text2); line-height:1.75; margin-top:10px; }
 
   /* selectable miner list */
   .mrow { display:flex; align-items:center; gap:12px; padding:12px 2px; border-bottom:1px solid var(--border); cursor:pointer; }
@@ -139,16 +145,6 @@
   .sheet-h .st { font-size:16px; font-weight:800; color:#fff; } .sheet-x { font-size:22px; color:var(--muted); }
   .sheet-b { padding:14px 18px 20px; overflow-y:auto; }
   .grab { width:38px; height:4px; background:#33353f; border-radius:3px; margin:8px auto 0; }
-  /* centered dialog (popup) */
-  .dialog-mask { position:absolute; inset:0; background:rgba(0,0,0,.62); z-index:110; display:flex; align-items:center; justify-content:center; padding:0 30px; opacity:0; pointer-events:none; transition:opacity .22s; }
-  .dialog-mask.show { opacity:1; pointer-events:all; }
-  .dialog { width:100%; max-width:300px; background:#15171e; border:1px solid #262a34; border-radius:20px; padding:22px 20px 18px; text-align:center; transform:scale(.92); transition:transform .22s; }
-  .dialog-mask.show .dialog { transform:none; }
-  .dialog .d-ic { width:52px; height:52px; border-radius:50%; background:#101a2a; color:#7da2ff; display:flex; align-items:center; justify-content:center; font-size:24px; margin:0 auto 12px; }
-  .dialog .d-t { font-size:16px; font-weight:800; color:#fff; }
-  .dialog .d-x { font-size:13px; color:var(--text2); line-height:1.65; margin-top:9px; }
-  .dialog .d-btns { display:flex; gap:10px; margin-top:18px; }
-  .dialog .d-btns .wbtn { height:44px; font-size:14px; }
   .mtoast { position:absolute; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:#2a2c38; color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; z-index:200; opacity:0; transition:all .25s; white-space:nowrap; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #393b48; }
   .mtoast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
@@ -157,7 +153,7 @@
 
 <div class="gallery-head">
   <h1>CaryPact · 矿机模块（销售奖励 / 提币 / 奖励规则 / 矿机转赠）</h1>
-  <p>CA 已有等级与团队；本模块新增：个人中心内「销售奖励」入口（Hero 总奖励/已发放/待发放/已提取 · 提币 · 明细 · 奖励规则 1·18·90 台对照）+ 侧边栏「矿机转赠」（按矿机编号勾选转赠）。未有效入金时点提币弹框提示需入金满 100U。<br>上方多屏走查便于讲解，页面底部为可交互动态原型</p>
+  <p>个人中心沿用 CA 原生菜单（我的社区 / 社区收益 / 邀请好友 / 我的邀请人），在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（总奖励/已发放/待发放/已提取）· 提币页 · 提币记录 · 奖励规则（1·18·90 台对照）。未有效入金时「确认提币」跳转「暂无法提取」独立页。侧边栏另增「矿机转赠」（按矿机编号勾选）。<br>上方多屏走查便于讲解，页面底部为可交互动态原型</p>
 </div>
 
 <div class="gallery">
@@ -182,9 +178,9 @@
     </div>
   </div>
 
-  <!-- ② 个人中心（含销售奖励入口） -->
+  <!-- ② 个人中心（CA 原生菜单 + 销售奖励入口） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">2</span><span class="nm">个人中心（销售奖励入口置于此）</span></div>
+    <div class="slide-label"><span class="no">2</span><span class="nm">个人中心（原生菜单 · 销售奖励置于邀请好友上方）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -201,11 +197,11 @@
           </div>
         </div>
         <div class="card" style="padding:2px 16px;">
-          <div class="row"><div class="ic">💰</div><div class="rmain"><div class="rtitle">我的资产</div></div><span class="chev">›</span></div>
-          <div class="row"><div class="ic">👥</div><div class="rmain"><div class="rtitle">我的团队</div></div><span class="chev">›</span></div>
-          <div class="row"><div class="ic green">🎁</div><div class="rmain"><div class="rtitle">销售奖励<span class="b b-info" style="margin-left:6px;">新</span></div><div class="rsub">矿机/算力销售奖励 · 提币 · 明细</div></div><span class="chev">›</span></div>
-          <div class="row"><div class="ic">🏅</div><div class="rmain"><div class="rtitle">等级中心</div></div><span class="chev">›</span></div>
-          <div class="row"><div class="ic">⚙️</div><div class="rmain"><div class="rtitle">设置</div></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">我的社区</div></div><span class="rtag">🛡 普通用户</span><span class="chev" style="margin-left:8px;">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">社区收益</div></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">销售奖励<span class="b b-info" style="margin-left:6px;">新</span></div></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">邀请好友</div></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">我的邀请人</div></div><span class="chev">›</span></div>
         </div>
       </div>
     </div>
@@ -244,38 +240,51 @@
     </div>
   </div>
 
-  <!-- ④ 提币拦截（未入金 · 弹框） -->
+  <!-- ④ 奖励提币（页面） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">4</span><span class="nm">提币拦截（未入金 · 弹框提示）</span></div>
+    <div class="slide-label"><span class="no">4</span><span class="nm">奖励提币（可提余额 / 数量 / 确认）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
-      <div class="topbar">
-        <div class="logo"><span class="mark"></span>CaryPact</div>
-        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">◑</button><button class="iconbtn">☰</button></div>
-      </div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">销售奖励</span></div>
-      <div class="content" style="position:relative;overflow:hidden;">
-        <div class="hero" style="opacity:.32;">
-          <div class="h-lbl">总奖励</div>
-          <div class="h-big">8,420.00 <small>USDT</small></div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">奖励提币</span></div>
+      <div class="content">
+        <div class="card">
+          <div class="kv"><span class="k">可提余额</span><span class="v" style="color:#2dd4bf;">0 USDT</span></div>
+          <div class="kv"><span class="k">结算币种</span><span class="v">USDT</span></div>
         </div>
-        <div class="wbtn-row" style="opacity:.32;"><button class="wbtn">提币</button><button class="wbtn ghost">提币记录</button></div>
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:0 22px;">
-          <div class="dialog" style="transform:none;">
-            <div class="d-ic">❄️</div>
-            <div class="d-t">暂无法提取奖励</div>
-            <div class="d-x">您尚未有效入金，需 <b style="color:#bcd3ff;">入金满 100U</b> 才可提取奖励。入金满 100U 后奖励将全部解冻。</div>
-            <div class="d-btns"><button class="wbtn ghost">我知道了</button><button class="wbtn">去入金</button></div>
+        <div style="font-size:13px;color:var(--text2);margin:6px 2px 2px;">提币数量</div>
+        <input class="input" placeholder="请输入提币数量">
+        <div style="font-size:13px;color:var(--text2);margin:8px 2px 2px;">提币地址</div>
+        <input class="input" value="0x2236…dEF2" readonly style="color:var(--text2);">
+        <button class="wbtn" style="width:100%;margin-top:16px;">确认提币</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑤ 暂无法提取（未入金 · 另开一页） -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">5</span><span class="nm">暂无法提取（未入金拦截 · 独立页）</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">暂无法提取</span></div>
+      <div class="content">
+        <div class="blockp">
+          <div class="bic">❄️</div>
+          <div class="bt">暂无法提取奖励</div>
+          <div class="bx">您尚未有效入金，需 <b style="color:#bcd3ff;">入金满 100U</b> 才可提取奖励。<br>入金满 100U 后奖励将全部解冻、可全部提取。</div>
+          <div class="wbtn-row" style="width:100%;margin-top:26px;">
+            <button class="wbtn ghost">返回</button>
+            <button class="wbtn">去入金</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- ⑤ 提币记录 -->
+  <!-- ⑥ 提币记录 -->
   <div class="slide">
-    <div class="slide-label"><span class="no">5</span><span class="nm">提币记录（金额 / 时间 / 状态）</span></div>
+    <div class="slide-label"><span class="no">6</span><span class="nm">提币记录（金额 / 时间 / 状态）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -290,9 +299,9 @@
     </div>
   </div>
 
-  <!-- ⑥ 奖励规则（1 / 18 / 90 台对照） -->
+  <!-- ⑦ 奖励规则（1 / 18 / 90 台对照） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">6</span><span class="nm">奖励规则（1 / 18 / 90 台奖励对照）</span></div>
+    <div class="slide-label"><span class="no">7</span><span class="nm">奖励规则（1 / 18 / 90 台奖励对照）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -321,9 +330,9 @@
     </div>
   </div>
 
-  <!-- ⑦ 矿机转赠（按编号勾选） -->
+  <!-- ⑧ 矿机转赠（按编号勾选） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">7</span><span class="nm">矿机转赠（按矿机编号勾选转赠）</span></div>
+    <div class="slide-label"><span class="no">8</span><span class="nm">矿机转赠（按矿机编号勾选转赠）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -361,9 +370,9 @@
     </div>
   </div>
 
-  <!-- ⑧ 转赠记录（含编号 · 成功/失败） -->
+  <!-- ⑨ 转赠记录（含编号 · 成功/失败） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">8</span><span class="nm">转赠记录（矿机编号 · 成功/失败）</span></div>
+    <div class="slide-label"><span class="no">9</span><span class="nm">转赠记录（矿机编号 · 成功/失败）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -383,7 +392,7 @@
 <!-- LIVE START -->
 <div class="live-head">
   <h2>高保真动态原型（可交互）</h2>
-  <p>☰ → 个人中心 → 销售奖励；提币（未入金弹框拦截）/ 提币记录（弹层）；明细右侧「奖励规则 ›」；☰ → 矿机转赠（按编号勾选 + 转赠记录）</p>
+  <p>☰ → 个人中心 → 销售奖励；提币 → 奖励提币页 → 确认提币（未入金跳「暂无法提取」独立页）；提币记录（弹层）；明细右侧「奖励规则 ›」；☰ → 矿机转赠（按编号勾选 + 转赠记录）</p>
 </div>
 <div class="live-wrap"><div class="live">
   <div class="phone">
@@ -409,11 +418,11 @@
           </div>
         </div>
         <div class="card" style="padding:2px 16px;">
-          <div class="row" onclick="showT('CA 既有功能')"><div class="ic">💰</div><div class="rmain"><div class="rtitle">我的资产</div></div><span class="chev">›</span></div>
-          <div class="row" onclick="showT('CA 既有功能')"><div class="ic">👥</div><div class="rmain"><div class="rtitle">我的团队</div></div><span class="chev">›</span></div>
-          <div class="row" onclick="goPage('rebate','销售奖励')"><div class="ic green">🎁</div><div class="rmain"><div class="rtitle">销售奖励<span class="b b-info" style="margin-left:6px;">新</span></div><div class="rsub">矿机/算力销售奖励 · 提币 · 明细</div></div><span class="chev">›</span></div>
-          <div class="row" onclick="showT('CA 既有功能')"><div class="ic">🏅</div><div class="rmain"><div class="rtitle">等级中心</div></div><span class="chev">›</span></div>
-          <div class="row" onclick="showT('CA 既有功能')"><div class="ic">⚙️</div><div class="rmain"><div class="rtitle">设置</div></div><span class="chev">›</span></div>
+          <div class="row" onclick="showT('CA 既有功能')"><div class="rmain"><div class="rtitle">我的社区</div></div><span class="rtag">🛡 普通用户</span><span class="chev" style="margin-left:8px;">›</span></div>
+          <div class="row" onclick="showT('CA 既有功能')"><div class="rmain"><div class="rtitle">社区收益</div></div><span class="chev">›</span></div>
+          <div class="row" onclick="goPage('rebate','销售奖励')"><div class="rmain"><div class="rtitle">销售奖励<span class="b b-info" style="margin-left:6px;">新</span></div></div><span class="chev">›</span></div>
+          <div class="row" onclick="showT('CA 既有功能')"><div class="rmain"><div class="rtitle">邀请好友</div></div><span class="chev">›</span></div>
+          <div class="row" onclick="showT('CA 既有功能')"><div class="rmain"><div class="rtitle">我的邀请人</div></div><span class="chev">›</span></div>
         </div>
       </div>
 
@@ -428,13 +437,39 @@
             <div class="h-cell"><div class="c-l">已提取</div><div class="c-v">2,000 U</div></div>
           </div>
         </div>
-        <div class="wbtn-row"><button class="wbtn" onclick="openDialog()">提币</button><button class="wbtn ghost" onclick="openSheet('recSheet')">提币记录</button></div>
+        <div class="wbtn-row"><button class="wbtn" onclick="goPage('withdraw','奖励提币')">提币</button><button class="wbtn ghost" onclick="openSheet('recSheet')">提币记录</button></div>
         <div class="sect" style="display:flex;align-items:center;justify-content:space-between;">销售奖励明细<span class="more" style="font-size:12px;" onclick="goPage('rules','奖励规则')">奖励规则 ›</span></div>
         <div class="card" style="padding:2px 16px;">
           <div class="row"><div class="ic green">🎁</div><div class="rmain"><div class="rtitle">地址 0x6a1f…0c2</div><div class="rsub">购买 18 台 · 2026-07-02</div></div><div class="rright"><div class="rval usdt">+1,480</div><div class="rdate"><span class="b b-done">已发放</span></div></div></div>
           <div class="row"><div class="ic amber">🎁</div><div class="rmain"><div class="rtitle">地址 0x93cd…7a1</div><div class="rsub">购买 1 台 · 2026-07-01</div></div><div class="rright"><div class="rval usdt">+1,030</div><div class="rdate"><span class="b b-wait">待发放</span></div></div></div>
           <div class="row"><div class="ic green">🎁</div><div class="rmain"><div class="rtitle">地址 0x74d4…f1f</div><div class="rsub">购买 90 台 · 2026-06-28</div></div><div class="rright"><div class="rval usdt">+590</div><div class="rdate"><span class="b b-done">已发放</span></div></div></div>
           <div class="row"><div class="ic red">🎁</div><div class="rmain"><div class="rtitle">地址 0xba11…e2</div><div class="rsub">购买 3 台 · 2026-06-20</div></div><div class="rright"><div class="rval usdt">+820</div><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+        </div>
+      </div>
+
+      <!-- 奖励提币 -->
+      <div class="page" id="p-withdraw">
+        <div class="card">
+          <div class="kv"><span class="k">可提余额</span><span class="v" style="color:#2dd4bf;">0 USDT</span></div>
+          <div class="kv"><span class="k">结算币种</span><span class="v">USDT</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--text2);margin:6px 2px 2px;">提币数量</div>
+        <input class="input" placeholder="请输入提币数量">
+        <div style="font-size:13px;color:var(--text2);margin:8px 2px 2px;">提币地址</div>
+        <input class="input" value="0x2236…dEF2" readonly style="color:var(--text2);">
+        <button class="wbtn" style="width:100%;margin-top:16px;" onclick="goPage('withdrawBlock','暂无法提取')">确认提币</button>
+      </div>
+
+      <!-- 暂无法提取（未入金 · 另开一页） -->
+      <div class="page" id="p-withdrawBlock">
+        <div class="blockp">
+          <div class="bic">❄️</div>
+          <div class="bt">暂无法提取奖励</div>
+          <div class="bx">您尚未有效入金，需 <b style="color:#bcd3ff;">入金满 100U</b> 才可提取奖励。<br>入金满 100U 后奖励将全部解冻、可全部提取。</div>
+          <div class="wbtn-row" style="width:100%;margin-top:26px;">
+            <button class="wbtn ghost" onclick="goPage('rebate','销售奖励')">返回</button>
+            <button class="wbtn" onclick="showT('前往入金页面')">去入金</button>
+          </div>
         </div>
       </div>
 
@@ -534,16 +569,6 @@
       </div>
     </div>
 
-    <!-- 未入金提币弹框 -->
-    <div class="dialog-mask" id="dialogMask" onclick="closeDialog()">
-      <div class="dialog" onclick="event.stopPropagation()">
-        <div class="d-ic">❄️</div>
-        <div class="d-t">暂无法提取奖励</div>
-        <div class="d-x">您尚未有效入金，需 <b style="color:#bcd3ff;">入金满 100U</b> 才可提取奖励。入金满 100U 后奖励将全部解冻。</div>
-        <div class="d-btns"><button class="wbtn ghost" onclick="closeDialog()">我知道了</button><button class="wbtn" onclick="closeDialog();showT('前往入金页面')">去入金</button></div>
-      </div>
-    </div>
-
     <div class="mtoast" id="mtoast">操作成功</div>
   </div>
 </div></div>
@@ -563,13 +588,13 @@
   }
   function goBack(){
     if(curPage==='rules') goPage('rebate','销售奖励');
+    else if(curPage==='withdrawBlock') goPage('withdraw','奖励提币');
+    else if(curPage==='withdraw') goPage('rebate','销售奖励');
     else if(curPage==='rebate') goPage('member','个人中心');
     else showT('返回 CA 上级页面');
   }
   function openSheet(id){ if(window.event && window.event.stopPropagation){ window.event.stopPropagation(); } document.getElementById('mask').classList.add('show'); document.getElementById(id).classList.add('show'); }
   function closeSheets(){ document.getElementById('mask').classList.remove('show'); document.querySelectorAll('.sheet').forEach(function(s){ s.classList.remove('show'); }); }
-  function openDialog(){ document.getElementById('dialogMask').classList.add('show'); }
-  function closeDialog(){ document.getElementById('dialogMask').classList.remove('show'); }
   function toggleMiner(el){
     el.classList.toggle('sel');
     el.querySelector('.mck').textContent = el.classList.contains('sel') ? '✓' : '';
