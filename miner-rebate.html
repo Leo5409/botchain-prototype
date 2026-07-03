@@ -146,6 +146,11 @@
   .sheet-h .st { font-size:16px; font-weight:800; color:#fff; } .sheet-x { font-size:22px; color:var(--muted); }
   .sheet-b { padding:14px 18px 20px; overflow-y:auto; }
   .grab { width:38px; height:4px; background:#33353f; border-radius:3px; margin:8px auto 0; }
+  /* centered modal (居中弹框) */
+  .cmodal { position:absolute; inset:0; z-index:101; display:flex; align-items:center; justify-content:center; padding:0 18px; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .cmodal.show { opacity:1; pointer-events:all; }
+  .cmodal .cbox { width:100%; max-width:330px; max-height:74%; background:#12141a; border:1px solid #262a34; border-radius:20px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.6); transform:scale(.92); transition:transform .22s; }
+  .cmodal.show .cbox { transform:none; }
   .mtoast { position:absolute; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:#2a2c38; color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; z-index:200; opacity:0; transition:all .25s; white-space:nowrap; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #393b48; }
   .mtoast.show { opacity:1; transform:translateX(-50%) translateY(0); }
 </style>
@@ -367,7 +372,7 @@
 
   <!-- ⑨ 转赠记录（弹框） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">9</span><span class="nm">转赠记录（弹框 · 矿机编号 · 成功/失败）</span></div>
+    <div class="slide-label"><span class="no">9</span><span class="nm">转赠记录（居中弹框 · 矿机编号 · 成功/失败）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -376,19 +381,20 @@
         <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">◑</button><button class="iconbtn">☰</button></div>
       </div>
       <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机转赠</span></div>
-      <div class="content" style="position:relative;overflow:hidden;min-height:520px;padding-bottom:0;">
+      <div class="content" style="position:relative;overflow:hidden;min-height:560px;padding-bottom:0;">
         <div class="hero" style="opacity:.28;">
           <div class="h-lbl">我的矿机 · 可转赠</div>
           <div class="h-big">65 <small>台</small></div>
         </div>
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,.55);"></div>
-        <div style="position:absolute;left:0;right:0;bottom:0;background:#12141a;border-top:1px solid #262a34;border-radius:22px 22px 0 0;">
-          <div class="grab"></div>
-          <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x">×</span></div>
-          <div class="sheet-b">
-            <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">编号 #100201–#100218 · 接收 0x9f2c…a1b · 2026-06-25</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-            <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">编号 #100219–#100225 · 接收 0x33de…7c0 · 2026-06-20</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-            <div class="row"><div class="ic red">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">编号 #100226–#100227 · 接收 0x71a8…e3f · 2026-07-01</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.6);"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 18px;">
+          <div style="width:100%;max-width:300px;background:#12141a;border:1px solid #262a34;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);">
+            <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x">×</span></div>
+            <div class="sheet-b">
+              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">编号 #100201–#100218 · 接收 0x9f2c…a1b · 2026-06-25</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">编号 #100219–#100225 · 接收 0x33de…7c0 · 2026-06-20</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+              <div class="row"><div class="ic red">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">编号 #100226–#100227 · 接收 0x71a8…e3f · 2026-07-01</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+            </div>
           </div>
         </div>
       </div>
@@ -560,14 +566,15 @@
       </div>
     </div>
 
-    <!-- 转赠记录 -->
-    <div class="sheet" id="transferRecSheet">
-      <div class="grab"></div>
-      <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x" onclick="closeSheets()">×</span></div>
-      <div class="sheet-b">
-        <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">编号 #100201–#100218 · 接收 0x9f2c…a1b · 2026-06-25</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-        <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">编号 #100219–#100225 · 接收 0x33de…7c0 · 2026-06-20</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-        <div class="row"><div class="ic red">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">编号 #100226–#100227 · 接收 0x71a8…e3f · 2026-07-01</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+    <!-- 转赠记录（居中弹框） -->
+    <div class="cmodal" id="transferRecSheet" onclick="closeSheets()">
+      <div class="cbox" onclick="event.stopPropagation()">
+        <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x" onclick="closeSheets()">×</span></div>
+        <div class="sheet-b">
+          <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">编号 #100201–#100218 · 接收 0x9f2c…a1b · 2026-06-25</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+          <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">编号 #100219–#100225 · 接收 0x33de…7c0 · 2026-06-20</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+          <div class="row"><div class="ic red">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">编号 #100226–#100227 · 接收 0x71a8…e3f · 2026-07-01</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+        </div>
       </div>
     </div>
 
@@ -596,7 +603,7 @@
     else showT('返回 CA 上级页面');
   }
   function openSheet(id){ if(window.event && window.event.stopPropagation){ window.event.stopPropagation(); } document.getElementById('mask').classList.add('show'); document.getElementById(id).classList.add('show'); }
-  function closeSheets(){ document.getElementById('mask').classList.remove('show'); document.querySelectorAll('.sheet').forEach(function(s){ s.classList.remove('show'); }); }
+  function closeSheets(){ document.getElementById('mask').classList.remove('show'); document.querySelectorAll('.sheet, .cmodal').forEach(function(s){ s.classList.remove('show'); }); }
   function updateTransferUI(){
     var rows = document.querySelectorAll('#p-transfer .mrow');
     var n = document.querySelectorAll('#p-transfer .mrow.sel').length;
