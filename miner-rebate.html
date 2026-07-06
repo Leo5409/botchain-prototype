@@ -151,6 +151,13 @@
   .cmodal.show { opacity:1; pointer-events:all; }
   .cmodal .cbox { width:100%; max-width:330px; max-height:74%; background:#12141a; border:1px solid #262a34; border-radius:20px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.6); transform:scale(.92); transition:transform .22s; }
   .cmodal.show .cbox { transform:none; }
+  .cmodal .sheet-b { flex:1; min-height:0; }
+  /* pagination */
+  .pager { display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-top:1px solid var(--border); flex-shrink:0; }
+  .pager .pg-btn { min-width:30px; height:30px; padding:0 9px; border-radius:8px; background:#171a21; border:1px solid var(--border); color:#c7cad4; font-size:13px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+  .pager .pg-btn.active { background:var(--pg); color:#fff; border-color:transparent; }
+  .pager .pg-btn.disabled { opacity:.35; pointer-events:none; }
+  .addr-msg { font-size:11.5px; margin:3px 2px 0; min-height:15px; }
   /* miner id chips (编号详情) */
   .idwrap { display:flex; flex-wrap:wrap; gap:8px; }
   .idchip { background:#171a21; border:1px solid var(--border); border-radius:8px; padding:5px 10px; font-size:12.5px; color:#dfe1ea; font-weight:600; }
@@ -352,15 +359,16 @@
           <div class="h-lbl">我的矿机 · 可转赠</div>
           <div class="h-big">65 <small>台</small></div>
           <div class="h-row">
-            <div class="h-cell"><div class="c-l">累计购买</div><div class="c-v">90 台</div></div>
-            <div class="h-cell"><div class="c-l">已转赠</div><div class="c-v">25 台</div></div>
+            <div class="h-cell"><div class="c-l">累计购买</div><div class="c-v">120 台</div></div>
+            <div class="h-cell"><div class="c-l">已转赠</div><div class="c-v">55 台</div></div>
             <div class="h-cell"><div class="c-l">当前持有</div><div class="c-v">65 台</div></div>
           </div>
         </div>
         <div class="card">
           <div class="card-t">转赠矿机</div>
           <div style="font-size:12px;color:var(--text2);margin:4px 2px;">接收地址</div>
-          <input class="input" placeholder="输入接收方地址 0x…">
+          <input class="input" value="0x1234…abcd" placeholder="输入接收方地址 0x…" style="margin-bottom:0;">
+          <div class="addr-msg" style="color:#fb7185;">该账户未注册，无法转赠矿机</div>
           <div class="sel-head"><span>选择要转赠的矿机 · <b>已选 2 台</b></span><span class="selall">☑ 全选</span></div>
           <div class="mrow sel"><div class="mck">✓</div><div class="mmain"><div class="mno">矿机 #100228</div><div class="msub">算力 1000 T/H · 3 期批次</div></div></div>
           <div class="mrow sel"><div class="mck">✓</div><div class="mmain"><div class="mno">矿机 #100229</div><div class="msub">算力 1000 T/H · 3 期批次</div></div></div>
@@ -398,8 +406,16 @@
             <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x">×</span></div>
             <div class="sheet-b">
               <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">接收 0x9f2c…a1b · 2026-06-25</div><div class="idlink">编号 #100201–#100210、#100221 等 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">接收 0x33de…7c0 · 2026-06-20</div><div class="idlink">编号 #100211–#100217 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-              <div class="row"><div class="ic red">📤</div><div class="rmain"><div class="rtitle">转赠 2 台</div><div class="rsub">接收 0x71a8…e3f · 2026-07-01</div><div class="idlink">编号 #100218–#100219 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
+              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">接收 0x33de…7c0 · 2026-06-24</div><div class="idlink">编号 #100211–#100217 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 6 台</div><div class="rsub">接收 0x5b71…9d2 · 2026-06-22</div><div class="idlink">编号 #100250–#100255 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 5 台</div><div class="rsub">接收 0xa4e0…3fc · 2026-06-20</div><div class="idlink">编号 #100260–#100264 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 4 台</div><div class="rsub">接收 0xc812…7b5 · 2026-06-18</div><div class="idlink">编号 #100270–#100273 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+            </div>
+            <div class="pager">
+              <span class="pg-btn disabled">‹</span>
+              <span class="pg-btn active">1</span>
+              <span class="pg-btn">2</span>
+              <span class="pg-btn">›</span>
             </div>
           </div>
         </div>
@@ -552,15 +568,17 @@
           <div class="h-lbl">我的矿机 · 可转赠</div>
           <div class="h-big">65 <small>台</small></div>
           <div class="h-row">
-            <div class="h-cell"><div class="c-l">累计购买</div><div class="c-v">90 台</div></div>
-            <div class="h-cell"><div class="c-l">已转赠</div><div class="c-v">25 台</div></div>
+            <div class="h-cell"><div class="c-l">累计购买</div><div class="c-v">120 台</div></div>
+            <div class="h-cell"><div class="c-l">已转赠</div><div class="c-v">55 台</div></div>
             <div class="h-cell"><div class="c-l">当前持有</div><div class="c-v">65 台</div></div>
           </div>
         </div>
         <div class="card">
           <div class="card-t">转赠矿机</div>
           <div style="font-size:12px;color:var(--text2);margin:4px 2px;">接收地址</div>
-          <input class="input" placeholder="输入接收方地址 0x…">
+          <input class="input" id="recvAddr" oninput="checkRecvAddr()" placeholder="输入接收方地址 0x…" style="margin-bottom:0;">
+          <div class="addr-msg" id="recvAddrMsg"></div>
+          <div class="idlink" style="cursor:pointer;" onclick="fillDemoAddr()">试填已注册示例地址</div>
           <div class="sel-head"><span>选择要转赠的矿机 · <b id="selCount">已选 0 台</b></span><span class="selall" id="selAllBtn" onclick="toggleSelectAll()">☑ 全选</span></div>
           <div class="mrow" onclick="toggleMiner(this)"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100228</div><div class="msub">算力 1000 T/H · 3 期批次</div></div></div>
           <div class="mrow" onclick="toggleMiner(this)"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100229</div><div class="msub">算力 1000 T/H · 3 期批次</div></div></div>
@@ -571,7 +589,7 @@
           <div class="list-more">共 65 台可转赠 · 滑动查看更多</div>
           <div class="wbtn-row" style="margin-top:6px;">
             <button class="wbtn" id="confirmTransferBtn" onclick="confirmTransfer()">确认转赠</button>
-            <button class="wbtn ghost" onclick="openSheet('transferRecSheet')">转赠记录</button>
+            <button class="wbtn ghost" onclick="openTransferRec()">转赠记录</button>
           </div>
         </div>
       </div>
@@ -613,6 +631,7 @@
       <div class="cbox" onclick="event.stopPropagation()">
         <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x" onclick="closeSheets()">×</span></div>
         <div class="sheet-b" id="transferRecList"></div>
+        <div class="pager" id="transferPager"></div>
       </div>
     </div>
 
@@ -675,18 +694,41 @@
     updateTransferUI();
   }
   function confirmTransfer(){
+    var el=document.getElementById('recvAddr'); var v=el?el.value.trim():'';
+    if(!v){ showT('请输入接收地址'); return; }
+    if(!isRegistered(v)){ showT('该账户未注册，无法转赠矿机'); checkRecvAddr(); return; }
     var n = document.querySelectorAll('#p-transfer .mrow.sel').length;
     if(n===0){ showT('请先勾选要转赠的矿机'); return; }
-    showT('已提交转赠 ' + n + ' 台矿机');
+    showT('已提交转赠 ' + n + ' 台矿机 → ' + v.slice(0,6) + '…');
   }
-  // ── 转赠记录 + 编号区间压缩（支持不连续设备号）──
+  // ── 接收地址校验（是否 CA 注册地址）──
+  var DEMO_REGISTERED = ['0x88f3a24c9b7e5d106a3f2c8b1a9e4d7c5b0a2f13'];
+  function normAddr(v){ return (v||'').trim().toLowerCase(); }
+  function isRegistered(v){ return DEMO_REGISTERED.indexOf(normAddr(v))>=0; }
+  function checkRecvAddr(){
+    var el=document.getElementById('recvAddr'); if(!el) return null;
+    var v=el.value.trim(), msg=document.getElementById('recvAddrMsg');
+    if(!v){ msg.textContent=''; return null; }
+    if(isRegistered(v)){ msg.textContent='✓ 已注册地址，可转赠'; msg.style.color='#34d399'; return true; }
+    msg.textContent='该账户未注册，无法转赠矿机'; msg.style.color='#fb7185'; return false;
+  }
+  function fillDemoAddr(){ var el=document.getElementById('recvAddr'); if(el){ el.value='0x88F3a24C9b7E5D106a3F2C8b1A9e4D7c5B0a2F13'; checkRecvAddr(); } }
+
+  // ── 转赠记录 + 编号区间压缩（支持不连续设备号）+ 分页（每页 5 条）──
   function idRange(a,b){ var r=[]; for(var i=a;i<=b;i++) r.push(i); return r; }
   var transferRecords = [
-    { n:18, addr:'0x9f2c…a1b', date:'2026-06-25', ok:true,
-      ids: idRange(100201,100210).concat([100221,100223]).concat(idRange(100240,100245)) },
-    { n:7,  addr:'0x33de…7c0', date:'2026-06-20', ok:true,  ids: idRange(100211,100217) },
-    { n:2,  addr:'0x71a8…e3f', date:'2026-07-01', ok:false, ids: [100218,100219] }
+    { n:18, addr:'0x9f2c…a1b', date:'2026-06-25', ok:true,  ids: idRange(100201,100210).concat([100221,100223]).concat(idRange(100240,100245)) },
+    { n:7,  addr:'0x33de…7c0', date:'2026-06-24', ok:true,  ids: idRange(100211,100217) },
+    { n:6,  addr:'0x5b71…9d2', date:'2026-06-22', ok:true,  ids: idRange(100250,100255) },
+    { n:5,  addr:'0xa4e0…3fc', date:'2026-06-20', ok:true,  ids: idRange(100260,100264) },
+    { n:4,  addr:'0xc812…7b5', date:'2026-06-18', ok:true,  ids: idRange(100270,100273) },
+    { n:8,  addr:'0x6d90…1a4', date:'2026-06-15', ok:true,  ids: idRange(100300,100307) },
+    { n:3,  addr:'0x2f47…e88', date:'2026-06-12', ok:true,  ids: idRange(100310,100312) },
+    { n:2,  addr:'0x9012…c3d', date:'2026-06-10', ok:true,  ids: idRange(100320,100321) },
+    { n:2,  addr:'0x71a8…e3f', date:'2026-06-08', ok:false, ids: [100218,100219] },
+    { n:2,  addr:'0xbb34…07a', date:'2026-06-05', ok:true,  ids: idRange(100330,100331) }
   ];
+  var transferPage = 1, TRANSFER_PAGE_SIZE = 5;
   function compressIds(ids){
     ids = ids.slice().sort(function(a,b){ return a-b; });
     var segs=[], i=0;
@@ -698,10 +740,13 @@
     }
     return segs;
   }
+  function transferPageCount(){ return Math.max(1, Math.ceil(transferRecords.length / TRANSFER_PAGE_SIZE)); }
   function renderTransferRecords(){
     var el=document.getElementById('transferRecList'); if(!el) return;
-    el.innerHTML = transferRecords.map(function(r,idx){
-      var segs=compressIds(r.ids);
+    var total=transferPageCount(); if(transferPage>total) transferPage=total;
+    var start=(transferPage-1)*TRANSFER_PAGE_SIZE;
+    el.innerHTML = transferRecords.slice(start, start+TRANSFER_PAGE_SIZE).map(function(r, li){
+      var idx=start+li, segs=compressIds(r.ids);
       var preview=segs.slice(0,2).join('、') + (segs.length>2 ? ' 等' : '');
       var icls=r.ok?'green':'red';
       var badge=r.ok?'<span class="b b-done">成功</span>':'<span class="b b-fail">失败</span>';
@@ -712,7 +757,18 @@
         + '<div class="idlink">编号 '+preview+' · 查看全部 ›</div></div>'
         + '<div class="rright"><div class="rdate">'+badge+'</div></div></div>';
     }).join('');
+    renderTransferPager();
   }
+  function renderTransferPager(){
+    var el=document.getElementById('transferPager'); if(!el) return;
+    var total=transferPageCount();
+    var h='<span class="pg-btn'+(transferPage===1?' disabled':'')+'" onclick="gotoTransferPage('+(transferPage-1)+')">‹</span>';
+    for(var p=1;p<=total;p++){ h+='<span class="pg-btn'+(p===transferPage?' active':'')+'" onclick="gotoTransferPage('+p+')">'+p+'</span>'; }
+    h+='<span class="pg-btn'+(transferPage===total?' disabled':'')+'" onclick="gotoTransferPage('+(transferPage+1)+')">›</span>';
+    el.innerHTML=h;
+  }
+  function gotoTransferPage(p){ var total=transferPageCount(); if(p<1||p>total) return; transferPage=p; renderTransferRecords(); var l=document.getElementById('transferRecList'); if(l) l.scrollTop=0; }
+  function openTransferRec(){ transferPage=1; renderTransferRecords(); openSheet('transferRecSheet'); }
   function openIdModal(idx){
     if(window.event && window.event.stopPropagation){ window.event.stopPropagation(); }
     var r=transferRecords[idx], segs=compressIds(r.ids);
