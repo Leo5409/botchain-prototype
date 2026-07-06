@@ -725,7 +725,6 @@
     { n:8,  addr:'0x6d90…1a4', date:'2026-06-15', ok:true,  ids: idRange(100300,100307) },
     { n:3,  addr:'0x2f47…e88', date:'2026-06-12', ok:true,  ids: idRange(100310,100312) },
     { n:2,  addr:'0x9012…c3d', date:'2026-06-10', ok:true,  ids: idRange(100320,100321) },
-    { n:2,  addr:'0x71a8…e3f', date:'2026-06-08', ok:false, ids: [100218,100219] },
     { n:2,  addr:'0xbb34…07a', date:'2026-06-05', ok:true,  ids: idRange(100330,100331) }
   ];
   var transferPage = 1, TRANSFER_PAGE_SIZE = 5;
@@ -748,10 +747,9 @@
     el.innerHTML = transferRecords.slice(start, start+TRANSFER_PAGE_SIZE).map(function(r, li){
       var idx=start+li, segs=compressIds(r.ids);
       var preview=segs.slice(0,2).join('、') + (segs.length>2 ? ' 等' : '');
-      var icls=r.ok?'green':'red';
-      var badge=r.ok?'<span class="b b-done">成功</span>':'<span class="b b-fail">失败</span>';
+      var badge='<span class="b b-done">成功</span>';
       return '<div class="row" onclick="openIdModal('+idx+')">'
-        + '<div class="ic '+icls+'">📤</div>'
+        + '<div class="ic green">📤</div>'
         + '<div class="rmain"><div class="rtitle">转赠 '+r.n+' 台</div>'
         + '<div class="rsub">接收 '+r.addr+' · '+r.date+'</div>'
         + '<div class="idlink">编号 '+preview+' · 查看全部 ›</div></div>'
