@@ -458,6 +458,43 @@
     </div>
   </div>
 
+  <!-- ⑪ 转赠二次确认弹框 -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">11</span><span class="nm">确认转赠 · 二次确认弹框</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>CaryPact</div>
+        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">◑</button><button class="iconbtn">☰</button></div>
+      </div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机转赠</span></div>
+      <div class="content" style="position:relative;overflow:hidden;min-height:560px;padding-bottom:0;">
+        <div class="hero" style="opacity:.28;">
+          <div class="h-lbl">我的矿机 · 可转赠</div>
+          <div class="h-big">65 <small>台</small></div>
+        </div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.6);"></div>
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 18px;">
+          <div style="width:100%;max-width:300px;background:#12141a;border:1px solid #262a34;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);">
+            <div class="sheet-h"><span class="st">确认转赠</span><span class="sheet-x">×</span></div>
+            <div class="sheet-b">
+              <div class="note warn"><span>⚠</span><span>转赠成功后，所选矿机及其<b style="color:#e7b667;">算力与收益权益</b>将转移至接收地址，<b style="color:#e7b667;">不可撤销</b>，请核对。</span></div>
+              <div class="kv"><span class="k">接收地址</span><span class="v" style="font-size:12px;">0x88F3…2F13</span></div>
+              <div class="kv"><span class="k">转赠台数</span><span class="v">2 台</span></div>
+              <div style="font-size:12px;color:var(--text2);margin:12px 2px 6px;">矿机编号</div>
+              <div class="idwrap"><span class="idchip">#100228–#100229</span></div>
+            </div>
+            <div style="padding:12px 16px;display:flex;gap:10px;border-top:1px solid var(--border);">
+              <button class="wbtn ghost">取消</button>
+              <button class="wbtn">确认转赠</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <!-- LIVE START -->
@@ -646,6 +683,24 @@
       </div>
     </div>
 
+    <!-- 转赠二次确认弹框 -->
+    <div class="cmodal" id="transferConfirmModal" style="z-index:114;background:rgba(0,0,0,.6);" onclick="closeTransferConfirm()">
+      <div class="cbox" onclick="event.stopPropagation()">
+        <div class="sheet-h"><span class="st">确认转赠</span><span class="sheet-x" onclick="closeTransferConfirm()">×</span></div>
+        <div class="sheet-b">
+          <div class="note warn"><span>⚠</span><span>转赠成功后，所选矿机及其<b style="color:#e7b667;">算力与收益权益</b>将转移至接收地址，<b style="color:#e7b667;">不可撤销</b>，请核对。</span></div>
+          <div class="kv"><span class="k">接收地址</span><span class="v" id="tcAddr" style="font-size:12px;">0x…</span></div>
+          <div class="kv"><span class="k">转赠台数</span><span class="v" id="tcCount">0 台</span></div>
+          <div style="font-size:12px;color:var(--text2);margin:12px 2px 6px;">矿机编号</div>
+          <div class="idwrap" id="tcIds"></div>
+        </div>
+        <div style="padding:12px 16px;display:flex;gap:10px;border-top:1px solid var(--border);">
+          <button class="wbtn ghost" onclick="closeTransferConfirm()">取消</button>
+          <button class="wbtn" onclick="doTransfer()">确认转赠</button>
+        </div>
+      </div>
+    </div>
+
     <div class="mtoast" id="mtoast">操作成功</div>
   </div>
 </div></div>
@@ -697,9 +752,19 @@
     var el=document.getElementById('recvAddr'); var v=el?el.value.trim():'';
     if(!v){ showT('请输入接收地址'); return; }
     if(!isRegistered(v)){ showT('该账户未注册，无法转赠矿机'); checkRecvAddr(); return; }
+    var sel = document.querySelectorAll('#p-transfer .mrow.sel');
+    if(sel.length===0){ showT('请先勾选要转赠的矿机'); return; }
+    document.getElementById('tcAddr').textContent = v;
+    document.getElementById('tcCount').textContent = sel.length + ' 台';
+    var nums=[]; sel.forEach(function(r){ var m=r.querySelector('.mno').textContent.match(/#(\d+)/); if(m) nums.push(parseInt(m[1],10)); });
+    document.getElementById('tcIds').innerHTML = compressIds(nums).map(function(s){ return '<span class="idchip">'+s+'</span>'; }).join('');
+    document.getElementById('transferConfirmModal').classList.add('show');
+  }
+  function closeTransferConfirm(){ document.getElementById('transferConfirmModal').classList.remove('show'); }
+  function doTransfer(){
     var n = document.querySelectorAll('#p-transfer .mrow.sel').length;
-    if(n===0){ showT('请先勾选要转赠的矿机'); return; }
-    showT('已提交转赠 ' + n + ' 台矿机 → ' + v.slice(0,6) + '…');
+    closeTransferConfirm();
+    showT('已提交转赠 ' + n + ' 台矿机');
   }
   // ── 接收地址校验（是否 CA 注册地址）──
   var DEMO_REGISTERED = ['0x88f3a24c9b7e5d106a3f2c8b1a9e4d7c5b0a2f13'];
