@@ -335,10 +335,6 @@
           </div>
         </div>
       </div>
-      <div class="card"><div class="card-body" style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#6b7280;line-height:1.7;">
-        <span style="color:#5b6af0;">ℹ</span>
-        <div><strong>发放口径：</strong>奖励 = 等级奖励（受益人本级原价奖励 × 台数）+ 级差奖励（（本级 − 被邀请人级别）× 台数）；<strong>特价矿机奖励减半</strong>（算力另发 1300 T/H，见「矿机批次发售」）。<strong>受益人未达佣金门槛时全部冻结、不可发放</strong>，达标后一并解冻。同一奖励单幂等发放、不重复入账。发放 / 驳回由运营单审通过、落审计（无需二次确认）。</div>
-      </div></div>
     </div>
 
     <!-- ════════ 矿机批次发售 ════════ -->
@@ -374,7 +370,7 @@
               <td class="td-num">800 / <span class="td-green">520</span> / <span class="td-orange">280</span></td>
               <td class="text-mute">2026-06-20</td>
               <td><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="showToastMsg('第 4 期（原价）已下架')">下架</button></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openBatchToggle('第 4 期（原价）','下架')">下架</button></td>
             </tr>
             <tr>
               <td>第 4 期<span class="inline-tag">特价</span></td>
@@ -385,7 +381,7 @@
               <td class="td-num">300 / <span class="td-green">180</span> / <span class="td-orange">120</span></td>
               <td class="text-mute">2026-06-20</td>
               <td><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="showToastMsg('第 4 期（特价）已下架')">下架</button></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openBatchToggle('第 4 期（特价）','下架')">下架</button></td>
             </tr>
             <tr>
               <td>第 5 期<span class="inline-tag">原价</span></td>
@@ -396,7 +392,7 @@
               <td class="td-num">800 / <span class="td-green">0</span> / 800</td>
               <td class="text-mute">2026-07-10</td>
               <td><span class="badge badge-warn"><span class="dot-status dot-wait"></span>未开售</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-success btn-sm" onclick="showToastMsg('第 5 期（原价）已上架发售')">上架</button></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-success btn-sm" onclick="openBatchToggle('第 5 期（原价）','上架')">上架</button></td>
             </tr>
             <tr>
               <td>第 3 期<span class="inline-tag">原价</span></td>
@@ -423,10 +419,6 @@
           </tbody>
         </table></div>
       </div>
-      <div class="card"><div class="card-body" style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#6b7280;line-height:1.7;">
-        <span style="color:#5b6af0;">ℹ</span>
-        <div><strong>特价批次：</strong>算力 <strong>1300 T/H</strong>（原价 1000 T/H），<strong>销售奖励减半</strong>（发放审核自动按减半计，见「佣金发放审核」）。每台矿机分配唯一<strong>设备编号</strong>，区间连续、跨批次不重叠，供 C 端「矿机转赠」按编号选择。</div>
-      </div></div>
     </div>
 
   </div>
@@ -553,7 +545,21 @@
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('batchDetailModal')">关闭</button>
-      <button class="btn btn-secondary" onclick="closeModal('batchDetailModal');showToastMsg('该批次已下架')">下架</button>
+      <button class="btn btn-secondary" onclick="closeModal('batchDetailModal');openBatchToggle('第 4 期（特价）','下架')">下架</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批次上下架二次确认 -->
+<div class="modal-overlay" id="batchToggleModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="btToggleTitle">批次操作确认</div><button class="modal-close" onclick="closeModal('batchToggleModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-alert" id="btToggleAlert"><span class="icon">⚠</span><div id="btToggleMsg"></div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('batchToggleModal')">取消</button>
+      <button class="btn btn-primary" id="btToggleConfirm" onclick="confirmBatchToggle()">确认</button>
     </div>
   </div>
 </div>
@@ -576,6 +582,22 @@
   function openRejectModal(){ openModal('rejectModal'); }
   function openBatchModal(){ openModal('batchModal'); }
   function openBatchDetail(){ openModal('batchDetailModal'); }
+  var btPending = null;
+  function openBatchToggle(name, action){
+    btPending = { name: name, action: action };
+    var isUp = action === '上架';
+    document.getElementById('btToggleTitle').textContent = (isUp ? '上架' : '下架') + '批次确认';
+    document.getElementById('btToggleMsg').innerHTML = '确认将 <strong>' + name + '</strong> ' + (isUp ? '<strong>上架发售</strong>？上架后该批次将对 C 端可售。' : '<strong>下架</strong>？下架后 C 端将停止售卖该批次。');
+    document.getElementById('btToggleAlert').className = 'modal-alert ' + (isUp ? 'info' : 'danger');
+    var btn = document.getElementById('btToggleConfirm');
+    btn.className = 'btn ' + (isUp ? 'btn-success' : 'btn-danger');
+    btn.textContent = isUp ? '确认上架' : '确认下架';
+    openModal('batchToggleModal');
+  }
+  function confirmBatchToggle(){
+    closeModal('batchToggleModal');
+    if(btPending){ showToastMsg(btPending.name + ' 已' + (btPending.action === '上架' ? '上架发售' : '下架')); btPending = null; }
+  }
   function onBatchTypeChange(){
     var t=document.getElementById('batchType').value;
     document.getElementById('batchHash').value = (t==='special') ? '1300' : '1000';
