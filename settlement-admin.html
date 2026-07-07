@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOT 算力服务器 — 结算管理系统（运营后台）</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 13px; display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 240px; background: #141627; display: flex; flex-direction: column; flex-shrink: 0; }
+  .logo { padding: 20px 20px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .logo-text { color: #fff; font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .logo-text small { display: block; font-size: 10px; color: rgba(255,255,255,.45); font-weight: 400; margin-top: 2px; letter-spacing: .5px; }
+  .nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .nav-group-title { color: rgba(255,255,255,.3); font-size: 11px; letter-spacing: 1px; padding: 14px 20px 6px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,.55); cursor: pointer; transition: all .15s; font-size: 13px; }
+  .nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.9); }
+  .nav-item.active { background: rgba(91,106,240,.2); color: #7c8ff7; border-right: 2px solid #5b6af0; }
+  .nav-item .ic { width: 16px; text-align: center; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 10px; }
+  .nav-badge.warn { background: #f59e0b; }
+  .nav-badge.new { background: #10b981; }
+  .sidebar-bottom { padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 28px; height: 28px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 600; }
+  .admin-name { color: rgba(255,255,255,.75); font-size: 12px; line-height: 1.2; }
+  .admin-role { color: rgba(255,255,255,.4); font-size: 10px; }
+
+  /* ── Main ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { height: 52px; background: #fff; border-bottom: 1px solid #e8eaed; display: flex; align-items: center; padding: 0 24px; gap: 8px; flex-shrink: 0; }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px; }
+  .breadcrumb .current { color: #1a1a2e; font-weight: 500; }
+  .breadcrumb-sep { color: #d1d5db; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .session-badge { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+  .session-badge .s-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
+
+  /* ── Content ── */
+  .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .page-title { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+  .page-subtitle { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+  .tag-module { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #eef0fe; color: #5b6af0; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+  .tag-new { background: #d1fae5; color: #065f46; }
+
+  /* ── Card ── */
+  .card { background: #fff; border-radius: 10px; border: 1px solid #e8eaed; margin-bottom: 14px; }
+  .card-header { padding: 14px 20px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 13px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 7px; }
+  .card-title::before { content: ''; width: 3px; height: 14px; background: #5b6af0; border-radius: 2px; display: inline-block; }
+  .card-body { padding: 16px 20px; }
+
+  /* ── Stat Grid ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  .stat-card { background: #fff; border: 1px solid #e8eaed; border-radius: 10px; padding: 14px 16px; }
+  .stat-label { font-size: 11px; color: #9ca3af; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .stat-value { font-size: 20px; font-weight: 700; color: #1a1a2e; font-variant-numeric: tabular-nums; }
+  .stat-value small { font-size: 11px; font-weight: 400; color: #9ca3af; margin-left: 4px; }
+  .stat-trend { font-size: 11px; margin-top: 4px; }
+  .stat-trend.up { color: #ef4444; }
+  .stat-trend.down { color: #10b981; }
+  .stat-trend.neutral { color: #9ca3af; }
+  .stat-card.alert { border-color: #fecaca; background: linear-gradient(135deg, #fef2f2, #fff); }
+  .stat-card.warn { border-color: #fde68a; background: linear-gradient(135deg, #fffbeb, #fff); }
+  .stat-card.ok { border-color: #a7f3d0; background: linear-gradient(135deg, #ecfdf5, #fff); }
+
+  /* ── Filter ── */
+  .filter-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+  .form-group.wide { flex: 1.5; }
+  .form-label { font-size: 12px; color: #6b7280; }
+  .req { color: #ef4444; }
+  .form-input, .form-select { height: 32px; border: 1px solid #e0e2e7; border-radius: 6px; padding: 0 10px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; transition: border-color .15s; }
+  .form-input:focus, .form-select:focus { border-color: #5b6af0; background: #fff; }
+  .form-input::placeholder { color: #c0c4cc; }
+  .form-textarea { min-height: 70px; padding: 8px 10px; border: 1px solid #e0e2e7; border-radius: 6px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; font-family: inherit; resize: vertical; }
+  .form-textarea:focus { border-color: #5b6af0; background: #fff; }
+  .filter-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* ── Buttons ── */
+  .btn { height: 32px; padding: 0 16px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all .15s; }
+  .btn-primary { background: #5b6af0; color: #fff; }
+  .btn-primary:hover { background: #4f5de6; }
+  .btn-secondary { background: #fff; color: #374151; border: 1px solid #e0e2e7; }
+  .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
+  .btn-success { background: #10b981; color: #fff; }
+  .btn-success:hover { background: #059669; }
+  .btn-danger { background: #ef4444; color: #fff; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-warn { background: #f59e0b; color: #fff; }
+  .btn-warn:hover { background: #d97706; }
+  .btn-sm { height: 26px; padding: 0 10px; font-size: 11px; }
+  .btn-ghost { background: none; border: 1px dashed #d1d5db; color: #6b7280; }
+  .btn-ghost:hover { border-color: #5b6af0; color: #5b6af0; }
+
+  /* ── Table ── */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #f8f9fd; }
+  th { padding: 10px 14px; text-align: left; color: #6b7280; font-weight: 600; font-size: 11px; white-space: nowrap; border-bottom: 1px solid #e8eaed; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; color: #374151; white-space: nowrap; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbff; }
+  .td-address { font-family: monospace; font-size: 11px; color: #5b6af0; cursor: pointer; }
+  .td-address:hover { text-decoration: underline; }
+  .td-num { text-align: right; font-variant-numeric: tabular-nums; }
+  .td-mono { font-family: monospace; font-size: 11px; color: #4f5de6; }
+  .td-green { color: #059669; font-weight: 600; }
+  .td-red   { color: #dc2626; font-weight: 600; }
+  .td-blue  { color: #2563eb; font-weight: 500; }
+  .td-orange { color: #d97706; font-weight: 600; }
+  .ops-cell { display: flex; align-items: center; gap: 6px; }
+
+  /* ── Badges ── */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-pending { background: #fef3c7; color: #92400e; }
+  .badge-process { background: #dbeafe; color: #1d4ed8; }
+  .badge-signing { background: #ede9fe; color: #5b21b6; }
+  .badge-done    { background: #d1fae5; color: #065f46; }
+  .badge-fail    { background: #fee2e2; color: #991b1b; }
+  .badge-grey    { background: #f3f4f6; color: #6b7280; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-info    { background: #eef0fe; color: #4f5de6; }
+  .badge-usdt    { background: #ccfbf1; color: #0f766e; }
+  .badge-special { background: #ffe4e6; color: #be123c; }
+
+  /* ── Status Dot ── */
+  .dot-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .dot-on { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+  .dot-off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+  .dot-wait { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.18); }
+
+  /* ── Pagination ── */
+  .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #f3f4f6; }
+  .pagination { display: flex; align-items: center; gap: 4px; }
+  .page-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #e0e2e7; background: #fff; color: #374151; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .page-btn:hover { border-color: #5b6af0; color: #5b6af0; }
+  .page-btn.active { background: #5b6af0; border-color: #5b6af0; color: #fff; }
+  .page-btn.disabled { opacity: .4; cursor: not-allowed; }
+  .total-count { font-size: 12px; color: #9ca3af; }
+  .total-count strong { color: #374151; }
+
+  /* ── Detail / Trace ── */
+  .detail-block { padding: 16px 20px; border-top: 1px solid #f3f4f6; }
+  .detail-block:first-child { border-top: none; }
+  .trace-table th, .trace-table td { padding: 8px 12px; }
+  .trace-table tfoot td { background: #f8f9fd; font-weight: 700; color: #1a1a2e; border-top: 2px solid #e8eaed; }
+
+  /* ── Checkbox ── */
+  .ck { width: 15px; height: 15px; accent-color: #5b6af0; cursor: pointer; }
+
+  /* ── Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal { background: #fff; border-radius: 12px; width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,.2); transform: translateY(10px); transition: transform .2s; max-height: 90vh; overflow: auto; }
+  .modal.large { width: 620px; }
+  .modal.wide { width: 760px; }
+  .modal-overlay.show .modal { transform: none; }
+  .modal-header { padding: 20px 24px 12px; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid #f3f4f6; }
+  .modal-title { font-size: 15px; font-weight: 700; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+  .modal-title.danger { color: #dc2626; }
+  .modal-close { width: 28px; height: 28px; border-radius: 6px; border: none; background: none; cursor: pointer; color: #9ca3af; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #f3f4f6; color: #374151; }
+  .modal-body { padding: 16px 24px 20px; }
+  .modal-body .form-group { margin-bottom: 12px; }
+  .modal-footer { padding: 12px 24px 20px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #f3f4f6; }
+  .modal-info-row { display: flex; align-items: center; gap: 10px; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed #f3f4f6; }
+  .modal-info-row:last-child { border-bottom: none; }
+  .modal-info-row .lbl { color: #9ca3af; min-width: 96px; }
+  .modal-info-row .val { color: #1a1a2e; font-weight: 500; }
+  .modal-alert { padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.6; margin-bottom: 12px; display: flex; gap: 8px; align-items: flex-start; }
+  .modal-alert.danger { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+  .modal-alert.info { background: #eef0fe; border-color: #c7d2fe; color: #3730a3; }
+  .modal-alert .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── Misc ── */
+  .empty-hint { padding: 40px 20px; text-align: center; color: #9ca3af; font-size: 12px; }
+  .text-mute { color: #9ca3af; }
+  .text-mono { font-family: monospace; }
+  .divider-h { height: 1px; background: #f3f4f6; margin: 14px 0; }
+  .inline-tag { display: inline-block; padding: 1px 6px; background: #f3f4f6; color: #6b7280; border-radius: 4px; font-size: 10px; margin-left: 4px; }
+  .pill { display:inline-block; padding: 1px 7px; border-radius: 6px; font-size: 11px; font-weight:600; }
+  .pill-v { background:#eef0fe; color:#4f5de6; }
+  .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a2e; color: #fff; padding: 11px 20px; border-radius: 8px; font-size: 13px; z-index: 2000; opacity: 0; transition: all .25s; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">⛓</div>
+    <div class="logo-text">BOT 算力服务器<small>结算管理系统 · 运营后台</small></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group-title">结算发放</div>
+    <div class="nav-item active" data-page="payout" onclick="switchPage('payout')"><span class="ic">💰</span>佣金发放审核<span class="nav-badge">3</span></div>
+    <div class="nav-group-title">矿机运营</div>
+    <div class="nav-item" data-page="batch" onclick="switchPage('batch')"><span class="ic">🖥</span>矿机批次发售</div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="avatar">运</div>
+    <div><div class="admin-name">运营-01</div><div class="admin-role">奖励复核 / 发放</div></div>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+  <header class="topbar">
+    <div class="breadcrumb"><span>结算管理系统</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">佣金发放审核</span></div>
+    <div class="topbar-right">
+      <span class="session-badge"><span class="s-dot"></span>会话已解锁 · 03:42</span>
+    </div>
+  </header>
+
+  <div class="content">
+
+    <!-- ════════ 佣金发放审核 ════════ -->
+    <div class="page active" id="page-payout">
+      <div class="page-header">
+        <div>
+          <div class="page-title">佣金发放审核<span class="tag-module">F-01</span></div>
+          <div class="page-subtitle">销售奖励（等级奖励 + 级差奖励，USDT）· 受益人达到佣金门槛才可发放，否则冻结 · 试算 → 复核 → 发放（幂等）</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary" onclick="showToastMsg('已生成佣金审核流水导出任务，前往下载中心')">⭳ 导出全部流水</button>
+          <button class="btn btn-success" onclick="openPayoutModal()">✓ 批量发放</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">待发放</div><div class="stat-value">4 <small>笔</small></div><div class="stat-trend neutral">含特价 1 笔</div></div>
+        <div class="stat-card ok"><div class="stat-label">待发放金额</div><div class="stat-value">20,040.00 <small>USDT</small></div><div class="stat-trend neutral">复核后发放</div></div>
+        <div class="stat-card"><div class="stat-label">今日已发放</div><div class="stat-value">6,400.00 <small>USDT</small></div><div class="stat-trend down">12 笔</div></div>
+        <div class="stat-card warn"><div class="stat-label">冻结中（未达佣金门槛）</div><div class="stat-value">1 <small>笔</small></div><div class="stat-trend up">980 U · 待受益人达标</div></div>
+      </div>
+      <div class="card">
+        <div class="card-body">
+          <div class="filter-row">
+            <div class="form-group"><label class="form-label">受益人地址</label><input class="form-input" placeholder="0x…"></div>
+            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待发放</option><option>已发放</option><option>冻结</option><option>驳回</option></select></div>
+            <div class="form-group"><label class="form-label">类型</label><select class="form-select"><option>全部</option><option>原价</option><option>特价（奖励减半）</option></select></div>
+            <div class="form-group"><label class="form-label">触发时间</label><input class="form-input" value="2026-06-20 — 2026-07-06"></div>
+            <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
+          </div>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead><tr>
+              <th style="width:32px;"><input type="checkbox" class="ck" onclick="toggleAll(this)"></th>
+              <th>奖励单号</th><th>受益人 / 级别</th><th>触发来源（被邀请人 · 台数 · 订单）</th>
+              <th class="td-num">等级奖励 (U)</th><th class="td-num">级差奖励 (U)</th><th class="td-num">合计 (USDT)</th>
+              <th>佣金门槛</th><th>状态</th><th>操作</th>
+            </tr></thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" class="ck row-ck"></td>
+                <td class="td-mono">RW-88205</td>
+                <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
+                <td><span class="td-address">0x93cd…7a1</span> <span class="pill pill-v">V1</span> · 1 台 · <span class="td-mono">ORD-77301</span></td>
+                <td class="td-num">680.00</td><td class="td-num td-green">200.00</td><td class="td-num" style="font-weight:700;">880.00</td>
+                <td><span class="badge badge-done">✓ 已达</span></td>
+                <td><span class="badge badge-process">待发放</span></td>
+                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88205 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck row-ck"></td>
+                <td class="td-mono">RW-88204</td>
+                <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
+                <td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span> · 18 台 · <span class="td-mono">ORD-77298</span></td>
+                <td class="td-num">14,940.00</td><td class="td-num td-green">2,700.00</td><td class="td-num" style="font-weight:700;">17,640.00</td>
+                <td><span class="badge badge-done">✓ 已达</span></td>
+                <td><span class="badge badge-process">待发放</span></td>
+                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88204 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck row-ck"></td>
+                <td class="td-mono">RW-88203</td>
+                <td class="td-address">0x88f3…2f13 <span class="pill pill-v">V4</span></td>
+                <td><span class="td-address">0x5b71…9d2</span> <span class="pill pill-v">V2</span> · 1 台 · <span class="badge badge-special">特价</span> · <span class="td-mono">ORD-77290</span></td>
+                <td class="td-num">365.00</td><td class="td-num td-green">75.00</td><td class="td-num" style="font-weight:700;">440.00</td>
+                <td><span class="badge badge-done">✓ 已达</span></td>
+                <td><span class="badge badge-process">待发放</span></td>
+                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88203 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck" disabled></td>
+                <td class="td-mono">RW-88201</td>
+                <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
+                <td><span class="td-address">0xba11…e2</span> <span class="pill pill-v">V0</span> · 1 台 · <span class="td-mono">ORD-77260</span></td>
+                <td class="td-num">680.00</td><td class="td-num td-green">300.00</td><td class="td-num" style="font-weight:700;">980.00</td>
+                <td><span class="badge badge-fail">✗ 未达</span></td>
+                <td><span class="badge badge-warn">冻结</span></td>
+                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><span class="text-mute" title="受益人未达佣金门槛，奖励全部冻结">冻结中 · 待达标</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck row-ck"></td>
+                <td class="td-mono">RW-88190</td>
+                <td class="td-address">0x9f2c…a1b <span class="pill pill-v">V8</span></td>
+                <td><span class="td-address">0x33de…7c0</span> <span class="pill pill-v">V5</span> · 1 台 · <span class="td-mono">ORD-77240</span></td>
+                <td class="td-num">930.00</td><td class="td-num td-green">150.00</td><td class="td-num" style="font-weight:700;">1,080.00</td>
+                <td><span class="badge badge-done">✓ 已达</span></td>
+                <td><span class="badge badge-process">待发放</span></td>
+                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88190 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck" disabled></td>
+                <td class="td-mono">RW-88155</td>
+                <td class="td-address">0x2f47…e88 <span class="pill pill-v">V7</span></td>
+                <td><span class="td-address">0x9012…c3d</span> <span class="pill pill-v">V4</span> · 1 台 · <span class="td-mono">ORD-77210</span></td>
+                <td class="td-num">880.00</td><td class="td-num td-green">150.00</td><td class="td-num" style="font-weight:700;">1,030.00</td>
+                <td><span class="badge badge-done">✓ 已达</span></td>
+                <td><span class="badge badge-done">已发放</span></td>
+                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><span class="text-mute">已入账</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="table-footer">
+          <span class="total-count">共 <strong>6</strong> 条 · 待发放 4 · 冻结 1 · 已发放 1</span>
+          <div class="pagination">
+            <button class="page-btn disabled">‹</button>
+            <button class="page-btn active">1</button>
+            <button class="page-btn">2</button>
+            <button class="page-btn">›</button>
+          </div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body" style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#6b7280;line-height:1.7;">
+        <span style="color:#5b6af0;">ℹ</span>
+        <div><strong>发放口径：</strong>奖励 = 等级奖励（受益人本级原价奖励 × 台数）+ 级差奖励（（本级 − 被邀请人级别）× 台数）；<strong>特价矿机奖励减半</strong>（算力另发 1300 T/H，见「矿机批次发售」）。<strong>受益人未达佣金门槛时全部冻结、不可发放</strong>，达标后一并解冻。同一奖励单幂等发放、不重复入账。发放 / 驳回由运营单审通过、落审计（无需二次确认）。</div>
+      </div></div>
+    </div>
+
+    <!-- ════════ 矿机批次发售 ════════ -->
+    <div class="page" id="page-batch">
+      <div class="page-header">
+        <div>
+          <div class="page-title">矿机批次发售<span class="tag-module">F-02</span></div>
+          <div class="page-subtitle">批次发行 · 设备编号区间分配 · 原价 / 特价 · 算力 1000 / 1300 T/H · 定价（单台 / 组 18 台 / 集群 90 台）· 上下架</div>
+        </div>
+        <div><button class="btn btn-primary" onclick="openBatchModal()">+ 新建批次</button></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">批次总数</div><div class="stat-value">5 <small>批</small></div></div>
+        <div class="stat-card ok"><div class="stat-label">发售中</div><div class="stat-value">2 <small>批</small></div></div>
+        <div class="stat-card"><div class="stat-label">累计已售</div><div class="stat-value">2,500 <small>台</small></div></div>
+        <div class="stat-card warn"><div class="stat-label">剩余可售</div><div class="stat-value">1,200 <small>台</small></div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">批次列表</div><span class="text-mute">编号区间连续分配、跨批次不重叠；售罄自动关闭</span></div>
+        <div class="table-wrapper"><table>
+          <thead><tr>
+            <th>批次</th><th>类型</th><th>基准算力</th>
+            <th class="td-num">单台 (U)</th><th class="td-num">组 18 台 (U)</th><th class="td-num">集群 90 台 (U)</th>
+            <th>设备编号区间</th><th class="td-num">发售 / 已售 / 剩余</th><th>开售时间</th><th>状态</th><th>操作</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>第 4 期<span class="inline-tag">原价</span></td>
+              <td><span class="badge badge-info">原价</span></td>
+              <td class="td-mono">1000 T/H</td>
+              <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
+              <td class="td-mono">#101201–#102000</td>
+              <td class="td-num">800 / <span class="td-green">520</span> / <span class="td-orange">280</span></td>
+              <td class="text-mute">2026-06-20</td>
+              <td><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="showToastMsg('第 4 期（原价）已下架')">下架</button></td>
+            </tr>
+            <tr>
+              <td>第 4 期<span class="inline-tag">特价</span></td>
+              <td><span class="badge badge-special">特价 · 奖励减半</span></td>
+              <td class="td-mono td-orange">1300 T/H</td>
+              <td class="td-num">2,980</td><td class="td-num">48,240</td><td class="td-num">223,200</td>
+              <td class="td-mono">#102001–#102300</td>
+              <td class="td-num">300 / <span class="td-green">180</span> / <span class="td-orange">120</span></td>
+              <td class="text-mute">2026-06-20</td>
+              <td><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="showToastMsg('第 4 期（特价）已下架')">下架</button></td>
+            </tr>
+            <tr>
+              <td>第 5 期<span class="inline-tag">原价</span></td>
+              <td><span class="badge badge-info">原价</span></td>
+              <td class="td-mono">1000 T/H</td>
+              <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
+              <td class="td-mono">#102301–#103100</td>
+              <td class="td-num">800 / <span class="td-green">0</span> / 800</td>
+              <td class="text-mute">2026-07-10</td>
+              <td><span class="badge badge-warn"><span class="dot-status dot-wait"></span>未开售</span></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-success btn-sm" onclick="showToastMsg('第 5 期（原价）已上架发售')">上架</button></td>
+            </tr>
+            <tr>
+              <td>第 3 期<span class="inline-tag">原价</span></td>
+              <td><span class="badge badge-info">原价</span></td>
+              <td class="td-mono">1000 T/H</td>
+              <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
+              <td class="td-mono">#100201–#101200</td>
+              <td class="td-num">1,000 / <span class="td-green">1,000</span> / 0</td>
+              <td class="text-mute">2026-06-01</td>
+              <td><span class="badge badge-grey">已售罄</span></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button></td>
+            </tr>
+            <tr>
+              <td>第 2 期<span class="inline-tag">原价</span></td>
+              <td><span class="badge badge-info">原价</span></td>
+              <td class="td-mono">1000 T/H</td>
+              <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
+              <td class="td-mono">#099401–#100200</td>
+              <td class="td-num">800 / <span class="td-green">800</span> / 0</td>
+              <td class="text-mute">2026-05-01</td>
+              <td><span class="badge badge-grey">已结束</span></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button></td>
+            </tr>
+          </tbody>
+        </table></div>
+      </div>
+      <div class="card"><div class="card-body" style="display:flex;gap:8px;align-items:flex-start;font-size:12px;color:#6b7280;line-height:1.7;">
+        <span style="color:#5b6af0;">ℹ</span>
+        <div><strong>特价批次：</strong>算力 <strong>1300 T/H</strong>（原价 1000 T/H），<strong>销售奖励减半</strong>（发放审核自动按减半计，见「佣金发放审核」）。每台矿机分配唯一<strong>设备编号</strong>，区间连续、跨批次不重叠，供 C 端「矿机转赠」按编号选择。</div>
+      </div></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════ MODALS ══════════ -->
+
+<!-- 奖励溯源（等级 + 级差演算） -->
+<div class="modal-overlay" id="rewardTraceModal">
+  <div class="modal large">
+    <div class="modal-header"><div class="modal-title">💰 奖励溯源 · 等级奖励 + 级差奖励</div><button class="modal-close" onclick="closeModal('rewardTraceModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-info-row"><span class="lbl">奖励单号</span><span class="val td-mono">RW-88205</span><span class="lbl">来源订单</span><span class="val td-mono">ORD-77301</span></div>
+      <div class="modal-info-row"><span class="lbl">受益人</span><span class="val">0x2236…dEF2 <span class="pill pill-v">V3</span></span><span class="lbl">被邀请人</span><span class="val">0x93cd…7a1 <span class="pill pill-v">V1</span> · 购买 1 台</span></div>
+      <div class="detail-block" style="padding:14px 0 6px;">
+        <div style="font-weight:600;color:#374151;margin-bottom:8px;">① 等级奖励 = 受益人本级原价奖励 × 台数</div>
+        <div class="modal-alert info"><span class="icon">∑</span><div>V3 原价奖励 <strong>680 U</strong> × <strong>1 台</strong> = <strong>680.00 U</strong></div></div>
+      </div>
+      <div class="detail-block" style="padding:6px 0;">
+        <div style="font-weight:600;color:#374151;margin-bottom:8px;">② 级差奖励 =（受益人本级 − 被邀请人级别）× 台数</div>
+        <table class="trace-table">
+          <thead><tr><th>项</th><th class="td-num">原价奖励 (U)</th></tr></thead>
+          <tbody>
+            <tr><td>受益人 V3</td><td class="td-num">680</td></tr>
+            <tr><td>被邀请人 V1</td><td class="td-num">480</td></tr>
+            <tr><td>级差（每台）</td><td class="td-num td-green">200</td></tr>
+          </tbody>
+          <tfoot><tr><td>级差奖励 = 200 × 1 台</td><td class="td-num">200.00</td></tr></tfoot>
+        </table>
+      </div>
+      <div class="detail-block" style="padding:6px 0;">
+        <table class="trace-table">
+          <tfoot><tr><td>合计（① + ②）</td><td class="td-num" style="font-size:15px;">880.00 USDT</td></tr></tfoot>
+        </table>
+      </div>
+      <div class="modal-alert"><span class="icon">⚠</span><div><strong>特价矿机</strong>：①②合计后<strong>整体减半</strong>。<strong>佣金门槛</strong>：受益人未达佣金门槛时，其全部奖励冻结、不可发放。</div></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('rewardTraceModal')">关闭</button>
+      <button class="btn btn-success" onclick="closeModal('rewardTraceModal');showToastMsg('已通过并发放（USDT）')">通过并发放</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批量发放（运营单审） -->
+<div class="modal-overlay" id="payoutModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">✓ 批量发放确认</div><button class="modal-close" onclick="closeModal('payoutModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-alert info"><span class="icon">ℹ</span><div>将发放已勾选、且受益人已达佣金门槛的奖励单。冻结 / 驳回单不会执行。</div></div>
+      <div class="modal-info-row"><span class="lbl">发放笔数</span><span class="val">3 笔</span></div>
+      <div class="modal-info-row"><span class="lbl">发放金额</span><span class="val td-green" style="font-weight:700;">18,960.00 USDT</span></div>
+      <div class="modal-info-row"><span class="lbl">结算币种</span><span class="val">USDT（一次性）</span></div>
+      <div class="modal-info-row"><span class="lbl">审核方式</span><span class="val">运营单审通过（无需 TOTP 二次确认）</span></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('payoutModal')">取消</button>
+      <button class="btn btn-success" onclick="closeModal('payoutModal');showToastMsg('已发放 3 笔 · 18,960 USDT（运营单审）')">确认发放</button>
+    </div>
+  </div>
+</div>
+
+<!-- 驳回 -->
+<div class="modal-overlay" id="rejectModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title danger">⨯ 驳回奖励单</div><button class="modal-close" onclick="closeModal('rejectModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-alert danger"><span class="icon">⚠</span><div>驳回后该奖励单在 C 端显示为「失败」，不再发放。可选填备注（落审计）。</div></div>
+      <div class="form-group"><label class="form-label">备注（选填）</label><textarea class="form-textarea" placeholder="补充说明（可不填）…"></textarea></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('rejectModal')">取消</button>
+      <button class="btn btn-danger" onclick="closeModal('rejectModal');showToastMsg('已驳回，C 端将显示为失败')">确认驳回</button>
+    </div>
+  </div>
+</div>
+
+<!-- 新建批次 -->
+<div class="modal-overlay" id="batchModal">
+  <div class="modal large">
+    <div class="modal-header"><div class="modal-title">🖥 新建矿机批次</div><button class="modal-close" onclick="closeModal('batchModal')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid2">
+        <div class="form-group"><label class="form-label">批次名 <span class="req">*</span></label><input class="form-input" value="第 5 期"></div>
+        <div class="form-group"><label class="form-label">类型 <span class="req">*</span></label>
+          <select class="form-select" id="batchType" onchange="onBatchTypeChange()"><option value="normal">原价</option><option value="special">特价（奖励减半）</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">基准算力 (T/H)</label><input class="form-input" id="batchHash" value="1000"></div>
+        <div class="form-group"><label class="form-label">发售数量 <span class="req">*</span></label><input class="form-input" value="800"></div>
+        <div class="form-group" style="grid-column:1 / -1;"><label class="form-label">设备编号起始 <span class="req">*</span></label><input class="form-input" value="#103101"></div>
+      </div>
+      <div class="modal-alert info" style="margin:6px 0 12px;"><span class="icon">ℹ</span><div>编号区间按「起始 + 发售数量」自动连续分配，本例 <strong>#103101–#103900</strong>，与其它批次不重叠。</div></div>
+      <div class="form-grid2">
+        <div class="form-group"><label class="form-label">单价 · 单台 (U)</label><input class="form-input" value="3980"></div>
+        <div class="form-group"><label class="form-label">单价 · 组 18 台 (U)</label><input class="form-input" value="69300"></div>
+        <div class="form-group"><label class="form-label">单价 · 集群 90 台 (U)</label><input class="form-input" value="342000"></div>
+        <div class="form-group"><label class="form-label">开售时间 <span class="req">*</span></label><input class="form-input" value="2026-07-10"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('batchModal')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('batchModal');showToastMsg('批次已创建（未开售），可在列表上架')">创建批次</button>
+    </div>
+  </div>
+</div>
+
+<!-- 批次详情 -->
+<div class="modal-overlay" id="batchDetailModal">
+  <div class="modal large">
+    <div class="modal-header"><div class="modal-title">🖥 批次详情 · 第 4 期（特价）</div><button class="modal-close" onclick="closeModal('batchDetailModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-info-row"><span class="lbl">类型</span><span class="val"><span class="badge badge-special">特价 · 奖励减半</span></span><span class="lbl">基准算力</span><span class="val td-orange">1300 T/H</span></div>
+      <div class="modal-info-row"><span class="lbl">编号区间</span><span class="val td-mono">#102001–#102300</span><span class="lbl">发售 / 已售 / 剩余</span><span class="val">300 / 180 / 120</span></div>
+      <div class="modal-info-row"><span class="lbl">单价</span><span class="val">单台 2,980 · 组 48,240 · 集群 223,200 U</span></div>
+      <div class="modal-info-row"><span class="lbl">开售时间</span><span class="val">2026-06-20</span><span class="lbl">状态</span><span class="val"><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></span></div>
+      <div class="detail-block" style="padding:12px 0 4px;">
+        <div style="font-weight:600;color:#374151;margin-bottom:8px;">已售编号（区间压缩，供 C 端转赠按编号选择）</div>
+        <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+          <span class="badge badge-grey">#102001–#102150</span>
+          <span class="badge badge-grey">#102160–#102189</span>
+          <span class="text-mute">共 180 台已售 · 剩余 120 台待售</span>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('batchDetailModal')">关闭</button>
+      <button class="btn btn-secondary" onclick="closeModal('batchDetailModal');showToastMsg('该批次已下架')">下架</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">操作成功</div>
+
+<script>
+  function switchPage(page){
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('page-'+page).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-page')===page); });
+    var titles = { payout:'佣金发放审核', batch:'矿机批次发售' };
+    document.getElementById('topbar-title').textContent = titles[page] || '';
+    document.querySelector('.content').scrollTop = 0;
+  }
+  function openModal(id){ document.getElementById(id).classList.add('show'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+  function openRewardTrace(){ openModal('rewardTraceModal'); }
+  function openPayoutModal(){ openModal('payoutModal'); }
+  function openRejectModal(){ openModal('rejectModal'); }
+  function openBatchModal(){ openModal('batchModal'); }
+  function openBatchDetail(){ openModal('batchDetailModal'); }
+  function onBatchTypeChange(){
+    var t=document.getElementById('batchType').value;
+    document.getElementById('batchHash').value = (t==='special') ? '1300' : '1000';
+  }
+  function toggleAll(cb){ document.querySelectorAll('.row-ck').forEach(function(c){ c.checked = cb.checked; }); }
+  var toastTimer;
+  function showToastMsg(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); }, 2200); }
+  document.querySelectorAll('.modal-overlay').forEach(function(o){ o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('show'); }); });
+</script>
+</body>
+</html>
