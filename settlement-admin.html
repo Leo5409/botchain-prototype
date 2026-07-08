@@ -205,8 +205,10 @@
   <nav class="nav">
     <div class="nav-group-title">结算发放</div>
     <div class="nav-item active" data-page="payout" onclick="switchPage('payout')"><span class="ic">💰</span>佣金发放审核<span class="nav-badge">3</span></div>
+    <div class="nav-item" data-page="lookup" onclick="switchPage('lookup')"><span class="ic">🔍</span>用户佣金查询</div>
     <div class="nav-group-title">矿机运营</div>
     <div class="nav-item" data-page="batch" onclick="switchPage('batch')"><span class="ic">🖥</span>矿机批次发售</div>
+    <div class="nav-item" data-page="transfer" onclick="switchPage('transfer')"><span class="ic">📤</span>矿机转移记录</div>
   </nav>
   <div class="sidebar-bottom">
     <div class="avatar">运</div>
@@ -230,7 +232,7 @@
       <div class="page-header">
         <div>
           <div class="page-title">佣金发放审核<span class="tag-module">F-01</span></div>
-          <div class="page-subtitle">销售奖励（等级奖励 + 级差奖励，USDT）· 受益人达到佣金门槛才可发放，否则冻结 · 试算 → 复核 → 发放（幂等）</div>
+          <div class="page-subtitle">销售奖励（等级奖励 + 级差奖励，USDT）· 单笔 ≤ 免审阈值自动通过发放，其余运营复核 · 试算 → 复核 → 发放（幂等）</div>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-secondary" onclick="showToastMsg('已生成佣金审核流水导出任务，前往下载中心')">⭳ 导出全部流水</button>
@@ -238,16 +240,22 @@
         </div>
       </div>
       <div class="stat-grid">
-        <div class="stat-card"><div class="stat-label">待发放</div><div class="stat-value">4 <small>笔</small></div><div class="stat-trend neutral">含特价 1 笔</div></div>
-        <div class="stat-card ok"><div class="stat-label">待发放金额</div><div class="stat-value">20,040.00 <small>USDT</small></div><div class="stat-trend neutral">复核后发放</div></div>
+        <div class="stat-card"><div class="stat-label">待发放</div><div class="stat-value">4 <small>笔</small></div><div class="stat-trend neutral">待运营复核</div></div>
+        <div class="stat-card ok"><div class="stat-label">待发放金额</div><div class="stat-value">20,580.00 <small>USDT</small></div><div class="stat-trend neutral">复核后发放</div></div>
         <div class="stat-card"><div class="stat-label">今日已发放</div><div class="stat-value">6,400.00 <small>USDT</small></div><div class="stat-trend down">12 笔</div></div>
-        <div class="stat-card warn"><div class="stat-label">冻结中（未达佣金门槛）</div><div class="stat-value">1 <small>笔</small></div><div class="stat-trend up">980 U · 待受益人达标</div></div>
+        <div class="stat-card ok"><div class="stat-label">今日自动发放</div><div class="stat-value">8 <small>笔</small></div><div class="stat-trend neutral">≤ 免审阈值 500U</div></div>
       </div>
+      <div class="card"><div class="card-body" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
+        <div style="font-weight:600;color:#374151;">免审自动发放阈值</div>
+        <div style="display:flex;align-items:center;gap:6px;"><input class="form-input" id="autoThreshold" value="500" style="width:96px;"><span class="text-mute">USDT</span></div>
+        <span class="text-mute" style="flex:1;min-width:200px;">单笔合计 ≤ 阈值时<strong style="color:#374151;">免人工审核、自动通过发放</strong>；&gt; 阈值需运营复核。</span>
+        <button class="btn btn-primary" onclick="showToastMsg('免审阈值已更新为 '+document.getElementById('autoThreshold').value+' USDT，落审计')">保存</button>
+      </div></div>
       <div class="card">
         <div class="card-body">
           <div class="filter-row">
             <div class="form-group"><label class="form-label">受益人地址</label><input class="form-input" placeholder="0x…"></div>
-            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待发放</option><option>已发放</option><option>冻结</option><option>驳回</option></select></div>
+            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待发放</option><option>已发放</option><option>自动发放</option><option>驳回</option></select></div>
             <div class="form-group"><label class="form-label">类型</label><select class="form-select"><option>全部</option><option>原价</option><option>特价（奖励减半）</option></select></div>
             <div class="form-group"><label class="form-label">触发时间</label><input class="form-input" value="2026-06-20 — 2026-07-06"></div>
             <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
@@ -259,7 +267,7 @@
               <th style="width:32px;"><input type="checkbox" class="ck" onclick="toggleAll(this)"></th>
               <th>奖励单号</th><th>受益人 / 级别</th><th>触发来源（被邀请人 · 台数 · 订单）</th>
               <th class="td-num">等级奖励 (U)</th><th class="td-num">级差奖励 (U)</th><th class="td-num">合计 (USDT)</th>
-              <th>佣金门槛</th><th>状态</th><th>操作</th>
+              <th>状态</th><th>操作</th>
             </tr></thead>
             <tbody>
               <tr>
@@ -268,7 +276,6 @@
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0x93cd…7a1</span> <span class="pill pill-v">V1</span> · 1 台 · <span class="td-mono">ORD-77301</span></td>
                 <td class="td-num">680.00</td><td class="td-num td-green">200.00</td><td class="td-num" style="font-weight:700;">880.00</td>
-                <td><span class="badge badge-done">✓ 已达</span></td>
                 <td><span class="badge badge-process">待发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88205 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
               </tr>
@@ -278,29 +285,26 @@
                 <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
                 <td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span> · 18 台 · <span class="td-mono">ORD-77298</span></td>
                 <td class="td-num">14,940.00</td><td class="td-num td-green">2,700.00</td><td class="td-num" style="font-weight:700;">17,640.00</td>
-                <td><span class="badge badge-done">✓ 已达</span></td>
                 <td><span class="badge badge-process">待发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88204 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
               </tr>
               <tr>
-                <td><input type="checkbox" class="ck row-ck"></td>
+                <td><input type="checkbox" class="ck" disabled></td>
                 <td class="td-mono">RW-88203</td>
                 <td class="td-address">0x88f3…2f13 <span class="pill pill-v">V4</span></td>
                 <td><span class="td-address">0x5b71…9d2</span> <span class="pill pill-v">V2</span> · 1 台 · <span class="badge badge-special">特价</span> · <span class="td-mono">ORD-77290</span></td>
                 <td class="td-num">365.00</td><td class="td-num td-green">75.00</td><td class="td-num" style="font-weight:700;">440.00</td>
-                <td><span class="badge badge-done">✓ 已达</span></td>
-                <td><span class="badge badge-process">待发放</span></td>
-                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88203 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+                <td><span class="badge badge-done">已发放</span> <span class="pill" style="background:#ecfdf5;color:#047857;">自动</span></td>
+                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><span class="text-mute">自动发放 · 已入账</span></td>
               </tr>
               <tr>
-                <td><input type="checkbox" class="ck" disabled></td>
+                <td><input type="checkbox" class="ck row-ck"></td>
                 <td class="td-mono">RW-88201</td>
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0xba11…e2</span> <span class="pill pill-v">V0</span> · 1 台 · <span class="td-mono">ORD-77260</span></td>
                 <td class="td-num">680.00</td><td class="td-num td-green">300.00</td><td class="td-num" style="font-weight:700;">980.00</td>
-                <td><span class="badge badge-fail">✗ 未达</span></td>
-                <td><span class="badge badge-warn">冻结</span></td>
-                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><span class="text-mute" title="受益人未达佣金门槛，奖励全部冻结">冻结中 · 待达标</span></td>
+                <td><span class="badge badge-process">待发放</span></td>
+                <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88201 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
               </tr>
               <tr>
                 <td><input type="checkbox" class="ck row-ck"></td>
@@ -308,7 +312,6 @@
                 <td class="td-address">0x9f2c…a1b <span class="pill pill-v">V8</span></td>
                 <td><span class="td-address">0x33de…7c0</span> <span class="pill pill-v">V5</span> · 1 台 · <span class="td-mono">ORD-77240</span></td>
                 <td class="td-num">930.00</td><td class="td-num td-green">150.00</td><td class="td-num" style="font-weight:700;">1,080.00</td>
-                <td><span class="badge badge-done">✓ 已达</span></td>
                 <td><span class="badge badge-process">待发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88190 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
               </tr>
@@ -318,7 +321,6 @@
                 <td class="td-address">0x2f47…e88 <span class="pill pill-v">V7</span></td>
                 <td><span class="td-address">0x9012…c3d</span> <span class="pill pill-v">V4</span> · 1 台 · <span class="td-mono">ORD-77210</span></td>
                 <td class="td-num">880.00</td><td class="td-num td-green">150.00</td><td class="td-num" style="font-weight:700;">1,030.00</td>
-                <td><span class="badge badge-done">✓ 已达</span></td>
                 <td><span class="badge badge-done">已发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><span class="text-mute">已入账</span></td>
               </tr>
@@ -326,7 +328,7 @@
           </table>
         </div>
         <div class="table-footer">
-          <span class="total-count">共 <strong>6</strong> 条 · 待发放 4 · 冻结 1 · 已发放 1</span>
+          <span class="total-count">共 <strong>6</strong> 条 · 待发放 4 · 已发放 2（含自动 1）</span>
           <div class="pagination">
             <button class="page-btn disabled">‹</button>
             <button class="page-btn active">1</button>
@@ -367,10 +369,10 @@
               <td class="td-mono">1000 T/H</td>
               <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
               <td class="td-mono">#101201–#102000</td>
-              <td class="td-num">800 / <span class="td-green">520</span> / <span class="td-orange">280</span></td>
+              <td class="td-num">800 / <span class="td-green" id="sold1">520</span> / <span class="td-orange" id="left1">280</span></td>
               <td class="text-mute">2026-06-20</td>
               <td><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openBatchToggle('第 4 期（原价）','下架')">下架</button></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openEditSold('第 4 期（原价）',1,800)">改已售</button><button class="btn btn-secondary btn-sm" onclick="openBatchToggle('第 4 期（原价）','下架')">下架</button></td>
             </tr>
             <tr>
               <td>第 4 期<span class="inline-tag">特价</span></td>
@@ -378,10 +380,10 @@
               <td class="td-mono td-orange">1300 T/H</td>
               <td class="td-num">2,980</td><td class="td-num">48,240</td><td class="td-num">223,200</td>
               <td class="td-mono">#102001–#102300</td>
-              <td class="td-num">300 / <span class="td-green">180</span> / <span class="td-orange">120</span></td>
+              <td class="td-num">300 / <span class="td-green" id="sold2">180</span> / <span class="td-orange" id="left2">120</span></td>
               <td class="text-mute">2026-06-20</td>
               <td><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openBatchToggle('第 4 期（特价）','下架')">下架</button></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openEditSold('第 4 期（特价）',2,300)">改已售</button><button class="btn btn-secondary btn-sm" onclick="openBatchToggle('第 4 期（特价）','下架')">下架</button></td>
             </tr>
             <tr>
               <td>第 5 期<span class="inline-tag">原价</span></td>
@@ -389,10 +391,10 @@
               <td class="td-mono">1000 T/H</td>
               <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
               <td class="td-mono">#102301–#103100</td>
-              <td class="td-num">800 / <span class="td-green">0</span> / 800</td>
+              <td class="td-num">800 / <span class="td-green" id="sold3">0</span> / <span id="left3">800</span></td>
               <td class="text-mute">2026-07-10</td>
               <td><span class="badge badge-warn"><span class="dot-status dot-wait"></span>未开售</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-success btn-sm" onclick="openBatchToggle('第 5 期（原价）','上架')">上架</button></td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openEditSold('第 5 期（原价）',3,800)">改已售</button><button class="btn btn-success btn-sm" onclick="openBatchToggle('第 5 期（原价）','上架')">上架</button></td>
             </tr>
             <tr>
               <td>第 3 期<span class="inline-tag">原价</span></td>
@@ -418,6 +420,77 @@
             </tr>
           </tbody>
         </table></div>
+      </div>
+    </div>
+
+    <!-- ════════ 用户佣金查询 ════════ -->
+    <div class="page" id="page-lookup">
+      <div class="page-header">
+        <div>
+          <div class="page-title">用户佣金查询<span class="tag-module">F-03</span></div>
+          <div class="page-subtitle">按地址查询单个用户的佣金与矿机持有情况（数据来源 CaryPact 网体 + 本系统结算）</div>
+        </div>
+      </div>
+      <div class="card"><div class="card-body">
+        <div class="filter-row">
+          <div class="form-group wide"><label class="form-label">用户地址</label><input class="form-input" id="lookupAddr" value="0x2236…dEF2" placeholder="输入用户地址 0x…"></div>
+          <div class="filter-actions"><button class="btn btn-secondary" onclick="showToastMsg('已重置')">重置</button><button class="btn btn-primary" onclick="doLookup()">查询</button></div>
+        </div>
+      </div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">查询结果 · <span class="td-address" id="luAddr">0x2236…dEF2</span> <span class="pill pill-v">V3</span></div><span class="text-mute">佣金（USDT）· 矿机（台）</span></div>
+        <div class="card-body">
+          <div class="stat-grid" style="margin-bottom:12px;">
+            <div class="stat-card"><div class="stat-label">总佣金</div><div class="stat-value">8,420.00 <small>USDT</small></div></div>
+            <div class="stat-card ok"><div class="stat-label">已发放佣金</div><div class="stat-value">6,400.00 <small>USDT</small></div></div>
+            <div class="stat-card"><div class="stat-label">已提取佣金</div><div class="stat-value">2,000.00 <small>USDT</small></div></div>
+            <div class="stat-card"><div class="stat-label">待发放佣金</div><div class="stat-value">2,020.00 <small>USDT</small></div></div>
+          </div>
+          <div class="stat-grid" style="grid-template-columns:repeat(3,1fr);margin-bottom:0;">
+            <div class="stat-card"><div class="stat-label">总购买矿机数</div><div class="stat-value">120 <small>台</small></div></div>
+            <div class="stat-card"><div class="stat-label">当前持有矿机数</div><div class="stat-value">65 <small>台</small></div></div>
+            <div class="stat-card"><div class="stat-label">已转赠矿机数</div><div class="stat-value">55 <small>台</small></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════ 矿机转移记录 ════════ -->
+    <div class="page" id="page-transfer">
+      <div class="page-header">
+        <div>
+          <div class="page-title">矿机转移记录<span class="tag-module">F-04</span></div>
+          <div class="page-subtitle">用户矿机转赠/转移的全部记录（发起 → 接收 · 编号 · 算力 · 时间）</div>
+        </div>
+        <div><button class="btn btn-secondary" onclick="showToastMsg('已生成转移记录导出任务，前往下载中心')">⭳ 导出记录</button></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">累计转移笔数</div><div class="stat-value">9 <small>笔</small></div></div>
+        <div class="stat-card"><div class="stat-label">累计转移台数</div><div class="stat-value">55 <small>台</small></div></div>
+        <div class="stat-card"><div class="stat-label">今日转移</div><div class="stat-value">2 <small>笔</small></div></div>
+        <div class="stat-card"><div class="stat-label">涉及用户</div><div class="stat-value">9 <small>人</small></div></div>
+      </div>
+      <div class="card">
+        <div class="card-body"><div class="filter-row">
+          <div class="form-group"><label class="form-label">发起地址</label><input class="form-input" placeholder="0x…"></div>
+          <div class="form-group"><label class="form-label">接收地址</label><input class="form-input" placeholder="0x…"></div>
+          <div class="form-group"><label class="form-label">时间</label><input class="form-input" value="2026-06-01 — 2026-07-08"></div>
+          <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
+        </div></div>
+        <div class="table-wrapper"><table>
+          <thead><tr><th>转移单号</th><th>发起地址（转出）</th><th>接收地址（转入）</th><th>矿机编号</th><th class="td-num">台数</th><th>算力</th><th>时间</th><th>状态</th></tr></thead>
+          <tbody>
+            <tr><td class="td-mono">TR-3021</td><td class="td-address">0x2236…dEF2</td><td class="td-address">0x9f2c…a1b</td><td class="td-mono">#100201–#100210 等</td><td class="td-num">18</td><td class="td-mono td-orange">1300 T/H</td><td class="text-mute">2026-06-25 14:32:07</td><td><span class="badge badge-done">成功</span></td></tr>
+            <tr><td class="td-mono">TR-3018</td><td class="td-address">0x2236…dEF2</td><td class="td-address">0x33de…7c0</td><td class="td-mono">#100211–#100217</td><td class="td-num">7</td><td class="td-mono">1000 T/H</td><td class="text-mute">2026-06-24 10:15:43</td><td><span class="badge badge-done">成功</span></td></tr>
+            <tr><td class="td-mono">TR-3015</td><td class="td-address">0x2236…dEF2</td><td class="td-address">0x5b71…9d2</td><td class="td-mono">#100250–#100255</td><td class="td-num">6</td><td class="td-mono">1000 T/H</td><td class="text-mute">2026-06-22 18:07:21</td><td><span class="badge badge-done">成功</span></td></tr>
+            <tr><td class="td-mono">TR-3012</td><td class="td-address">0x2236…dEF2</td><td class="td-address">0xa4e0…3fc</td><td class="td-mono">#100260–#100264</td><td class="td-num">5</td><td class="td-mono">1000 T/H</td><td class="text-mute">2026-06-20 09:41:55</td><td><span class="badge badge-done">成功</span></td></tr>
+            <tr><td class="td-mono">TR-3009</td><td class="td-address">0x2236…dEF2</td><td class="td-address">0xc812…7b5</td><td class="td-mono">#100270–#100273</td><td class="td-num">4</td><td class="td-mono">1000 T/H</td><td class="text-mute">2026-06-18 21:03:12</td><td><span class="badge badge-done">成功</span></td></tr>
+          </tbody>
+        </table></div>
+        <div class="table-footer">
+          <span class="total-count">共 <strong>9</strong> 条 · 累计 55 台</span>
+          <div class="pagination"><button class="page-btn disabled">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">›</button></div>
+        </div>
       </div>
     </div>
 
@@ -454,7 +527,7 @@
           <tfoot><tr><td>合计（① + ②）</td><td class="td-num" style="font-size:15px;">880.00 USDT</td></tr></tfoot>
         </table>
       </div>
-      <div class="modal-alert"><span class="icon">⚠</span><div><strong>特价矿机</strong>：①②合计后<strong>整体减半</strong>。<strong>佣金门槛</strong>：受益人未达佣金门槛时，其全部奖励冻结、不可发放。</div></div>
+      <div class="modal-alert"><span class="icon">⚠</span><div><strong>特价矿机</strong>：①②合计后<strong>整体减半</strong>。单笔合计 ≤ 免审阈值时自动通过发放，其余运营复核。</div></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('rewardTraceModal')">关闭</button>
@@ -468,7 +541,7 @@
   <div class="modal">
     <div class="modal-header"><div class="modal-title">✓ 批量发放确认</div><button class="modal-close" onclick="closeModal('payoutModal')">×</button></div>
     <div class="modal-body">
-      <div class="modal-alert info"><span class="icon">ℹ</span><div>将发放已勾选、且受益人已达佣金门槛的奖励单。冻结 / 驳回单不会执行。</div></div>
+      <div class="modal-alert info"><span class="icon">ℹ</span><div>将发放已勾选的奖励单；已自动发放 / 驳回单不会重复执行。</div></div>
       <div class="modal-info-row"><span class="lbl">发放笔数</span><span class="val">3 笔</span></div>
       <div class="modal-info-row"><span class="lbl">发放金额</span><span class="val td-green" style="font-weight:700;">18,960.00 USDT</span></div>
       <div class="modal-info-row"><span class="lbl">结算币种</span><span class="val">USDT（一次性）</span></div>
@@ -516,6 +589,7 @@
         <div class="form-group"><label class="form-label">单价 · 组 18 台 (U)</label><input class="form-input" value="69300"></div>
         <div class="form-group"><label class="form-label">单价 · 集群 90 台 (U)</label><input class="form-input" value="342000"></div>
         <div class="form-group"><label class="form-label">开售时间 <span class="req">*</span></label><input class="form-input" value="2026-07-10"></div>
+        <div class="form-group" style="grid-column:1 / -1;"><label class="form-label">结束发售时间 <span class="req">*</span></label><input class="form-input" value="2026-08-10"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -564,6 +638,22 @@
   </div>
 </div>
 
+<!-- 改已售数量 -->
+<div class="modal-overlay" id="editSoldModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">✎ 修改已售数量</div><button class="modal-close" onclick="closeModal('editSoldModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-alert"><span class="icon">⚠</span><div>手动修改「已售」为运营调账操作，<strong>实时同步至 C 端展示</strong>；剩余 = 发售上限 − 已售。请谨慎操作，已落审计。</div></div>
+      <div class="modal-info-row"><span class="lbl">批次</span><span class="val" id="esBatch">—</span><span class="lbl">发售上限</span><span class="val" id="esTotal">—</span></div>
+      <div class="form-group" style="margin-top:10px;"><label class="form-label">已售数量 <span class="req">*</span></label><input class="form-input" id="esInput" type="number" value="0"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('editSoldModal')">取消</button>
+      <button class="btn btn-primary" onclick="confirmEditSold()">保存</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast">操作成功</div>
 
 <script>
@@ -571,7 +661,7 @@
     document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
     document.getElementById('page-'+page).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-page')===page); });
-    var titles = { payout:'佣金发放审核', batch:'矿机批次发售' };
+    var titles = { payout:'佣金发放审核', lookup:'用户佣金查询', batch:'矿机批次发售', transfer:'矿机转移记录' };
     document.getElementById('topbar-title').textContent = titles[page] || '';
     document.querySelector('.content').scrollTop = 0;
   }
@@ -597,6 +687,28 @@
   function confirmBatchToggle(){
     closeModal('batchToggleModal');
     if(btPending){ showToastMsg(btPending.name + ' 已' + (btPending.action === '上架' ? '上架发售' : '下架')); btPending = null; }
+  }
+  var esTarget=null;
+  function openEditSold(name, idx, total){
+    esTarget={idx:idx,total:total};
+    document.getElementById('esBatch').textContent=name;
+    document.getElementById('esTotal').textContent=total+' 台';
+    document.getElementById('esInput').value=(document.getElementById('sold'+idx).textContent||'0').replace(/,/g,'');
+    openModal('editSoldModal');
+  }
+  function confirmEditSold(){
+    if(!esTarget) return;
+    var v=parseInt(document.getElementById('esInput').value||'0',10);
+    if(isNaN(v)||v<0) v=0; if(v>esTarget.total) v=esTarget.total;
+    document.getElementById('sold'+esTarget.idx).textContent=v.toLocaleString();
+    document.getElementById('left'+esTarget.idx).textContent=(esTarget.total-v).toLocaleString();
+    closeModal('editSoldModal');
+    showToastMsg('已售已更新为 '+v+' 台（剩余 '+(esTarget.total-v)+'）· 已同步 C 端');
+    esTarget=null;
+  }
+  function doLookup(){
+    document.getElementById('luAddr').textContent=document.getElementById('lookupAddr').value||'0x2236…dEF2';
+    showToastMsg('已查询该用户佣金与矿机状态');
   }
   function onBatchTypeChange(){
     var t=document.getElementById('batchType').value;
