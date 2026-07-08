@@ -446,10 +446,10 @@
             <div class="sheet-b">
               <div class="idsub">连续编号已合并为区间，共 4 段 / 18 台 · 算力 1300 T/H（不连续设备号也能干净展示）</div>
               <div class="idwrap">
-                <span class="idchip">#100201–#100210</span>
-                <span class="idchip">#100221</span>
-                <span class="idchip">#100223</span>
-                <span class="idchip">#100240–#100245</span>
+                <span class="idchip">#100201–#100210 · 1300 T/H</span>
+                <span class="idchip">#100221 · 1300 T/H</span>
+                <span class="idchip">#100223 · 1300 T/H</span>
+                <span class="idchip">#100240–#100245 · 1300 T/H</span>
               </div>
             </div>
           </div>
@@ -841,7 +841,7 @@
     var r=transferRecords[idx], segs=compressIds(r.ids);
     document.getElementById('idModalTitle').textContent='转赠编号（'+r.n+' 台）';
     document.getElementById('idModalSub').textContent='连续编号已合并为区间，共 '+segs.length+' 段 / '+r.n+' 台 · 算力 '+r.hash+' T/H';
-    document.getElementById('idModalBody').innerHTML='<div class="idwrap">'+segs.map(function(s){ return '<span class="idchip">'+s+'</span>'; }).join('')+'</div>';
+    document.getElementById('idModalBody').innerHTML='<div class="idwrap">'+segs.map(function(s){ return '<span class="idchip">'+s+' · '+r.hash+' T/H</span>'; }).join('')+'</div>';
     document.getElementById('idModal').classList.add('show');
   }
   function closeIdModal(){ document.getElementById('idModal').classList.remove('show'); }
