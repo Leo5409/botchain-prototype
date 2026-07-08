@@ -232,7 +232,7 @@
       <div class="page-header">
         <div>
           <div class="page-title">佣金发放审核<span class="tag-module">F-01</span></div>
-          <div class="page-subtitle">销售奖励（等级奖励 + 级差奖励，USDT）· 单笔 ≤ 免审阈值自动通过发放，其余运营复核 · 试算 → 复核 → 发放（幂等）</div>
+          <div class="page-subtitle">销售佣金（USDT）· 被邀请人得等级佣金，其上级得级差佣金 · 单笔 ≤ 免审阈值自动通过发放，其余运营复核 · 试算 → 复核 → 发放（幂等）</div>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-secondary" onclick="showToastMsg('已生成佣金审核流水导出任务，前往下载中心')">⭳ 导出全部流水</button>
@@ -245,12 +245,6 @@
         <div class="stat-card"><div class="stat-label">今日已发放</div><div class="stat-value">6,400.00 <small>USDT</small></div><div class="stat-trend down">12 笔</div></div>
         <div class="stat-card ok"><div class="stat-label">今日自动发放</div><div class="stat-value">8 <small>笔</small></div><div class="stat-trend neutral">≤ 免审阈值 500U</div></div>
       </div>
-      <div class="card"><div class="card-body" style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
-        <div style="font-weight:600;color:#374151;">免审自动发放阈值</div>
-        <div style="display:flex;align-items:center;gap:6px;"><input class="form-input" id="autoThreshold" value="500" style="width:96px;"><span class="text-mute">USDT</span></div>
-        <span class="text-mute" style="flex:1;min-width:200px;">单笔合计 ≤ 阈值时<strong style="color:#374151;">免人工审核、自动通过发放</strong>；&gt; 阈值需运营复核。</span>
-        <button class="btn btn-primary" onclick="showToastMsg('免审阈值已更新为 '+document.getElementById('autoThreshold').value+' USDT，落审计')">保存</button>
-      </div></div>
       <div class="card">
         <div class="card-body">
           <div class="filter-row">
@@ -266,7 +260,7 @@
             <thead><tr>
               <th style="width:32px;"><input type="checkbox" class="ck" onclick="toggleAll(this)"></th>
               <th>奖励单号</th><th>受益人 / 级别</th><th>被邀请人</th><th class="td-num">台数</th><th>订单</th>
-              <th class="td-num">等级奖励 (U)</th><th class="td-num">级差奖励 (U)</th><th class="td-num">合计 (USDT)</th>
+              <th class="td-num">合计佣金 (USDT)</th>
               <th>状态</th><th>操作</th>
             </tr></thead>
             <tbody>
@@ -275,7 +269,7 @@
                 <td class="td-mono">RW-88205</td>
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0x93cd…7a1</span> <span class="pill pill-v">V1</span></td><td class="td-num">1</td><td class="td-mono">ORD-77301</td>
-                <td class="td-num">680.00</td><td class="td-num td-green">200.00</td><td class="td-num" style="font-weight:700;">880.00</td>
+                <td class="td-num" style="font-weight:700;">880.00</td>
                 <td><span class="badge badge-process">待发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88205 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
               </tr>
@@ -284,7 +278,7 @@
                 <td class="td-mono">RW-88204</td>
                 <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
                 <td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span></td><td class="td-num">18</td><td class="td-mono">ORD-77298</td>
-                <td class="td-num">14,940.00</td><td class="td-num td-green">2,700.00</td><td class="td-num" style="font-weight:700;">17,640.00</td>
+                <td class="td-num" style="font-weight:700;">17,640.00</td>
                 <td><span class="badge badge-process">待发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88204 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
               </tr>
@@ -293,7 +287,7 @@
                 <td class="td-mono">RW-88203</td>
                 <td class="td-address">0x88f3…2f13 <span class="pill pill-v">V4</span></td>
                 <td><span class="td-address">0x5b71…9d2</span> <span class="pill pill-v">V2</span></td><td class="td-num">1</td><td class="td-mono"><span class="badge badge-special">特价</span> ORD-77290</td>
-                <td class="td-num">365.00</td><td class="td-num td-green">75.00</td><td class="td-num" style="font-weight:700;">440.00</td>
+                <td class="td-num" style="font-weight:700;">440.00</td>
                 <td><span class="badge badge-done">已发放</span> <span class="pill" style="background:#ecfdf5;color:#047857;">自动</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><span class="text-mute">自动发放 · 已入账</span></td>
               </tr>
@@ -302,7 +296,7 @@
                 <td class="td-mono">RW-88201</td>
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0xba11…e2</span> <span class="pill pill-v">V0</span></td><td class="td-num">1</td><td class="td-mono">ORD-77260</td>
-                <td class="td-num">680.00</td><td class="td-num td-green">300.00</td><td class="td-num" style="font-weight:700;">980.00</td>
+                <td class="td-num" style="font-weight:700;">980.00</td>
                 <td><span class="badge badge-process">待发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88201 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
               </tr>
@@ -311,7 +305,7 @@
                 <td class="td-mono">RW-88190</td>
                 <td class="td-address">0x9f2c…a1b <span class="pill pill-v">V8</span></td>
                 <td><span class="td-address">0x33de…7c0</span> <span class="pill pill-v">V5</span></td><td class="td-num">1</td><td class="td-mono">ORD-77240</td>
-                <td class="td-num">930.00</td><td class="td-num td-green">150.00</td><td class="td-num" style="font-weight:700;">1,080.00</td>
+                <td class="td-num" style="font-weight:700;">1,080.00</td>
                 <td><span class="badge badge-process">待发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88190 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
               </tr>
@@ -320,7 +314,7 @@
                 <td class="td-mono">RW-88155</td>
                 <td class="td-address">0x2f47…e88 <span class="pill pill-v">V7</span></td>
                 <td><span class="td-address">0x9012…c3d</span> <span class="pill pill-v">V4</span></td><td class="td-num">1</td><td class="td-mono">ORD-77210</td>
-                <td class="td-num">880.00</td><td class="td-num td-green">150.00</td><td class="td-num" style="font-weight:700;">1,030.00</td>
+                <td class="td-num" style="font-weight:700;">1,030.00</td>
                 <td><span class="badge badge-done">已发放</span></td>
                 <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRewardTrace()">溯源</button><span class="text-mute">已入账</span></td>
               </tr>
@@ -430,7 +424,7 @@
           <div class="page-title">用户佣金查询<span class="tag-module">F-03</span></div>
           <div class="page-subtitle">按地址查询单个用户的佣金与矿机持有情况（数据来源 CaryPact 网体 + 本系统结算）</div>
         </div>
-        <div><button class="btn btn-secondary" onclick="showToastMsg('已生成该用户佣金流水导出任务，前往下载中心')">⭳ 导出佣金流水</button></div>
+        <div><button class="btn btn-secondary" onclick="showToastMsg('已生成该用户佣金统计导出任务，前往下载中心')">⭳ 导出佣金统计</button></div>
       </div>
       <div class="card"><div class="card-body">
         <div class="filter-row">
@@ -453,22 +447,6 @@
             <div class="stat-card"><div class="stat-label">已转赠矿机数</div><div class="stat-value">55 <small>台</small></div></div>
           </div>
         </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header"><div class="card-title">佣金流水 · <span class="td-address" id="flowAddr">0x2236…dEF2</span></div><span class="text-mute">该用户每一笔佣金明细</span></div>
-        <div class="table-wrapper"><table>
-          <thead><tr><th>流水单号</th><th>被邀请人</th><th class="td-num">台数</th><th>订单</th><th class="td-num">金额 (USDT)</th><th>状态</th><th>时间</th></tr></thead>
-          <tbody>
-            <tr><td class="td-mono">FL-88260</td><td><span class="td-address">0x93cd…7a1</span> <span class="pill pill-v">V1</span></td><td class="td-num">1</td><td class="td-mono"><span class="badge badge-special">特价</span> ORD-77350</td><td class="td-num td-green">+1,030.00</td><td><span class="badge badge-process">待发放</span></td><td class="text-mute">2026-07-05 16:22:40</td></tr>
-            <tr><td class="td-mono">FL-88240</td><td><span class="td-address">0x33de…7c0</span> <span class="pill pill-v">V5</span></td><td class="td-num">1</td><td class="td-mono">ORD-77330</td><td class="td-num td-green">+990.00</td><td><span class="badge badge-process">待发放</span></td><td class="text-mute">2026-07-04 11:08:12</td></tr>
-            <tr><td class="td-mono">FL-88205</td><td><span class="td-address">0x93cd…7a1</span> <span class="pill pill-v">V1</span></td><td class="td-num">1</td><td class="td-mono">ORD-77301</td><td class="td-num td-green">+880.00</td><td><span class="badge badge-done">已发放</span></td><td class="text-mute">2026-07-02 12:04:11</td></tr>
-            <tr><td class="td-mono">FL-88120</td><td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span></td><td class="td-num">18</td><td class="td-mono">ORD-77180</td><td class="td-num td-green">+2,700.00</td><td><span class="badge badge-done">已发放</span></td><td class="text-mute">2026-06-24 14:02:55</td></tr>
-            <tr><td class="td-mono">FL-88040</td><td><span class="td-address">0x5b71…9d2</span> <span class="pill pill-v">V2</span></td><td class="td-num">90</td><td class="td-mono">ORD-77090</td><td class="td-num td-green">+1,840.00</td><td><span class="badge badge-done">已发放</span></td><td class="text-mute">2026-06-18 10:18:03</td></tr>
-            <tr><td class="td-mono">FL-87960</td><td><span class="td-address">0xba11…e2</span> <span class="pill pill-v">V0</span></td><td class="td-num">1</td><td class="td-mono">ORD-77030</td><td class="td-num td-green">+980.00</td><td><span class="badge badge-done">已发放</span></td><td class="text-mute">2026-06-11 09:31:20</td></tr>
-          </tbody>
-        </table></div>
-        <div class="table-footer"><span class="total-count">共 <strong>6</strong> 笔 · 已发放 6,400.00 · 待发放 2,020.00 USDT</span><div class="pagination"><button class="page-btn disabled">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">›</button></div></div>
       </div>
     </div>
 
@@ -516,35 +494,23 @@
 
 <!-- ══════════ MODALS ══════════ -->
 
-<!-- 奖励溯源（等级 + 级差演算） -->
+<!-- 佣金溯源（统一佣金） -->
 <div class="modal-overlay" id="rewardTraceModal">
   <div class="modal large">
-    <div class="modal-header"><div class="modal-title">💰 奖励溯源 · 等级奖励 + 级差奖励</div><button class="modal-close" onclick="closeModal('rewardTraceModal')">×</button></div>
+    <div class="modal-header"><div class="modal-title">💰 佣金溯源</div><button class="modal-close" onclick="closeModal('rewardTraceModal')">×</button></div>
     <div class="modal-body">
       <div class="modal-info-row"><span class="lbl">奖励单号</span><span class="val td-mono">RW-88205</span><span class="lbl">来源订单</span><span class="val td-mono">ORD-77301</span></div>
       <div class="modal-info-row"><span class="lbl">受益人</span><span class="val">0x2236…dEF2 <span class="pill pill-v">V3</span></span><span class="lbl">被邀请人</span><span class="val">0x93cd…7a1 <span class="pill pill-v">V1</span> · 购买 1 台</span></div>
       <div class="detail-block" style="padding:14px 0 6px;">
-        <div style="font-weight:600;color:#374151;margin-bottom:8px;">① 等级奖励 = 受益人本级原价奖励 × 台数</div>
-        <div class="modal-alert info"><span class="icon">∑</span><div>V3 原价奖励 <strong>680 U</strong> × <strong>1 台</strong> = <strong>680.00 U</strong></div></div>
-      </div>
-      <div class="detail-block" style="padding:6px 0;">
-        <div style="font-weight:600;color:#374151;margin-bottom:8px;">② 级差奖励 =（受益人本级 − 被邀请人级别）× 台数</div>
-        <table class="trace-table">
-          <thead><tr><th>项</th><th class="td-num">原价奖励 (U)</th></tr></thead>
-          <tbody>
-            <tr><td>受益人 V3</td><td class="td-num">680</td></tr>
-            <tr><td>被邀请人 V1</td><td class="td-num">480</td></tr>
-            <tr><td>级差（每台）</td><td class="td-num td-green">200</td></tr>
-          </tbody>
-          <tfoot><tr><td>级差奖励 = 200 × 1 台</td><td class="td-num">200.00</td></tr></tfoot>
-        </table>
+        <div style="font-weight:600;color:#374151;margin-bottom:8px;">佣金 = 受益人对该笔订单应得的销售佣金 × 台数</div>
+        <div class="modal-alert info"><span class="icon">∑</span><div>受益人 V3 · 购买 <strong>1 台</strong> · 单台佣金 <strong>880 U</strong> = <strong>880.00 U</strong></div></div>
       </div>
       <div class="detail-block" style="padding:6px 0;">
         <table class="trace-table">
-          <tfoot><tr><td>合计（① + ②）</td><td class="td-num" style="font-size:15px;">880.00 USDT</td></tr></tfoot>
+          <tfoot><tr><td>佣金合计</td><td class="td-num" style="font-size:15px;">880.00 USDT</td></tr></tfoot>
         </table>
       </div>
-      <div class="modal-alert"><span class="icon">⚠</span><div><strong>特价矿机</strong>：①②合计后<strong>整体减半</strong>。单笔合计 ≤ 免审阈值时自动通过发放，其余运营复核。</div></div>
+      <div class="modal-alert"><span class="icon">⚠</span><div><strong>返佣规则</strong>：被邀请人得<strong>等级佣金</strong>，其上级得<strong>级差佣金</strong>；本单为受益人应得部分，统一按佣金结算。<strong>特价矿机</strong>佣金整体减半；单笔合计 ≤ 免审阈值时自动通过发放，其余运营复核。</div></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('rewardTraceModal')">关闭</button>
@@ -725,7 +691,7 @@
   }
   function doLookup(){
     var a=document.getElementById('lookupAddr').value||'0x2236…dEF2';
-    document.getElementById('luAddr').textContent=a; document.getElementById('flowAddr').textContent=a;
+    document.getElementById('luAddr').textContent=a;
     showToastMsg('已查询该用户佣金与矿机状态');
   }
   function onBatchTypeChange(){
