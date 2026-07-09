@@ -207,6 +207,7 @@
     <div class="nav-item active" data-page="payout" onclick="switchPage('payout')"><span class="ic">💰</span>佣金发放审核<span class="nav-badge">3</span></div>
     <div class="nav-item" data-page="lookup" onclick="switchPage('lookup')"><span class="ic">🔍</span>用户佣金查询</div>
     <div class="nav-group-title">矿机运营</div>
+    <div class="nav-item" data-page="rebate" onclick="switchPage('rebate')"><span class="ic">📊</span>返佣参数设置</div>
     <div class="nav-item" data-page="batch" onclick="switchPage('batch')"><span class="ic">🖥</span>矿机批次发售</div>
     <div class="nav-item" data-page="transfer" onclick="switchPage('transfer')"><span class="ic">📤</span>矿机转移记录</div>
   </nav>
@@ -351,14 +352,14 @@
         <div class="card-header"><div class="card-title">批次列表</div><span class="text-mute">编号区间连续分配、跨批次不重叠；售罄自动关闭</span></div>
         <div class="table-wrapper"><table>
           <thead><tr>
-            <th>批次</th><th>类型</th><th>基准算力</th>
+            <th>批次</th><th>类型</th><th>返佣参数表</th><th>基准算力</th>
             <th class="td-num">单台 (U)</th><th class="td-num">组 18 台 (U)</th><th class="td-num">集群 90 台 (U)</th>
             <th>设备编号区间</th><th class="td-num">发售 / 已售 / 剩余</th><th>开售时间</th><th>状态</th><th>操作</th>
           </tr></thead>
           <tbody>
             <tr>
               <td>第 4 期<span class="inline-tag">原价</span></td>
-              <td><span class="badge badge-info">原价</span></td>
+              <td><span class="badge badge-info">原价</span></td><td><span class="td-mono">标准原价返佣表</span></td>
               <td class="td-mono">1000 T/H</td>
               <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
               <td class="td-mono">#101201–#102000</td>
@@ -369,7 +370,7 @@
             </tr>
             <tr>
               <td>第 5 期<span class="inline-tag">原价</span></td>
-              <td><span class="badge badge-info">原价</span></td>
+              <td><span class="badge badge-info">原价</span></td><td><span class="td-mono">促销减半返佣表</span></td>
               <td class="td-mono">1000 T/H</td>
               <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
               <td class="td-mono">#102301–#103100</td>
@@ -380,7 +381,7 @@
             </tr>
             <tr>
               <td>第 3 期<span class="inline-tag">原价</span></td>
-              <td><span class="badge badge-info">原价</span></td>
+              <td><span class="badge badge-info">原价</span></td><td><span class="td-mono">标准原价返佣表</span></td>
               <td class="td-mono">1000 T/H</td>
               <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
               <td class="td-mono">#100201–#101200</td>
@@ -391,7 +392,7 @@
             </tr>
             <tr>
               <td>第 2 期<span class="inline-tag">原价</span></td>
-              <td><span class="badge badge-info">原价</span></td>
+              <td><span class="badge badge-info">原价</span></td><td><span class="td-mono">标准原价返佣表</span></td>
               <td class="td-mono">1000 T/H</td>
               <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
               <td class="td-mono">#099401–#100200</td>
@@ -481,10 +482,100 @@
       </div>
     </div>
 
+    <!-- ════════ 返佣参数设置 ════════ -->
+    <div class="page" id="page-rebate">
+      <div class="page-header">
+        <div>
+          <div class="page-title">返佣参数设置<span class="tag-module">F-05</span></div>
+          <div class="page-subtitle">自定义 / 维护返佣参数表（V0–V10 × 单台 / 组 / 集群）；矿机批次发售时关联，佣金按所关联的返佣表计算</div>
+        </div>
+        <div><button class="btn btn-primary" onclick="openRebateEdit('新建返佣表')">+ 新建返佣表</button></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">返佣表总数</div><div class="stat-value">3 <small>个</small></div></div>
+        <div class="stat-card ok"><div class="stat-label">启用中</div><div class="stat-value">2 <small>个</small></div></div>
+        <div class="stat-card"><div class="stat-label">已关联批次</div><div class="stat-value">4 <small>批</small></div></div>
+        <div class="stat-card"><div class="stat-label">级别档位</div><div class="stat-value">V0–V10</div></div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">返佣表列表</div><span class="text-mute">每张表定义 V0–V10 × 单台 / 组 18 台 / 集群 90 台 的返佣金额</span></div>
+        <div class="table-wrapper"><table>
+          <thead><tr><th>表编号</th><th>表名</th><th>规则说明</th><th class="td-num">关联批次</th><th>状态</th><th>更新时间</th><th>操作</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="td-mono">RB-01</td>
+              <td>标准原价返佣表 <span class="pill pill-v">默认</span></td>
+              <td class="text-mute">单台 380–980 U · 组每台减 130 · 集群每台减 180</td>
+              <td class="td-num">3</td>
+              <td><span class="badge badge-done">启用</span></td>
+              <td class="text-mute">2026-06-01 10:00:00</td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRebateView('标准原价返佣表')">查看</button><button class="btn btn-secondary btn-sm" onclick="openRebateEdit('编辑 · 标准原价返佣表')">编辑</button></td>
+            </tr>
+            <tr>
+              <td class="td-mono">RB-02</td>
+              <td>促销减半返佣表</td>
+              <td class="text-mute">标准表整体 ×0.5（用于促销 / 特惠批次）</td>
+              <td class="td-num">1</td>
+              <td><span class="badge badge-done">启用</span></td>
+              <td class="text-mute">2026-06-20 14:30:00</td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRebateView('促销减半返佣表')">查看</button><button class="btn btn-secondary btn-sm" onclick="openRebateEdit('编辑 · 促销减半返佣表')">编辑</button><button class="btn btn-secondary btn-sm" onclick="showToastMsg('已停用（不影响已关联批次历史）')">停用</button></td>
+            </tr>
+            <tr>
+              <td class="td-mono">RB-03</td>
+              <td>新春活动返佣表</td>
+              <td class="text-mute">自定义单台奖励 · 组每台减 100 · 集群每台减 150</td>
+              <td class="td-num">0</td>
+              <td><span class="badge badge-grey">停用</span></td>
+              <td class="text-mute">2026-05-10 09:12:00</td>
+              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRebateView('新春活动返佣表')">查看</button><button class="btn btn-secondary btn-sm" onclick="openRebateEdit('编辑 · 新春活动返佣表')">编辑</button><button class="btn btn-success btn-sm" onclick="showToastMsg('已启用')">启用</button></td>
+            </tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
   </div>
 </div>
 
 <!-- ══════════ MODALS ══════════ -->
+
+<!-- 返佣参数表 编辑 / 查看 -->
+<div class="modal-overlay" id="rebateModal">
+  <div class="modal wide">
+    <div class="modal-header"><div class="modal-title" id="rebateModalTitle">📊 返佣参数表</div><button class="modal-close" onclick="closeModal('rebateModal')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid2">
+        <div class="form-group"><label class="form-label">表名 <span class="req">*</span></label><input class="form-input" id="rebateName" value="标准原价返佣表"></div>
+        <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>启用</option><option>停用</option></select></div>
+        <div class="form-group"><label class="form-label">组每台让利 (U)</label><input class="form-input" value="130"></div>
+        <div class="form-group"><label class="form-label">集群每台让利 (U)</label><input class="form-input" value="180"></div>
+      </div>
+      <div class="modal-alert info" style="margin:6px 0 12px;"><span class="icon">ℹ</span><div><strong>18 台（组）=（单台原价奖励 − 组每台让利）× 18</strong>；<strong>90 台（集群）=（单台原价奖励 − 集群每台让利）× 90</strong>。修改「单台原价奖励」后组 / 集群列自动重算。<strong>关联本表的矿机批次成交后即按此表计算佣金</strong>；改表仅影响之后成交的订单（历史不变，落审计）。</div></div>
+      <div class="table-wrapper" style="border:1px solid #e8eaed;border-radius:8px;">
+        <table>
+          <thead><tr><th>级别</th><th class="td-num">单台原价奖励 (U)</th><th class="td-num">18 台（组）</th><th class="td-num">90 台（集群）</th></tr></thead>
+          <tbody>
+            <tr><td style="font-weight:600;">V0（普通）</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="380"></td><td class="td-num">4,500</td><td class="td-num">18,000</td></tr>
+            <tr><td style="font-weight:600;">V1</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="480"></td><td class="td-num">6,300</td><td class="td-num">27,000</td></tr>
+            <tr><td style="font-weight:600;">V2</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="580"></td><td class="td-num">8,100</td><td class="td-num">36,000</td></tr>
+            <tr><td style="font-weight:600;">V3</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="680"></td><td class="td-num">9,900</td><td class="td-num">45,000</td></tr>
+            <tr><td style="font-weight:600;">V4</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="730"></td><td class="td-num">10,800</td><td class="td-num">49,500</td></tr>
+            <tr><td style="font-weight:600;">V5</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="780"></td><td class="td-num">11,700</td><td class="td-num">54,000</td></tr>
+            <tr><td style="font-weight:600;">V6</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="830"></td><td class="td-num">12,600</td><td class="td-num">58,500</td></tr>
+            <tr><td style="font-weight:600;">V7</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="880"></td><td class="td-num">13,500</td><td class="td-num">63,000</td></tr>
+            <tr><td style="font-weight:600;">V8</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="930"></td><td class="td-num">14,400</td><td class="td-num">67,500</td></tr>
+            <tr><td style="font-weight:600;">V9</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="960"></td><td class="td-num">14,940</td><td class="td-num">70,200</td></tr>
+            <tr><td style="font-weight:600;">V10</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="980"></td><td class="td-num">15,300</td><td class="td-num">72,000</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('rebateModal')">取消</button>
+      <button class="btn btn-primary" onclick="closeModal('rebateModal');showToastMsg('返佣参数表已保存（落审计）')">保存</button>
+    </div>
+  </div>
+</div>
 
 <!-- 批量发放（运营单审） -->
 <div class="modal-overlay" id="payoutModal">
@@ -531,6 +622,9 @@
         </div>
         <div class="form-group"><label class="form-label">基准算力 (T/H)</label><input class="form-input" id="batchHash" value="1000"></div>
         <div class="form-group"><label class="form-label">发售数量 <span class="req">*</span></label><input class="form-input" value="800"></div>
+        <div class="form-group" style="grid-column:1 / -1;"><label class="form-label">关联返佣参数表 <span class="req">*</span></label>
+          <select class="form-select" id="batchRebate"><option>标准原价返佣表（默认）</option><option>促销减半返佣表</option><option>新春活动返佣表</option></select>
+        </div>
         <div class="form-group" style="grid-column:1 / -1;"><label class="form-label">设备编号起始 <span class="req">*</span></label><input class="form-input" value="#103101"></div>
       </div>
       <div class="modal-alert info" style="margin:6px 0 12px;"><span class="icon">ℹ</span><div>编号区间按「起始 + 发售数量」自动连续分配，本例 <strong>#103101–#103900</strong>，与其它批次不重叠。</div></div>
@@ -555,6 +649,7 @@
     <div class="modal-header"><div class="modal-title">🖥 批次详情 · 第 4 期（原价）</div><button class="modal-close" onclick="closeModal('batchDetailModal')">×</button></div>
     <div class="modal-body">
       <div class="modal-info-row"><span class="lbl">类型</span><span class="val"><span class="badge badge-info">原价</span></span><span class="lbl">基准算力</span><span class="val td-mono">1000 T/H</span></div>
+      <div class="modal-info-row"><span class="lbl">返佣参数表</span><span class="val td-mono">标准原价返佣表</span><span class="lbl">佣金口径</span><span class="val">成交后按该表计算</span></div>
       <div class="modal-info-row"><span class="lbl">编号区间</span><span class="val td-mono">#101201–#102000</span><span class="lbl">发售 / 已售 / 剩余</span><span class="val">800 / 520 / 280</span></div>
       <div class="modal-info-row"><span class="lbl">单价</span><span class="val">单台 3,980 · 组 69,300 · 集群 342,000 U</span></div>
       <div class="modal-info-row"><span class="lbl">开售时间</span><span class="val">2026-06-20</span><span class="lbl">状态</span><span class="val"><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></span></div>
@@ -611,13 +706,15 @@
     document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
     document.getElementById('page-'+page).classList.add('active');
     document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-page')===page); });
-    var titles = { payout:'佣金发放审核', lookup:'用户佣金查询', batch:'矿机批次发售', transfer:'矿机转移记录' };
+    var titles = { payout:'佣金发放审核', lookup:'用户佣金查询', rebate:'返佣参数设置', batch:'矿机批次发售', transfer:'矿机转移记录' };
     document.getElementById('topbar-title').textContent = titles[page] || '';
     document.querySelector('.content').scrollTop = 0;
   }
   function openModal(id){ document.getElementById(id).classList.add('show'); }
   function closeModal(id){ document.getElementById(id).classList.remove('show'); }
   function openPayoutModal(){ openModal('payoutModal'); }
+  function openRebateEdit(title){ document.getElementById('rebateModalTitle').textContent='📊 '+title; openModal('rebateModal'); }
+  function openRebateView(name){ document.getElementById('rebateModalTitle').textContent='📊 查看 · '+name; openModal('rebateModal'); }
   function openRejectModal(){ openModal('rejectModal'); }
   var batchMode='create';
   function openBatchModal(){ batchMode='create'; document.getElementById('batchModalTitle').textContent='🖥 新建矿机批次'; document.getElementById('batchModalSave').textContent='创建批次'; openModal('batchModal'); }
