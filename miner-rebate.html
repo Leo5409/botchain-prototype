@@ -187,7 +187,7 @@
         <div class="menu-cap">CA 菜单</div>
         <div class="menu-item dim">首页</div>
         <div class="menu-item dim">等级规则</div>
-        <div class="menu-item dim">算力服务器预售</div>
+        <div class="menu-item dim">算力服务器发售</div>
         <div class="menu-item">个人中心 · 销售奖励入口</div>
         <div class="menu-sep"></div>
         <div class="menu-cap">矿机（本次新增）</div>
@@ -495,9 +495,9 @@
     </div>
   </div>
 
-  <!-- ⑫ 算力服务器预售（对齐后台矿机批次售卖设置） -->
+  <!-- ⑫ 算力服务器发售（对齐后台矿机批次售卖设置） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">12</span><span class="nm">算力服务器预售（对齐后台批次 · 原价 · 1000 T/H）</span></div>
+    <div class="slide-label"><span class="no">12</span><span class="nm">算力服务器发售（对齐后台批次 · 1000 T/H · 多状态）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -505,9 +505,9 @@
         <div class="logo"><span class="mark"></span>CaryPact</div>
         <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div>
       </div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">算力服务器预售</span></div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">算力服务器发售</span></div>
       <div class="content">
-        <div class="note" style="margin-top:8px;"><span>🖥</span><span><b style="color:#fff;">第 4 期 · 原价批次</b> <span class="b b-done" style="margin-left:2px;">发售中</span><br>基准算力 <b style="color:#8fb0ff;">1,000 T/H</b> / 台 · 编号 <b style="color:#dfe1ea;">#101201–#102000</b> · 剩余 <b style="color:#e7b667;">280</b> 台 · 截止 2026-08-10</span></div>
+        <div class="note" style="margin-top:8px;"><span>🖥</span><span><b style="color:#fff;">第 4 期</b> <span class="b b-done" style="margin-left:2px;">发售中</span><br>基准算力 <b style="color:#8fb0ff;">1,000 T/H</b> / 台 · 编号 <b style="color:#dfe1ea;">#101201–#102000</b> · 剩余 <b style="color:#e7b667;">280</b> 台<br>开售 2026-06-20 10:00:00 · 截止 2026-08-10 22:00:00</span></div>
 
         <div style="font-size:13px;color:var(--text2);margin:4px 2px 9px;">购买规模（按后台批次定价）</div>
         <div style="display:flex;gap:8px;margin-bottom:16px;">
@@ -554,10 +554,75 @@
 
         <button class="wbtn" style="width:100%;height:50px;font-size:16px;">确认购买</button>
 
+        <div class="sect" style="font-size:14px;margin:20px 2px 8px;color:var(--text2);font-weight:700;">其他批次状态（示意）</div>
+        <div class="card" style="padding:12px 14px;margin-bottom:10px;">
+          <div style="font-size:13px;font-weight:700;color:#fff;">第 5 期 <span class="b b-wait" style="margin-left:4px;">未开售</span></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:6px;">编号 #102301–#103100 · 800 台 · 开售 2026-07-10 10:00:00</div>
+          <div style="display:flex;align-items:center;gap:6px;margin-top:10px;flex-wrap:wrap;">
+            <span style="font-size:11px;color:var(--text2);">开售倒计时</span>
+            <span style="background:#171a21;border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:12px;font-weight:800;color:#8fb0ff;">01</span><span style="font-size:11px;color:var(--text2);">天</span>
+            <span style="background:#171a21;border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:12px;font-weight:800;color:#8fb0ff;">06</span><span style="font-size:11px;color:var(--text2);">时</span>
+            <span style="background:#171a21;border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:12px;font-weight:800;color:#8fb0ff;">32</span><span style="font-size:11px;color:var(--text2);">分</span>
+            <span style="background:#171a21;border:1px solid var(--border);border-radius:6px;padding:3px 7px;font-size:12px;font-weight:800;color:#8fb0ff;">15</span><span style="font-size:11px;color:var(--text2);">秒</span>
+          </div>
+          <button class="wbtn" style="width:100%;height:44px;font-size:14px;margin-top:12px;background:#20222c;color:#5f6573;box-shadow:none;cursor:not-allowed;">未开售 · 倒计时结束后开放</button>
+        </div>
+        <div class="card" style="padding:12px 14px;margin-bottom:2px;">
+          <div style="font-size:13px;font-weight:700;color:#fff;">第 3 期 <span class="b" style="margin-left:4px;background:#20222c;color:#8b909e;">已售罄</span></div>
+          <div style="font-size:11px;color:var(--text2);margin-top:6px;">编号 #100201–#101200 · 已售 1,000 / 1,000 · 售罄 2026-06-30 21:14:02</div>
+          <button class="wbtn" style="width:100%;height:44px;font-size:14px;margin-top:12px;background:#20222c;color:#5f6573;box-shadow:none;cursor:not-allowed;">已售罄</button>
+        </div>
+
         <div class="sect" style="font-size:15px;margin:22px 2px 10px;">购买记录</div>
         <div class="card" style="padding:12px 16px;margin-bottom:6px;">
           <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">数量：<b style="color:#fff;">1 台</b></span><span style="color:var(--text2);">总费用：<b style="color:#fff;">3,980 USDT</b></span></div>
           <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">状态：成功</span><span style="color:var(--muted);">编号 #101821 · 2026-07-08 15:20:17</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ⑬ 矿机销售历史弹框（历史发售明细） -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">13</span><span class="nm">矿机销售历史（弹框 · 历史发售明细）</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>CaryPact</div>
+        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div>
+      </div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">算力服务器发售</span></div>
+      <div class="content" style="position:relative;overflow:hidden;min-height:560px;padding-bottom:0;">
+        <div class="note" style="margin-top:8px;opacity:.28;"><span>🖥</span><span><b style="color:#fff;">第 4 期</b> 发售中 · 剩余 280 台</span></div>
+        <div style="opacity:.28;margin-top:12px;font-size:13px;color:var(--text2);line-height:2;">购买规模 · 数量 · 支付方式 · 费用 · 确认购买 …<br>（销售历史入口）</div>
+        <div style="position:absolute;inset:0;background:rgba(0,0,0,.62);"></div>
+        <div style="position:absolute;left:0;right:0;bottom:0;background:#12141a;border-top:1px solid #262a34;border-radius:22px 22px 0 0;max-height:90%;display:flex;flex-direction:column;">
+          <div class="grab"></div>
+          <div class="sheet-h"><span class="st">矿机销售历史</span><span class="sheet-x">×</span></div>
+          <div class="sheet-b" style="overflow-y:auto;">
+            <div class="card" style="padding:12px 14px;margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 4 期 · 18 台（组）</span><span class="b b-done">成功</span></div>
+              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.75;">单价 3,850 U/台 · 总费用 <b style="color:var(--usdt);">69,300 USDT</b><br>编号 #101601–#101618 · 支付 USDT<br>2026-07-08 15:20:17</div>
+            </div>
+            <div class="card" style="padding:12px 14px;margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 4 期 · 1 台</span><span class="b b-done">成功</span></div>
+              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.75;">单价 3,980 U · 总费用 <b style="color:var(--usdt);">3,980 USDT</b><br>编号 #101821 · 支付 USDT<br>2026-07-05 11:08:42</div>
+            </div>
+            <div class="card" style="padding:12px 14px;margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 3 期 · 90 台（集群）</span><span class="b b-done">成功</span></div>
+              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.75;">单价 3,800 U/台 · 总费用 <b style="color:var(--usdt);">342,000 USDT</b><br>编号 #100301–#100390 · 支付 USDT<br>2026-06-28 18:07:21</div>
+            </div>
+            <div class="card" style="padding:12px 14px;margin-bottom:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 3 期 · 1 台</span><span class="b b-fail">失败</span></div>
+              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.75;">单价 3,980 U · 总费用 <b style="color:#fb7185;">3,980 USDT</b><br>编号 —（未分配 · 支付失败）· 支付 USDT<br>2026-06-20 09:41:55</div>
+            </div>
+            <div class="card" style="padding:12px 14px;margin-bottom:4px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 2 期 · 18 台（组）</span><span class="b b-done">成功</span></div>
+              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.75;">单价 3,850 U/台 · 总费用 <b style="color:var(--usdt);">69,300 USDT</b><br>编号 #099501–#099518 · 支付 CA<br>2026-05-15 14:02:55</div>
+            </div>
+            <div class="list-more">仅展示最近 5 笔 · 下拉查看更多</div>
+          </div>
         </div>
       </div>
     </div>
@@ -709,7 +774,7 @@
         <div class="menu-cap">CA 菜单</div>
         <div class="menu-item dim" onclick="showT('CA 既有模块，已实现')">首页</div>
         <div class="menu-item dim" onclick="showT('CA 既有：等级规则 / 社区概况 / 推荐列表')">等级规则</div>
-        <div class="menu-item dim" onclick="showT('CA 既有模块，已实现')">算力服务器预售</div>
+        <div class="menu-item dim" onclick="showT('CA 既有模块，已实现')">算力服务器发售</div>
         <div class="menu-item active" data-page="member" onclick="goPage('member','个人中心')">个人中心</div>
         <div class="menu-sep"></div>
         <div class="menu-cap">矿机（本次新增）</div>
