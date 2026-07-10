@@ -338,70 +338,30 @@
       <div class="page-header">
         <div>
           <div class="page-title">矿机批次发售<span class="tag-module">F-02</span></div>
-          <div class="page-subtitle">批次发行 · 设备编号区间分配 · 原价 · 算力 1000 T/H · 定价（单台 / 组 18 台 / 集群 90 台）· 上下架</div>
+          <div class="page-subtitle">批次发行 · 设备编号区间分配 · 定价（单台 / 组 18 台 / 集群 90 台）· <strong style="color:#5b6af0;">同一时间仅一个批次发售中（顺序发售、时间段不重叠）</strong></div>
         </div>
         <div><button class="btn btn-primary" onclick="openBatchModal()">+ 新建批次</button></div>
       </div>
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-label">批次总数</div><div class="stat-value">4 <small>批</small></div></div>
-        <div class="stat-card ok"><div class="stat-label">发售中</div><div class="stat-value">1 <small>批</small></div></div>
+        <div class="stat-card ok"><div class="stat-label">发售中</div><div class="stat-value"><span id="statOnsale">1</span> <small>批</small></div></div>
         <div class="stat-card"><div class="stat-label">累计已售</div><div class="stat-value">2,320 <small>台</small></div></div>
         <div class="stat-card warn"><div class="stat-label">剩余可售</div><div class="stat-value">1,080 <small>台</small></div></div>
       </div>
+      <div class="card" style="background:#f7f8ff;border-color:#dfe3fb;">
+        <div class="card-body" style="font-size:12px;color:#4b5563;line-height:1.95;">
+          <strong style="color:#374151;">发售规则</strong>：① 同一时间<strong>仅一个批次「发售中 / 已下架」</strong>（活跃批次，顺序发售）；② 新批次<strong>发售时间段不得与其它批次重叠</strong>、开售须晚于上一批结束（创建时校验拦截）；③ 发售中可<strong>「下架」暂停</strong>（C 端停售）→ 之后可<strong>「重新上架」</strong>恢复，或<strong>「结束发售」</strong>永久关闭；④ 存在活跃批次时，其它未开售批次<strong>不可上架</strong>；⑤ 售罄 / 到期<strong>自动关闭并释放名额</strong>，方可上架下一批。
+        </div>
+      </div>
       <div class="card">
-        <div class="card-header"><div class="card-title">批次列表</div><span class="text-mute">编号区间连续分配、跨批次不重叠；售罄自动关闭</span></div>
+        <div class="card-header"><div class="card-title">批次列表</div><span class="text-mute">同一时间仅一个活跃批次；编号区间连续分配、跨批次不重叠；售罄 / 到期自动关闭</span></div>
         <div class="table-wrapper"><table>
           <thead><tr>
             <th>批次</th><th>类型</th><th>返佣参数表</th><th>基准算力</th>
             <th class="td-num">单台 (U)</th><th class="td-num">组 18 台 (U)</th><th class="td-num">集群 90 台 (U)</th>
             <th>设备编号区间</th><th class="td-num">发售 / 已售 / 剩余</th><th>开售时间</th><th>状态</th><th>操作</th>
           </tr></thead>
-          <tbody>
-            <tr>
-              <td>第 4 期<span class="inline-tag">原价</span></td>
-              <td><span class="badge badge-info">原价</span></td><td><span class="td-mono">标准原价返佣表</span></td>
-              <td class="td-mono">1000 T/H</td>
-              <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
-              <td class="td-mono">#101201–#102000</td>
-              <td class="td-num">800 / <span class="td-green" id="sold1">520</span> / <span class="td-orange" id="left1">280</span></td>
-              <td class="text-mute">2026-06-20 10:00:00</td>
-              <td><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openEditSold('第 4 期（原价）',1,800)">改已售</button><button class="btn btn-secondary btn-sm" onclick="openBatchToggle('第 4 期（原价）','下架')">下架</button></td>
-            </tr>
-            <tr>
-              <td>第 5 期<span class="inline-tag">原价</span></td>
-              <td><span class="badge badge-info">原价</span></td><td><span class="td-mono">促销减半返佣表</span></td>
-              <td class="td-mono">1000 T/H</td>
-              <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
-              <td class="td-mono">#102301–#103100</td>
-              <td class="td-num">800 / <span class="td-green" id="sold3">0</span> / <span id="left3">800</span></td>
-              <td class="text-mute">2026-07-10 10:00:00</td>
-              <td><span class="badge badge-warn"><span class="dot-status dot-wait"></span>未开售</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button><button class="btn btn-secondary btn-sm" onclick="openBatchEdit('第 5 期（原价）')">编辑</button><button class="btn btn-secondary btn-sm" onclick="openEditSold('第 5 期（原价）',3,800)">改已售</button><button class="btn btn-success btn-sm" onclick="openBatchToggle('第 5 期（原价）','上架')">上架</button></td>
-            </tr>
-            <tr>
-              <td>第 3 期<span class="inline-tag">原价</span></td>
-              <td><span class="badge badge-info">原价</span></td><td><span class="td-mono">标准原价返佣表</span></td>
-              <td class="td-mono">1000 T/H</td>
-              <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
-              <td class="td-mono">#100201–#101200</td>
-              <td class="td-num">1,000 / <span class="td-green">1,000</span> / 0</td>
-              <td class="text-mute">2026-06-01 10:00:00</td>
-              <td><span class="badge badge-grey">已售罄</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button></td>
-            </tr>
-            <tr>
-              <td>第 2 期<span class="inline-tag">原价</span></td>
-              <td><span class="badge badge-info">原价</span></td><td><span class="td-mono">标准原价返佣表</span></td>
-              <td class="td-mono">1000 T/H</td>
-              <td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>
-              <td class="td-mono">#099401–#100200</td>
-              <td class="td-num">800 / <span class="td-green">800</span> / 0</td>
-              <td class="text-mute">2026-05-01 10:00:00</td>
-              <td><span class="badge badge-grey">已结束</span></td>
-              <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openBatchDetail()">详情</button></td>
-            </tr>
-          </tbody>
+          <tbody id="batchTbody"></tbody>
         </table></div>
       </div>
     </div>
@@ -615,7 +575,7 @@
     <div class="modal-header"><div class="modal-title" id="batchModalTitle">🖥 新建矿机批次</div><button class="modal-close" onclick="closeModal('batchModal')">×</button></div>
     <div class="modal-body">
       <div class="form-grid2">
-        <div class="form-group"><label class="form-label">批次名 <span class="req">*</span></label><input class="form-input" value="第 5 期"></div>
+        <div class="form-group"><label class="form-label">批次名 <span class="req">*</span></label><input class="form-input" value="第 6 期"></div>
         <div class="form-group"><label class="form-label">类型 <span class="req">*</span></label>
           <select class="form-select" id="batchType"><option value="normal">原价</option></select>
         </div>
@@ -627,12 +587,13 @@
         <div class="form-group" style="grid-column:1 / -1;"><label class="form-label">设备编号起始 <span class="req">*</span></label><input class="form-input" value="#103101"></div>
       </div>
       <div class="modal-alert info" style="margin:6px 0 12px;"><span class="icon">ℹ</span><div>编号区间按「起始 + 发售数量」自动连续分配，本例 <strong>#103101–#103900</strong>，与其它批次不重叠。</div></div>
+      <div class="modal-alert" style="margin:0 0 12px;"><span class="icon">⏱</span><div><strong>同一时间仅一个批次发售</strong>：开售时间须<strong>晚于上一批次结束</strong>（当前最晚结束：<strong>2026-09-10 22:00:00</strong>），发售时间段不得与其它批次重叠；保存时系统校验，重叠将拦截。</div></div>
       <div class="form-grid2">
         <div class="form-group"><label class="form-label">单价 · 单台 (U)</label><input class="form-input" value="3980"></div>
         <div class="form-group"><label class="form-label">单价 · 组 18 台 (U)</label><input class="form-input" value="69300"></div>
         <div class="form-group"><label class="form-label">单价 · 集群 90 台 (U)</label><input class="form-input" value="342000"></div>
-        <div class="form-group"><label class="form-label">开售时间 <span class="req">*</span></label><input class="form-input" value="2026-07-10 10:00:00"></div>
-        <div class="form-group" style="grid-column:1 / -1;"><label class="form-label">结束发售时间 <span class="req">*</span></label><input class="form-input" value="2026-08-10 22:00:00"></div>
+        <div class="form-group"><label class="form-label">开售时间 <span class="req">*</span></label><input class="form-input" id="batchOpen" value="2026-09-11 10:00:00"></div>
+        <div class="form-group" style="grid-column:1 / -1;"><label class="form-label">结束发售时间 <span class="req">*</span></label><input class="form-input" id="batchEnd" value="2026-10-10 22:00:00"></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -645,25 +606,26 @@
 <!-- 批次详情 -->
 <div class="modal-overlay" id="batchDetailModal">
   <div class="modal large">
-    <div class="modal-header"><div class="modal-title">🖥 批次详情 · 第 4 期（原价）</div><button class="modal-close" onclick="closeModal('batchDetailModal')">×</button></div>
+    <div class="modal-header"><div class="modal-title" id="bdTitle">🖥 批次详情 · 第 4 期（原价）</div><button class="modal-close" onclick="closeModal('batchDetailModal')">×</button></div>
     <div class="modal-body">
       <div class="modal-info-row"><span class="lbl">类型</span><span class="val"><span class="badge badge-info">原价</span></span><span class="lbl">基准算力</span><span class="val td-mono">1000 T/H</span></div>
-      <div class="modal-info-row"><span class="lbl">返佣参数表</span><span class="val td-mono">标准原价返佣表</span><span class="lbl">佣金口径</span><span class="val">成交后按该表计算</span></div>
-      <div class="modal-info-row"><span class="lbl">编号区间</span><span class="val td-mono">#101201–#102000</span><span class="lbl">发售 / 已售 / 剩余</span><span class="val">800 / 520 / 280</span></div>
+      <div class="modal-info-row"><span class="lbl">返佣参数表</span><span class="val td-mono" id="bdRebate">标准原价返佣表</span><span class="lbl">佣金口径</span><span class="val">成交后按该表计算</span></div>
+      <div class="modal-info-row"><span class="lbl">编号区间</span><span class="val td-mono" id="bdRange">#101201–#102000</span><span class="lbl">发售 / 已售 / 剩余</span><span class="val" id="bdStock">800 / 520 / 280</span></div>
       <div class="modal-info-row"><span class="lbl">单价</span><span class="val">单台 3,980 · 组 69,300 · 集群 342,000 U</span></div>
-      <div class="modal-info-row"><span class="lbl">开售时间</span><span class="val">2026-06-20 10:00:00</span><span class="lbl">状态</span><span class="val"><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></span></div>
+      <div class="modal-info-row"><span class="lbl">开售时间</span><span class="val" id="bdOpen">2026-06-20 10:00:00</span><span class="lbl">结束发售</span><span class="val" id="bdEnd">2026-08-10 22:00:00</span></div>
+      <div class="modal-info-row"><span class="lbl">状态</span><span class="val" id="bdState"><span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span></span></div>
       <div class="detail-block" style="padding:12px 0 4px;">
         <div style="font-weight:600;color:#374151;margin-bottom:8px;">已售编号（区间压缩，供 C 端转赠按编号选择）</div>
         <div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
           <span class="badge badge-grey">#101201–#101600</span>
           <span class="badge badge-grey">#101610–#101729</span>
-          <span class="text-mute">共 520 台已售 · 剩余 280 台待售</span>
+          <span class="text-mute" id="bdSoldNote">共 520 台已售 · 剩余 280 台待售</span>
         </div>
       </div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('batchDetailModal')">关闭</button>
-      <button class="btn btn-secondary" onclick="closeModal('batchDetailModal');openBatchToggle('第 4 期（原价）','下架')">下架</button>
+      <span id="bdFooterOps"></span>
     </div>
   </div>
 </div>
@@ -715,48 +677,133 @@
   function openRebateEdit(title){ document.getElementById('rebateModalTitle').textContent='📊 '+title; openModal('rebateModal'); }
   function openRebateView(name){ document.getElementById('rebateModalTitle').textContent='📊 查看 · '+name; openModal('rebateModal'); }
   function openRejectModal(){ openModal('rejectModal'); }
+  // ===== 矿机批次 状态机（同一时间仅一个活跃批次 · 顺序发售） =====
+  var LAST_END='2026-09-10 22:00:00'; // 现有批次最晚结束时间（新批次开售须晚于此）
+  var batches=[
+    {q:'4',name:'第 4 期',rebate:'标准原价返佣表',range:'#101201–#102000',total:800,sold:520,open:'2026-06-20 10:00:00',end:'2026-08-10 22:00:00',state:'onsale'},
+    {q:'5',name:'第 5 期',rebate:'促销减半返佣表',range:'#102301–#103100',total:800,sold:0,open:'2026-08-11 10:00:00',end:'2026-09-10 22:00:00',state:'pending'},
+    {q:'3',name:'第 3 期',rebate:'标准原价返佣表',range:'#100201–#101200',total:1000,sold:1000,open:'2026-06-01 10:00:00',end:'2026-06-20 09:59:59',state:'soldout'},
+    {q:'2',name:'第 2 期',rebate:'标准原价返佣表',range:'#099401–#100200',total:800,sold:800,open:'2026-05-01 10:00:00',end:'2026-06-01 09:59:59',state:'ended'}
+  ];
+  function findB(q){ for(var i=0;i<batches.length;i++){ if(batches[i].q===q) return batches[i]; } }
+  function hasActive(){ return batches.some(function(b){ return b.state==='onsale'||b.state==='paused'; }); }
+  function stateBadge(st){
+    return ({onsale:'<span class="badge badge-done"><span class="dot-status dot-on"></span>发售中</span>',
+      paused:'<span class="badge badge-fail"><span class="dot-status dot-off"></span>已下架</span>',
+      pending:'<span class="badge badge-warn"><span class="dot-status dot-wait"></span>未开售</span>',
+      soldout:'<span class="badge badge-grey">已售罄</span>',
+      ended:'<span class="badge badge-grey">已结束</span>'})[st];
+  }
+  function opsHtml(b){
+    var d='<button class="btn btn-secondary btn-sm" onclick="openBatchDetail(\'' + b.q + '\')">详情</button>';
+    var es='<button class="btn btn-secondary btn-sm" onclick="openEditSold(\'' + b.q + '\')">改已售</button>';
+    if(b.state==='onsale') return d+es+'<button class="btn btn-secondary btn-sm" onclick="batchAction(\'' + b.q + '\',\'下架\')">下架</button>';
+    if(b.state==='paused') return d+es+'<button class="btn btn-success btn-sm" onclick="batchAction(\'' + b.q + '\',\'重新上架\')">重新上架</button><button class="btn btn-danger btn-sm" onclick="batchAction(\'' + b.q + '\',\'结束发售\')">结束发售</button>';
+    if(b.state==='pending'){
+      var ed='<button class="btn btn-secondary btn-sm" onclick="openBatchEdit(\'' + b.name + '（原价）\')">编辑</button>';
+      var up=!hasActive()
+        ? '<button class="btn btn-success btn-sm" onclick="batchAction(\'' + b.q + '\',\'上架\')">上架</button>'
+        : '<button class="btn btn-secondary btn-sm" style="opacity:.45;cursor:not-allowed;" title="已有活跃批次，需先结束后再上架" onclick="showToastMsg(\'已有活跃批次（发售中 / 已下架），需先结束当前批次后再上架下一批\')">上架</button>';
+      return d+ed+es+up;
+    }
+    return d;
+  }
+  function rowHtml(b){
+    var left=b.total-b.sold;
+    return '<tr><td>'+b.name+'<span class="inline-tag">原价</span></td>'
+      +'<td><span class="badge badge-info">原价</span></td><td><span class="td-mono">'+b.rebate+'</span></td>'
+      +'<td class="td-mono">1000 T/H</td><td class="td-num">3,980</td><td class="td-num">69,300</td><td class="td-num">342,000</td>'
+      +'<td class="td-mono">'+b.range+'</td>'
+      +'<td class="td-num">'+b.total.toLocaleString()+' / <span class="td-green">'+b.sold.toLocaleString()+'</span> / <span class="'+(left>0?'td-orange':'')+'">'+left.toLocaleString()+'</span></td>'
+      +'<td class="text-mute">'+b.open+'</td><td>'+stateBadge(b.state)+'</td>'
+      +'<td class="ops-cell">'+opsHtml(b)+'</td></tr>';
+  }
+  function renderBatches(){
+    document.getElementById('batchTbody').innerHTML=batches.map(rowHtml).join('');
+    document.getElementById('statOnsale').textContent=batches.filter(function(b){return b.state==='onsale';}).length;
+  }
   var batchMode='create';
   function openBatchModal(){ batchMode='create'; document.getElementById('batchModalTitle').textContent='🖥 新建矿机批次'; document.getElementById('batchModalSave').textContent='创建批次'; openModal('batchModal'); }
   function openBatchEdit(name){ batchMode='edit'; document.getElementById('batchModalTitle').textContent='✎ 编辑矿机批次 · '+name; document.getElementById('batchModalSave').textContent='保存修改'; openModal('batchModal'); }
-  function saveBatch(){ closeModal('batchModal'); showToastMsg(batchMode==='edit' ? '批次信息已保存修改（未发售批次可改）' : '批次已创建（未开售），可在列表上架'); }
-  function openBatchDetail(){ openModal('batchDetailModal'); }
-  var btPending = null;
-  function openBatchToggle(name, action){
-    btPending = { name: name, action: action };
-    var isUp = action === '上架';
-    document.getElementById('btToggleTitle').textContent = (isUp ? '上架' : '下架') + '批次确认';
-    document.getElementById('btToggleMsg').innerHTML = '确认将 <strong>' + name + '</strong> ' + (isUp ? '<strong>上架发售</strong>？上架后该批次将对 C 端可售。' : '<strong>下架</strong>？下架后 C 端将停止售卖该批次。');
-    document.getElementById('btToggleAlert').className = 'modal-alert ' + (isUp ? 'info' : 'danger');
-    var btn = document.getElementById('btToggleConfirm');
-    btn.className = 'btn ' + (isUp ? 'btn-success' : 'btn-danger');
-    btn.textContent = isUp ? '确认上架' : '确认下架';
+  function saveBatch(){
+    if(batchMode==='create'){
+      var op=(document.getElementById('batchOpen').value||'').trim();
+      var en=(document.getElementById('batchEnd').value||'').trim();
+      if(op<=LAST_END){ showToastMsg('❌ 发售时间段重叠：开售须晚于上一批次结束（'+LAST_END+'）'); return; }
+      if(en<=op){ showToastMsg('❌ 结束发售时间须晚于开售时间'); return; }
+    }
+    closeModal('batchModal');
+    showToastMsg(batchMode==='edit' ? '批次信息已保存修改（未发售批次可改）' : '✔ 已校验发售时间段无重叠 · 批次已创建（未开售），到点且上一批结束后可上架');
+  }
+  function openBatchDetail(q){
+    var b=findB(q), left=b.total-b.sold;
+    document.getElementById('bdTitle').textContent='🖥 批次详情 · '+b.name+'（原价）';
+    document.getElementById('bdRebate').textContent=b.rebate;
+    document.getElementById('bdRange').textContent=b.range;
+    document.getElementById('bdStock').textContent=b.total.toLocaleString()+' / '+b.sold.toLocaleString()+' / '+left.toLocaleString();
+    document.getElementById('bdOpen').textContent=b.open;
+    document.getElementById('bdEnd').textContent=b.end;
+    document.getElementById('bdState').innerHTML=stateBadge(b.state);
+    document.getElementById('bdSoldNote').textContent='共 '+b.sold.toLocaleString()+' 台已售 · 剩余 '+left.toLocaleString()+' 台待售';
+    var f=document.getElementById('bdFooterOps'); f.innerHTML='';
+    if(b.state==='onsale') f.innerHTML='<button class="btn btn-danger" onclick="closeModal(\'batchDetailModal\');batchAction(\'' + b.q + '\',\'下架\')">下架（暂停）</button>';
+    else if(b.state==='paused') f.innerHTML='<button class="btn btn-success" onclick="closeModal(\'batchDetailModal\');batchAction(\'' + b.q + '\',\'重新上架\')">重新上架</button> <button class="btn btn-danger" onclick="closeModal(\'batchDetailModal\');batchAction(\'' + b.q + '\',\'结束发售\')">结束发售</button>';
+    openModal('batchDetailModal');
+  }
+  var pendingBatch=null;
+  function batchAction(q, action){
+    if(action==='上架' && hasActive()){ showToastMsg('已有活跃批次，需先结束当前批次后再上架'); return; }
+    var b=findB(q);
+    var cfg={
+      '上架':{t:'上架发售确认',danger:false,btn:'确认上架',m:'确认<strong>上架发售</strong>？上架后 C 端可购买本批次。（已校验当前无其它发售中 / 已下架批次）'},
+      '下架':{t:'下架（暂停发售）确认',danger:true,btn:'确认下架',m:'确认<strong>下架（暂停发售）</strong>？C 端将<strong>暂停售卖</strong>，稍后可<strong>重新上架</strong>恢复；该批次仍占用“当前发售”名额（不释放）。'},
+      '重新上架':{t:'重新上架确认',danger:false,btn:'确认重新上架',m:'确认<strong>重新上架</strong>？C 端<strong>恢复售卖</strong>本批次（仍在发售时段内、未售罄）。'},
+      '结束发售':{t:'结束发售确认',danger:true,btn:'确认结束',m:'确认<strong>结束发售</strong>？该批次将<strong>永久结束、不可再上架</strong>；结束后方可上架下一批次。'}
+    }[action];
+    pendingBatch={q:q,action:action};
+    document.getElementById('btToggleTitle').textContent=cfg.t;
+    document.getElementById('btToggleMsg').innerHTML='批次 <strong>'+b.name+'</strong>：'+cfg.m;
+    document.getElementById('btToggleAlert').className='modal-alert '+(cfg.danger?'danger':'info');
+    var bt=document.getElementById('btToggleConfirm');
+    bt.className='btn '+(cfg.danger?'btn-danger':'btn-success');
+    bt.textContent=cfg.btn;
     openModal('batchToggleModal');
   }
   function confirmBatchToggle(){
     closeModal('batchToggleModal');
-    if(btPending){ showToastMsg(btPending.name + ' 已' + (btPending.action === '上架' ? '上架发售' : '下架')); btPending = null; }
+    if(!pendingBatch) return;
+    var b=findB(pendingBatch.q), a=pendingBatch.action;
+    if(a==='上架'){ if(hasActive()){ showToastMsg('操作失败：已有活跃批次'); pendingBatch=null; return; } b.state='onsale'; }
+    else if(a==='下架'){ b.state='paused'; }
+    else if(a==='重新上架'){ b.state='onsale'; }
+    else if(a==='结束发售'){ b.state='ended'; }
+    renderBatches();
+    showToastMsg(b.name+' '+({'上架':'已上架发售','下架':'已下架（暂停发售）','重新上架':'已重新上架','结束发售':'已结束发售'})[a]);
+    pendingBatch=null;
   }
-  var esTarget=null;
-  function openEditSold(name, idx, total){
-    esTarget={idx:idx,total:total};
-    document.getElementById('esBatch').textContent=name;
-    document.getElementById('esTotal').textContent=total+' 台';
-    document.getElementById('esInput').value=(document.getElementById('sold'+idx).textContent||'0').replace(/,/g,'');
+  var esKey=null;
+  function openEditSold(q){
+    esKey=q; var b=findB(q);
+    document.getElementById('esBatch').textContent=b.name+'（原价）';
+    document.getElementById('esTotal').textContent=b.total+' 台';
+    document.getElementById('esInput').value=b.sold;
     openModal('editSoldModal');
   }
   function confirmEditSold(){
-    if(!esTarget) return;
+    if(!esKey) return; var b=findB(esKey);
     var v=parseInt(document.getElementById('esInput').value||'0',10);
-    if(isNaN(v)||v<0) v=0; if(v>esTarget.total) v=esTarget.total;
-    document.getElementById('sold'+esTarget.idx).textContent=v.toLocaleString();
-    document.getElementById('left'+esTarget.idx).textContent=(esTarget.total-v).toLocaleString();
+    if(isNaN(v)||v<0) v=0; if(v>b.total) v=b.total;
+    b.sold=v;
+    if(v>=b.total && (b.state==='onsale'||b.state==='paused')) b.state='soldout';
+    renderBatches();
     closeModal('editSoldModal');
-    showToastMsg('已售已更新为 '+v+' 台（剩余 '+(esTarget.total-v)+'）· 已同步 C 端');
-    esTarget=null;
+    showToastMsg('已售已更新为 '+v+' 台（剩余 '+(b.total-v)+'）· 已同步 C 端'+(b.state==='soldout'?' · 已售罄自动关闭':''));
+    esKey=null;
   }
   function toggleAll(cb){ document.querySelectorAll('.row-ck').forEach(function(c){ c.checked = cb.checked; }); }
   var toastTimer;
   function showToastMsg(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); }, 2200); }
+  renderBatches();
   document.querySelectorAll('.modal-overlay').forEach(function(o){ o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('show'); }); });
 </script>
 </body>
