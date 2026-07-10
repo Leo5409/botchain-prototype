@@ -541,29 +541,30 @@
 
 <!-- 返佣参数表 编辑 / 查看 -->
 <div class="modal-overlay" id="rebateModal">
-  <div class="modal wide">
+  <div class="modal">
     <div class="modal-header"><div class="modal-title" id="rebateModalTitle">📊 返佣参数表</div><button class="modal-close" onclick="closeModal('rebateModal')">×</button></div>
     <div class="modal-body">
       <div class="form-grid2">
         <div class="form-group"><label class="form-label">表名 <span class="req">*</span></label><input class="form-input" id="rebateName" value="标准原价返佣表"></div>
         <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>启用</option><option>停用</option></select></div>
       </div>
-      <div style="font-size:12px;color:#6b7280;margin:2px 0 12px;">每个级别的 <strong style="color:#374151;">单台 / 18 台（组）/ 90 台（集群）</strong> 返佣金额均可手动填写；关联本表的矿机批次成交后按此表计算佣金（改表仅影响之后成交的订单，历史不变，落审计）。</div>
+      <div style="font-size:12px;color:#6b7280;margin:2px 0 12px;">每个级别填写 <strong style="color:#374151;">单台奖励（U）</strong> 即可；组（18 台）/ 集群（90 台）按平台固定套餐让利自动计算（组每台减 130、集群每台减 180）。关联本表的矿机批次成交后按此表计算佣金（改表仅影响之后成交的订单，历史不变，落审计）。</div>
       <div class="table-wrapper" style="border:1px solid #e8eaed;border-radius:8px;">
         <table>
-          <thead><tr><th>级别</th><th class="td-num">单台奖励（U）</th><th class="td-num">18 台（组）</th><th class="td-num">90 台（集群）</th></tr></thead>
+          <thead><tr><th>级别</th><th class="td-num">单台奖励（U）</th></tr></thead>
           <tbody>
-            <tr><td style="font-weight:600;">V0（普通）</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="380"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="4,500"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="18,000"></td></tr>
-            <tr><td style="font-weight:600;">V1</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="480"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="6,300"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="27,000"></td></tr>
-            <tr><td style="font-weight:600;">V2</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="580"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="8,100"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="36,000"></td></tr>
-            <tr><td style="font-weight:600;">V3</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="680"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="9,900"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="45,000"></td></tr>
-            <tr><td style="font-weight:600;">V4</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="730"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="10,800"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="49,500"></td></tr>
-            <tr><td style="font-weight:600;">V5</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="780"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="11,700"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="54,000"></td></tr>
-            <tr><td style="font-weight:600;">V6</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="830"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="12,600"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="58,500"></td></tr>
-            <tr><td style="font-weight:600;">V7</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="880"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="13,500"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="63,000"></td></tr>
-            <tr><td style="font-weight:600;">V8</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="930"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="14,400"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="67,500"></td></tr>
-            <tr><td style="font-weight:600;">V9</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="960"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="14,940"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="70,200"></td></tr>
-            <tr><td style="font-weight:600;">V10</td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="980"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="15,300"></td><td class="td-num"><input class="form-input" style="height:26px;width:96px;text-align:right;margin-left:auto;" value="72,000"></td></tr>
+            <tr><td style="font-weight:600;">普通</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="380"></td></tr>
+            <tr><td style="font-weight:600;">V0</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="380"></td></tr>
+            <tr><td style="font-weight:600;">V1</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="480"></td></tr>
+            <tr><td style="font-weight:600;">V2</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="580"></td></tr>
+            <tr><td style="font-weight:600;">V3</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="680"></td></tr>
+            <tr><td style="font-weight:600;">V4</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="730"></td></tr>
+            <tr><td style="font-weight:600;">V5</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="780"></td></tr>
+            <tr><td style="font-weight:600;">V6</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="830"></td></tr>
+            <tr><td style="font-weight:600;">V7</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="880"></td></tr>
+            <tr><td style="font-weight:600;">V8</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="930"></td></tr>
+            <tr><td style="font-weight:600;">V9</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="960"></td></tr>
+            <tr><td style="font-weight:600;">V10</td><td class="td-num"><input class="form-input" style="height:26px;width:120px;text-align:right;margin-left:auto;" value="980"></td></tr>
           </tbody>
         </table>
       </div>
