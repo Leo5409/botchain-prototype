@@ -337,7 +337,7 @@
             <tr><td class="lv">V5</td><td class="tnum tg">780</td></tr>
             <tr><td class="lv">V6</td><td class="tnum tg">830</td></tr>
             <tr><td class="lv">V7</td><td class="tnum tg">880</td></tr>
-            <tr class="me"><td class="lv">V8（我）</td><td class="tnum tg">930</td></tr>
+            <tr><td class="lv">V8</td><td class="tnum tg">930</td></tr>
             <tr><td class="lv">V9</td><td class="tnum tg">960</td></tr>
             <tr><td class="lv">V10</td><td class="tnum tg">980</td></tr>
           </tbody>
@@ -1012,8 +1012,7 @@
     var rt=document.getElementById('ruleTable'); if(rt) rt.textContent=t.name;
     var tb=document.getElementById('rulesTbody'); if(!tb) return;
     tb.innerHTML=t.rows.map(function(r){
-      var me=(r[0]===MY_LEVEL);
-      return '<tr'+(me?' class="me"':'')+'><td class="lv">'+(me?r[0]+'（我）':r[0])+'</td><td class="tnum tg">'+r[1]+'</td></tr>';
+      return '<tr><td class="lv">'+r[0]+'</td><td class="tnum tg">'+r[1]+'</td></tr>';
     }).join('');
     var ps=document.getElementById('rulePillStd'), pp=document.getElementById('rulePillPromo');
     if(ps) ps.className='rulepill'+(key==='std'?' on':'');
