@@ -323,22 +323,23 @@
       <div class="subbar"><span class="bk">← 返回</span><span class="tt">奖励规则</span></div>
       <div class="content">
         <div class="sect" style="font-size:15px;">级别与购买规模奖励对照</div>
-        <div style="font-size:11px;color:var(--text2);margin:-6px 2px 4px;">按<b style="color:#8fb0ff;">当前在售批次返佣表</b>计，单位 U（1 台 / 18 台组 / 90 台集群）</div>
+        <div style="font-size:11px;color:var(--text2);margin:-6px 2px 4px;">按<b style="color:#8fb0ff;">当前在售批次返佣表</b>计 · 单台奖励（U）</div>
         <div class="note" style="margin:2px 0 8px;"><span>🟢</span><span>当前在售：<b style="color:#fff;">第 4 期</b> · 返佣表 <b style="color:#8fb0ff;">标准原价返佣表</b>　奖励规则随在售批次返佣表<b style="color:#c4b5fd;">实时更新、自动替换</b>。</span></div>
         <table class="ttab t4">
-          <thead><tr><th>级别</th><th class="tnum">1 台</th><th class="tnum">18 台</th><th class="tnum">90 台</th></tr></thead>
+          <thead><tr><th>级别</th><th class="tnum">单台奖励（U）</th></tr></thead>
           <tbody>
-            <tr><td class="lv">V0 普通</td><td class="tnum tg">380</td><td class="tnum">4,500</td><td class="tnum">18,000</td></tr>
-            <tr><td class="lv">V1</td><td class="tnum tg">480</td><td class="tnum">6,300</td><td class="tnum">27,000</td></tr>
-            <tr><td class="lv">V2</td><td class="tnum tg">580</td><td class="tnum">8,100</td><td class="tnum">36,000</td></tr>
-            <tr><td class="lv">V3</td><td class="tnum tg">680</td><td class="tnum">9,900</td><td class="tnum">45,000</td></tr>
-            <tr><td class="lv">V4</td><td class="tnum tg">730</td><td class="tnum">10,800</td><td class="tnum">49,500</td></tr>
-            <tr><td class="lv">V5</td><td class="tnum tg">780</td><td class="tnum">11,700</td><td class="tnum">54,000</td></tr>
-            <tr><td class="lv">V6</td><td class="tnum tg">830</td><td class="tnum">12,600</td><td class="tnum">58,500</td></tr>
-            <tr><td class="lv">V7</td><td class="tnum tg">880</td><td class="tnum">13,500</td><td class="tnum">63,000</td></tr>
-            <tr class="me"><td class="lv">V8（我）</td><td class="tnum tg">930</td><td class="tnum">14,400</td><td class="tnum">67,500</td></tr>
-            <tr><td class="lv">V9</td><td class="tnum tg">960</td><td class="tnum">14,940</td><td class="tnum">70,200</td></tr>
-            <tr><td class="lv">V10</td><td class="tnum tg">980</td><td class="tnum">15,300</td><td class="tnum">72,000</td></tr>
+            <tr><td class="lv">普通</td><td class="tnum tg">380</td></tr>
+            <tr><td class="lv">V0</td><td class="tnum tg">380</td></tr>
+            <tr><td class="lv">V1</td><td class="tnum tg">480</td></tr>
+            <tr><td class="lv">V2</td><td class="tnum tg">580</td></tr>
+            <tr><td class="lv">V3</td><td class="tnum tg">680</td></tr>
+            <tr><td class="lv">V4</td><td class="tnum tg">730</td></tr>
+            <tr><td class="lv">V5</td><td class="tnum tg">780</td></tr>
+            <tr><td class="lv">V6</td><td class="tnum tg">830</td></tr>
+            <tr><td class="lv">V7</td><td class="tnum tg">880</td></tr>
+            <tr class="me"><td class="lv">V8（我）</td><td class="tnum tg">930</td></tr>
+            <tr><td class="lv">V9</td><td class="tnum tg">960</td></tr>
+            <tr><td class="lv">V10</td><td class="tnum tg">980</td></tr>
           </tbody>
         </table>
         <div class="note warn" style="margin-top:14px;"><span>⚠</span><span>收益随全网算力与币价浮动，不构成保本或固定回报承诺。</span></div>
@@ -744,11 +745,11 @@
       <!-- 奖励规则 -->
       <div class="page" id="p-rules">
         <div class="sect" style="font-size:15px;">级别与购买规模奖励对照</div>
-        <div style="font-size:11px;color:var(--text2);margin:-6px 2px 4px;">按<b style="color:#8fb0ff;">当前在售批次返佣表</b>计，单位 U（1 台 / 18 台组 / 90 台集群）</div>
+        <div style="font-size:11px;color:var(--text2);margin:-6px 2px 4px;">按<b style="color:#8fb0ff;">当前在售批次返佣表</b>计 · 单台奖励（U）</div>
         <div class="note" style="margin:2px 0 6px;"><span>🟢</span><span>当前在售：<b style="color:#fff;" id="ruleBatch">第 4 期</b> · 返佣表 <b style="color:#8fb0ff;" id="ruleTable">标准原价返佣表</b><br>奖励规则随在售批次返佣表<b style="color:#c4b5fd;">实时更新</b>，切换在售批次后自动替换。</span></div>
         <div style="display:flex;align-items:center;gap:6px;margin:0 2px 8px;flex-wrap:wrap;"><span style="font-size:10.5px;color:var(--muted);">演示切换：</span><span class="rulepill on" id="rulePillStd" onclick="renderRules('std')">第 4 期 · 标准原价（在售）</span><span class="rulepill" id="rulePillPromo" onclick="renderRules('promo')">第 5 期 · 促销减半（预览）</span></div>
         <table class="ttab t4">
-          <thead><tr><th>级别</th><th class="tnum">1 台</th><th class="tnum">18 台</th><th class="tnum">90 台</th></tr></thead>
+          <thead><tr><th>级别</th><th class="tnum">单台奖励（U）</th></tr></thead>
           <tbody id="rulesTbody"></tbody>
         </table>
         <div class="note warn" style="margin-top:14px;"><span>⚠</span><span>收益随全网算力与币价浮动，不构成保本或固定回报承诺。</span></div>
@@ -1002,8 +1003,8 @@
   function closeIdModal(){ document.getElementById('idModal').classList.remove('show'); }
   var MY_LEVEL='V8';
   var RULE_TABLES={
-    std:{batch:'第 4 期',name:'标准原价返佣表',rows:[['V0',380,'4,500','18,000'],['V1',480,'6,300','27,000'],['V2',580,'8,100','36,000'],['V3',680,'9,900','45,000'],['V4',730,'10,800','49,500'],['V5',780,'11,700','54,000'],['V6',830,'12,600','58,500'],['V7',880,'13,500','63,000'],['V8',930,'14,400','67,500'],['V9',960,'14,940','70,200'],['V10',980,'15,300','72,000']]},
-    promo:{batch:'第 5 期',name:'促销减半返佣表',rows:[['V0',190,'2,250','9,000'],['V1',240,'3,150','13,500'],['V2',290,'4,050','18,000'],['V3',340,'4,950','22,500'],['V4',365,'5,400','24,750'],['V5',390,'5,850','27,000'],['V6',415,'6,300','29,250'],['V7',440,'6,750','31,500'],['V8',465,'7,200','33,750'],['V9',480,'7,470','35,100'],['V10',490,'7,650','36,000']]}
+    std:{batch:'第 4 期',name:'标准原价返佣表',rows:[['普通',380],['V0',380],['V1',480],['V2',580],['V3',680],['V4',730],['V5',780],['V6',830],['V7',880],['V8',930],['V9',960],['V10',980]]},
+    promo:{batch:'第 5 期',name:'促销减半返佣表',rows:[['普通',190],['V0',190],['V1',240],['V2',290],['V3',340],['V4',365],['V5',390],['V6',415],['V7',440],['V8',465],['V9',480],['V10',490]]}
   };
   function renderRules(key){
     var t=RULE_TABLES[key]; if(!t) return;
@@ -1011,8 +1012,8 @@
     var rt=document.getElementById('ruleTable'); if(rt) rt.textContent=t.name;
     var tb=document.getElementById('rulesTbody'); if(!tb) return;
     tb.innerHTML=t.rows.map(function(r){
-      var code=r[0], base=(code==='V0'?'V0 普通':code), me=(code===MY_LEVEL);
-      return '<tr'+(me?' class="me"':'')+'><td class="lv">'+(me?base+'（我）':base)+'</td><td class="tnum tg">'+r[1]+'</td><td class="tnum">'+r[2]+'</td><td class="tnum">'+r[3]+'</td></tr>';
+      var me=(r[0]===MY_LEVEL);
+      return '<tr'+(me?' class="me"':'')+'><td class="lv">'+(me?r[0]+'（我）':r[0])+'</td><td class="tnum tg">'+r[1]+'</td></tr>';
     }).join('');
     var ps=document.getElementById('rulePillStd'), pp=document.getElementById('rulePillPromo');
     if(ps) ps.className='rulepill'+(key==='std'?' on':'');
