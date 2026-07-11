@@ -681,13 +681,13 @@
   <div class="modal large">
     <div class="modal-header"><div class="modal-title">📤 发起矿机转移</div><button class="modal-close" onclick="closeModal('transferInitModal')">×</button></div>
     <div class="modal-body">
-      <div class="modal-alert info"><span class="icon">ℹ</span><div>由运营<strong>代用户发起</strong>矿机转移（原 C 端转赠）。转移成功后所选矿机及其<strong>算力与收益权益</strong>转移至接收地址，<strong>不可撤销</strong>，落审计。</div></div>
+      <div class="modal-alert info"><span class="icon">ℹ</span><div>由运营<strong>代用户发起</strong>矿机转移（原 C 端转赠）。<strong>接收地址须为发起地址（转出用户）的下线地址</strong>，方可接收该矿机。转移成功后所选矿机及其<strong>算力与收益权益</strong>转移至接收地址，<strong>不可撤销</strong>，落审计。</div></div>
       <div class="form-grid2">
-        <div class="form-group"><label class="form-label">发起地址（转出用户）<span class="req">*</span></label><input class="form-input" id="tiFrom" value="0x2236…dEF2"></div>
-        <div class="form-group"><label class="form-label">接收地址（转入）<span class="req">*</span></label><input class="form-input" id="tiTo" oninput="checkTiAddr()" placeholder="0x…"></div>
+        <div class="form-group"><label class="form-label">发起地址（转出用户）<span class="req">*</span></label><input class="form-input" id="tiFrom" value="0x2236…dEF2" oninput="checkTiAddr()"></div>
+        <div class="form-group"><label class="form-label">接收地址（转入 · 须为发起地址下线）<span class="req">*</span></label><input class="form-input" id="tiTo" oninput="checkTiAddr()" placeholder="0x…"></div>
       </div>
       <div id="tiAddrMsg" style="font-size:12px;min-height:16px;margin:-4px 0 4px;"></div>
-      <div class="text-mute" style="font-size:11px;cursor:pointer;margin-bottom:10px;" onclick="document.getElementById('tiTo').value='0x88F3a24C9b7E5D106a3F2C8b1A9e4D7c5B0a2F13';checkTiAddr();">试填已注册示例地址 →</div>
+      <div class="text-mute" style="font-size:11px;cursor:pointer;margin-bottom:10px;" onclick="document.getElementById('tiTo').value='0x93cd…7a1';checkTiAddr();">试填该发起地址的下线示例地址（0x93cd…7a1）→</div>
       <div class="form-group"><label class="form-label">选择要转移的矿机（勾选编号）<span class="req">*</span> · <strong id="tiCount">已选 0 台</strong></label>
         <div class="table-wrapper" style="border:1px solid #e8eaed;border-radius:8px;max-height:210px;overflow:auto;">
           <table>
@@ -870,9 +870,16 @@
   function openTransferInit(){ document.getElementById('tiTo').value=''; document.getElementById('tiAddrMsg').textContent=''; document.querySelectorAll('.ti-ck').forEach(function(c){ c.checked=false; }); tiCount(); openModal('transferInitModal'); }
   function tiCount(){ var n=document.querySelectorAll('.ti-ck:checked').length; document.getElementById('tiCount').textContent='已选 '+n+' 台'; }
   function tiToggleAll(cb){ document.querySelectorAll('.ti-ck').forEach(function(c){ c.checked=cb.checked; }); tiCount(); }
-  var TI_REG=['0x88f3a24c9b7e5d106a3f2c8b1a9e4d7c5b0a2f13'];
-  function checkTiAddr(){ var v=(document.getElementById('tiTo').value||'').trim(), m=document.getElementById('tiAddrMsg'); if(!v){ m.textContent=''; return null; } if(TI_REG.indexOf(v.toLowerCase())>=0){ m.textContent='✓ 已注册地址，可转移'; m.style.color='#059669'; return true; } m.textContent='✗ 该账户未注册，无法转移矿机'; m.style.color='#dc2626'; return false; }
-  function confirmTransferInit(){ var to=(document.getElementById('tiTo').value||'').trim(); if(!to){ showToastMsg('请输入接收地址'); return; } if(checkTiAddr()!==true){ showToastMsg('接收地址未注册，无法转移'); return; } var n=document.querySelectorAll('.ti-ck:checked').length; if(n===0){ showToastMsg('请勾选要转移的矿机'); return; } closeModal('transferInitModal'); showToastMsg('已发起转移 '+n+' 台矿机（落审计）· 可在转移记录中查看'); }
+  // 各发起地址的下线地址集合（接收地址须为发起地址的下线才可接收）
+  var DOWNLINES={ '0x2236…dEF2':['0x93cd…7a1','0xba11…e2','0x74d4…f1f','0x33de…7c0','0x5b71…9d2'] };
+  function isDownline(from,to){ var list=DOWNLINES[from]||[]; return list.indexOf(to)>=0; }
+  function checkTiAddr(){
+    var to=(document.getElementById('tiTo').value||'').trim(), from=(document.getElementById('tiFrom').value||'').trim(), m=document.getElementById('tiAddrMsg');
+    if(!to){ m.textContent=''; return null; }
+    if(isDownline(from,to)){ m.textContent='✓ 是发起地址的下线，可接收该矿机'; m.style.color='#059669'; return true; }
+    m.textContent='✗ 该地址不是发起地址（'+from+'）的下线，无法接收该矿机'; m.style.color='#dc2626'; return false;
+  }
+  function confirmTransferInit(){ var to=(document.getElementById('tiTo').value||'').trim(); if(!to){ showToastMsg('请输入接收地址'); return; } if(checkTiAddr()!==true){ showToastMsg('接收地址须为发起地址的下线，无法转移'); return; } var n=document.querySelectorAll('.ti-ck:checked').length; if(n===0){ showToastMsg('请勾选要转移的矿机'); return; } closeModal('transferInitModal'); showToastMsg('已发起转移 '+n+' 台矿机（落审计）· 可在转移记录中查看'); }
   document.querySelectorAll('.modal-overlay').forEach(function(o){ o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('show'); }); });
 </script>
 </body>
