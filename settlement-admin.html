@@ -261,7 +261,7 @@
               <th style="width:32px;"><input type="checkbox" class="ck" onclick="toggleAll(this)"></th>
               <th>奖励单号</th><th>受益人 / 级别</th><th>被邀请人</th><th class="td-num">台数</th><th>订单</th>
               <th class="td-num">合计佣金 (USDT)</th>
-              <th>状态</th><th>操作</th>
+              <th>状态</th><th>驳回备注</th><th>操作</th>
             </tr></thead>
             <tbody>
               <tr>
@@ -270,8 +270,9 @@
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0x93cd…7a1</span> <span class="pill pill-v">V1</span></td><td class="td-num">1</td><td class="td-mono">ORD-77301</td>
                 <td class="td-num" style="font-weight:700;">880.00</td>
-                <td><span class="badge badge-process">待发放</span></td>
-                <td class="ops-cell"><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88205 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+                <td id="st-88205"><span class="badge badge-process">待发放</span></td>
+                <td class="text-mute" id="note-88205">—</td>
+                <td class="ops-cell" id="ops-88205"><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88205 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal('88205')">驳回</button></td>
               </tr>
               <tr>
                 <td><input type="checkbox" class="ck row-ck"></td>
@@ -279,8 +280,9 @@
                 <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
                 <td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span></td><td class="td-num">18</td><td class="td-mono">ORD-77298</td>
                 <td class="td-num" style="font-weight:700;">17,640.00</td>
-                <td><span class="badge badge-process">待发放</span></td>
-                <td class="ops-cell"><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88204 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+                <td id="st-88204"><span class="badge badge-process">待发放</span></td>
+                <td class="text-mute" id="note-88204">—</td>
+                <td class="ops-cell" id="ops-88204"><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88204 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal('88204')">驳回</button></td>
               </tr>
               <tr>
                 <td><input type="checkbox" class="ck" disabled></td>
@@ -289,6 +291,7 @@
                 <td><span class="td-address">0x5b71…9d2</span> <span class="pill pill-v">V2</span></td><td class="td-num">1</td><td class="td-mono">ORD-77290</td>
                 <td class="td-num" style="font-weight:700;">440.00</td>
                 <td><span class="badge badge-done">已发放</span> <span class="pill" style="background:#ecfdf5;color:#047857;">自动</span></td>
+                <td class="text-mute">—</td>
                 <td class="ops-cell"><span class="text-mute">自动发放 · 已入账</span></td>
               </tr>
               <tr>
@@ -297,8 +300,9 @@
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0xba11…e2</span> <span class="pill pill-v">V0</span></td><td class="td-num">1</td><td class="td-mono">ORD-77260</td>
                 <td class="td-num" style="font-weight:700;">980.00</td>
-                <td><span class="badge badge-process">待发放</span></td>
-                <td class="ops-cell"><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88201 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+                <td id="st-88201"><span class="badge badge-process">待发放</span></td>
+                <td class="text-mute" id="note-88201">—</td>
+                <td class="ops-cell" id="ops-88201"><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88201 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal('88201')">驳回</button></td>
               </tr>
               <tr>
                 <td><input type="checkbox" class="ck row-ck"></td>
@@ -306,8 +310,9 @@
                 <td class="td-address">0x9f2c…a1b <span class="pill pill-v">V8</span></td>
                 <td><span class="td-address">0x33de…7c0</span> <span class="pill pill-v">V5</span></td><td class="td-num">1</td><td class="td-mono">ORD-77240</td>
                 <td class="td-num" style="font-weight:700;">1,080.00</td>
-                <td><span class="badge badge-process">待发放</span></td>
-                <td class="ops-cell"><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88190 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal()">驳回</button></td>
+                <td id="st-88190"><span class="badge badge-process">待发放</span></td>
+                <td class="text-mute" id="note-88190">—</td>
+                <td class="ops-cell" id="ops-88190"><button class="btn btn-success btn-sm" onclick="showToastMsg('RW-88190 已发放（USDT）')">发放</button><button class="btn btn-secondary btn-sm" onclick="openRejectModal('88190')">驳回</button></td>
               </tr>
               <tr>
                 <td><input type="checkbox" class="ck" disabled></td>
@@ -316,6 +321,7 @@
                 <td><span class="td-address">0x9012…c3d</span> <span class="pill pill-v">V4</span></td><td class="td-num">1</td><td class="td-mono">ORD-77210</td>
                 <td class="td-num" style="font-weight:700;">1,030.00</td>
                 <td><span class="badge badge-done">已发放</span></td>
+                <td class="text-mute">—</td>
                 <td class="ops-cell"><span class="text-mute">已入账</span></td>
               </tr>
             </tbody>
@@ -408,9 +414,9 @@
       <div class="page-header">
         <div>
           <div class="page-title">矿机转移记录<span class="tag-module">F-04</span></div>
-          <div class="page-subtitle">用户矿机转赠/转移的全部记录（发起 → 接收 · 编号 · 算力 · 时间）</div>
+          <div class="page-subtitle">运营代用户发起矿机转移（原 C 端「矿机转赠」功能移入后台，不再面向用户）+ 全部转移记录（发起 → 接收 · 编号 · 算力 · 时间）</div>
         </div>
-        <div><button class="btn btn-secondary" onclick="showToastMsg('已生成转移记录导出任务，前往下载中心')">⭳ 导出记录</button></div>
+        <div style="display:flex;gap:8px;"><button class="btn btn-secondary" onclick="showToastMsg('已生成转移记录导出任务，前往下载中心')">⭳ 导出记录</button><button class="btn btn-primary" onclick="openTransferInit()">+ 发起转移</button></div>
       </div>
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-label">累计转移笔数</div><div class="stat-value">9 <small>笔</small></div></div>
@@ -560,11 +566,11 @@
     <div class="modal-header"><div class="modal-title danger">⨯ 驳回奖励单</div><button class="modal-close" onclick="closeModal('rejectModal')">×</button></div>
     <div class="modal-body">
       <div class="modal-alert danger"><span class="icon">⚠</span><div>驳回后该奖励单在 C 端显示为「失败」，不再发放。可选填备注（落审计）。</div></div>
-      <div class="form-group"><label class="form-label">备注（选填）</label><textarea class="form-textarea" placeholder="补充说明（可不填）…"></textarea></div>
+      <div class="form-group"><label class="form-label">备注（选填）</label><textarea class="form-textarea" id="rejectNote" placeholder="补充说明（可不填）…"></textarea></div>
     </div>
     <div class="modal-footer">
       <button class="btn btn-secondary" onclick="closeModal('rejectModal')">取消</button>
-      <button class="btn btn-danger" onclick="closeModal('rejectModal');showToastMsg('已驳回，C 端将显示为失败')">确认驳回</button>
+      <button class="btn btn-danger" onclick="confirmReject()">确认驳回</button>
     </div>
   </div>
 </div>
@@ -575,7 +581,17 @@
     <div class="modal-header"><div class="modal-title" id="batchModalTitle">🖥 新建矿机批次</div><button class="modal-close" onclick="closeModal('batchModal')">×</button></div>
     <div class="modal-body">
       <div class="form-grid2">
-        <div class="form-group"><label class="form-label">批次名 <span class="req">*</span></label><input class="form-input" value="第 6 期"></div>
+        <div class="form-group" style="grid-column:1 / -1;"><label class="form-label">批次名（多语言）<span class="req">*</span></label>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <input class="form-input" placeholder="中文（简体）" value="第 6 期">
+            <input class="form-input" placeholder="English" value="Batch 6">
+            <input class="form-input" placeholder="한국어" value="제6기">
+            <input class="form-input" placeholder="日本語" value="第6期">
+            <input class="form-input" placeholder="Español" value="Lote 6">
+            <input class="form-input" placeholder="Tiếng Việt" value="Đợt 6">
+            <input class="form-input" placeholder="Português" value="Lote 6">
+          </div>
+        </div>
         <div class="form-group"><label class="form-label">类型 <span class="req">*</span></label>
           <select class="form-select" id="batchType"><option value="normal">原价</option></select>
         </div>
@@ -660,6 +676,41 @@
   </div>
 </div>
 
+<!-- 发起矿机转移（运营代发起） -->
+<div class="modal-overlay" id="transferInitModal">
+  <div class="modal large">
+    <div class="modal-header"><div class="modal-title">📤 发起矿机转移</div><button class="modal-close" onclick="closeModal('transferInitModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-alert info"><span class="icon">ℹ</span><div>由运营<strong>代用户发起</strong>矿机转移（原 C 端转赠）。转移成功后所选矿机及其<strong>算力与收益权益</strong>转移至接收地址，<strong>不可撤销</strong>，落审计。</div></div>
+      <div class="form-grid2">
+        <div class="form-group"><label class="form-label">发起地址（转出用户）<span class="req">*</span></label><input class="form-input" id="tiFrom" value="0x2236…dEF2"></div>
+        <div class="form-group"><label class="form-label">接收地址（转入）<span class="req">*</span></label><input class="form-input" id="tiTo" oninput="checkTiAddr()" placeholder="0x…"></div>
+      </div>
+      <div id="tiAddrMsg" style="font-size:12px;min-height:16px;margin:-4px 0 4px;"></div>
+      <div class="text-mute" style="font-size:11px;cursor:pointer;margin-bottom:10px;" onclick="document.getElementById('tiTo').value='0x88F3a24C9b7E5D106a3F2C8b1A9e4D7c5B0a2F13';checkTiAddr();">试填已注册示例地址 →</div>
+      <div class="form-group"><label class="form-label">选择要转移的矿机（勾选编号）<span class="req">*</span> · <strong id="tiCount">已选 0 台</strong></label>
+        <div class="table-wrapper" style="border:1px solid #e8eaed;border-radius:8px;max-height:210px;overflow:auto;">
+          <table>
+            <thead><tr><th style="width:32px;"><input type="checkbox" onclick="tiToggleAll(this)"></th><th>矿机编号</th><th>算力</th><th>批次</th></tr></thead>
+            <tbody>
+              <tr><td><input type="checkbox" class="ck ti-ck" onclick="tiCount()"></td><td class="td-mono">#100228</td><td class="td-mono">1000 T/H</td><td>第 3 期</td></tr>
+              <tr><td><input type="checkbox" class="ck ti-ck" onclick="tiCount()"></td><td class="td-mono">#100229</td><td class="td-mono">1000 T/H</td><td>第 3 期</td></tr>
+              <tr><td><input type="checkbox" class="ck ti-ck" onclick="tiCount()"></td><td class="td-mono">#100230</td><td class="td-mono">1000 T/H</td><td>第 4 期</td></tr>
+              <tr><td><input type="checkbox" class="ck ti-ck" onclick="tiCount()"></td><td class="td-mono">#100231</td><td class="td-mono">1000 T/H</td><td>第 4 期</td></tr>
+              <tr><td><input type="checkbox" class="ck ti-ck" onclick="tiCount()"></td><td class="td-mono">#100232</td><td class="td-mono">1000 T/H</td><td>第 4 期</td></tr>
+              <tr><td><input type="checkbox" class="ck ti-ck" onclick="tiCount()"></td><td class="td-mono">#100233</td><td class="td-mono">1000 T/H</td><td>第 4 期</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('transferInitModal')">取消</button>
+      <button class="btn btn-primary" onclick="confirmTransferInit()">确认发起转移</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast" id="toast">操作成功</div>
 
 <script>
@@ -676,7 +727,19 @@
   function openPayoutModal(){ openModal('payoutModal'); }
   function openRebateEdit(title){ document.getElementById('rebateModalTitle').textContent='📊 '+title; openModal('rebateModal'); }
   function openRebateView(name){ document.getElementById('rebateModalTitle').textContent='📊 查看 · '+name; openModal('rebateModal'); }
-  function openRejectModal(){ openModal('rejectModal'); }
+  var rejectRw=null;
+  function openRejectModal(rw){ rejectRw=rw||null; var t=document.getElementById('rejectNote'); if(t) t.value=''; openModal('rejectModal'); }
+  function confirmReject(){
+    var note=(document.getElementById('rejectNote').value||'').trim();
+    closeModal('rejectModal');
+    if(rejectRw){
+      var st=document.getElementById('st-'+rejectRw); if(st) st.innerHTML='<span class="badge badge-fail">已驳回</span>';
+      var nt=document.getElementById('note-'+rejectRw); if(nt){ nt.textContent=note||'（未填备注）'; nt.className='td-red'; }
+      var op=document.getElementById('ops-'+rejectRw); if(op) op.innerHTML='<span class="text-mute">已驳回 · C 端显示失败</span>';
+    }
+    showToastMsg('已驳回，C 端将显示为失败'+(note?('：'+note):''));
+    rejectRw=null;
+  }
   // ===== 矿机批次 状态机（同一时间仅一个活跃批次 · 顺序发售） =====
   var LAST_END='2026-09-10 22:00:00'; // 现有批次最晚结束时间（新批次开售须晚于此）
   var batches=[
@@ -804,6 +867,12 @@
   var toastTimer;
   function showToastMsg(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); }, 2200); }
   renderBatches();
+  function openTransferInit(){ document.getElementById('tiTo').value=''; document.getElementById('tiAddrMsg').textContent=''; document.querySelectorAll('.ti-ck').forEach(function(c){ c.checked=false; }); tiCount(); openModal('transferInitModal'); }
+  function tiCount(){ var n=document.querySelectorAll('.ti-ck:checked').length; document.getElementById('tiCount').textContent='已选 '+n+' 台'; }
+  function tiToggleAll(cb){ document.querySelectorAll('.ti-ck').forEach(function(c){ c.checked=cb.checked; }); tiCount(); }
+  var TI_REG=['0x88f3a24c9b7e5d106a3f2c8b1a9e4d7c5b0a2f13'];
+  function checkTiAddr(){ var v=(document.getElementById('tiTo').value||'').trim(), m=document.getElementById('tiAddrMsg'); if(!v){ m.textContent=''; return null; } if(TI_REG.indexOf(v.toLowerCase())>=0){ m.textContent='✓ 已注册地址，可转移'; m.style.color='#059669'; return true; } m.textContent='✗ 该账户未注册，无法转移矿机'; m.style.color='#dc2626'; return false; }
+  function confirmTransferInit(){ var to=(document.getElementById('tiTo').value||'').trim(); if(!to){ showToastMsg('请输入接收地址'); return; } if(checkTiAddr()!==true){ showToastMsg('接收地址未注册，无法转移'); return; } var n=document.querySelectorAll('.ti-ck:checked').length; if(n===0){ showToastMsg('请勾选要转移的矿机'); return; } closeModal('transferInitModal'); showToastMsg('已发起转移 '+n+' 台矿机（落审计）· 可在转移记录中查看'); }
   document.querySelectorAll('.modal-overlay').forEach(function(o){ o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('show'); }); });
 </script>
 </body>
