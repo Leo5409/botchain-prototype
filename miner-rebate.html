@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CaryPact · 矿机 — 销售奖励 / 奖励规则 / 矿机转赠</title>
+<title>CaryPact · 矿机 — 销售奖励 / 提币 / 算力服务器发售</title>
 <style>
   * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
   :root{
@@ -100,8 +100,6 @@
   .tnum { text-align:right; } .tg { color:#34d399; font-weight:700; }
   .ttab.t4 th, .ttab.t4 td { padding:7px 6px; font-size:11px; }
   .ttab.t4 .lv { font-weight:700; color:#fff; }
-  .rulepill { font-size:11px; font-weight:700; padding:4px 9px; border-radius:8px; background:#171a21; border:1px solid var(--border); color:var(--text2); cursor:pointer; }
-  .rulepill.on { background:var(--pg); color:#fff; border-color:transparent; }
 
   /* block page (未入金拦截，另开一页) */
   .blockp { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:430px; padding:0 22px; }
@@ -172,15 +170,15 @@
 <body>
 
 <div class="gallery-head">
-  <h1>CaryPact · 矿机模块（销售奖励 / 提币 / 奖励规则 / 矿机转赠）</h1>
-  <p>个人中心沿用 CA 原生菜单（我的社区 / 社区收益 / 邀请好友 / 我的邀请人），在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（总奖励/已发放/待发放/已提取）· 提币页 · 提币记录 · 奖励规则（1·18·90 台对照）。未有效入金时「确认提币」跳转「暂无法提取」独立页。侧边栏另增「矿机转赠」（按矿机编号勾选）。<br>上方多屏走查便于讲解，页面底部为可交互动态原型</p>
+  <h1>CaryPact · 矿机模块（销售奖励 / 提币 / 算力服务器发售）</h1>
+  <p>个人中心沿用 CA 原生菜单，在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（可提取 / 总奖励 / 待发放 / 已提取）· 提币页 · 提币记录。账号未激活时「确认提币」跳转「暂无法提取」独立页。另含算力服务器发售 · 矿机发售历史（独立页）· 暂停发售态。<br>矿机转赠已移至运营后台、奖励规则不再展示。上方多屏走查便于讲解，页面底部为可交互动态原型</p>
 </div>
 
 <div class="gallery">
 
-  <!-- ① 侧边栏入口（个人中心 / 矿机转赠） -->
+  <!-- ① 侧边栏入口（个人中心 · 销售奖励入口） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">1</span><span class="nm">侧边栏 · 个人中心 / 矿机转赠</span></div>
+    <div class="slide-label"><span class="no">1</span><span class="nm">侧边栏 · 个人中心（销售奖励入口）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -190,10 +188,7 @@
         <div class="menu-item dim">首页</div>
         <div class="menu-item dim">等级规则</div>
         <div class="menu-item dim">算力服务器发售</div>
-        <div class="menu-item">个人中心 · 销售奖励入口</div>
-        <div class="menu-sep"></div>
-        <div class="menu-cap">矿机（本次新增）</div>
-        <div class="menu-item active">矿机转赠</div>
+        <div class="menu-item active">个人中心 · 销售奖励入口</div>
       </div>
     </div>
   </div>
@@ -234,7 +229,7 @@
       <div class="subbar"><span class="bk">← 返回</span><span class="tt">销售奖励</span></div>
       <div class="content">
         <div class="hero">
-          <div class="h-lbl">已发放</div>
+          <div class="h-lbl">可提取</div>
           <div class="h-big">6,400.00 <small>USDT</small></div>
           <div class="h-row">
             <div class="h-cell"><div class="c-l">总奖励</div><div class="c-v">8,420 U</div></div>
@@ -243,7 +238,7 @@
           </div>
         </div>
         <div class="wbtn-row"><button class="wbtn">提币</button><button class="wbtn ghost">提币记录</button></div>
-        <div class="sect" style="display:flex;align-items:center;justify-content:space-between;">销售奖励明细<span style="font-size:12px;font-weight:600;color:var(--purple);">奖励规则 ›</span></div>
+        <div class="sect">销售奖励明细</div>
         <div class="card" style="padding:2px 16px;">
           <div class="row"><div class="ic green">🎁</div><div class="rmain"><div class="rtitle">地址 0x6a1f…0c2</div><div class="rsub">购买 18 台 · 2026-07-02 14:32:07</div></div><div class="rright"><div class="rval usdt">+1,480</div><div class="rdate"><span class="b b-done">已发放</span></div></div></div>
           <div class="row"><div class="ic amber">🎁</div><div class="rmain"><div class="rtitle">地址 0x93cd…7a1</div><div class="rsub">购买 1 台 · 2026-07-01 10:15:43</div></div><div class="rright"><div class="rval usdt">+1,030</div><div class="rdate"><span class="b b-wait">待发放</span></div></div></div>
@@ -287,7 +282,7 @@
         <div class="blockp">
           <div class="bic">❄️</div>
           <div class="bt">暂无法提取奖励</div>
-          <div class="bx">您的账号尚未激活，暂无法提取奖励。<br>满足以下<b style="color:#bcd3ff;">任一条件</b>即可激活账号：<br><b style="color:#bcd3ff;">① 算力入金满 100U</b><br><b style="color:#bcd3ff;">② 质押额达到 100U</b><br><b style="color:#bcd3ff;">③ 自身拥有算力服务器</b><br>激活后奖励全部解冻、可全部提取。</div>
+          <div class="bx">您的账号尚未激活，暂无法提取奖励。<br>满足以下<b style="color:#bcd3ff;">任一条件</b>即可激活账号：<br><b style="color:#bcd3ff;">① 算力入金业绩满 100U</b><br><b style="color:#bcd3ff;">② POS 质押 ≥ 360 天、质押额达到 100U</b><br><b style="color:#bcd3ff;">③ 自身购买并持有算力服务器</b><br>激活后奖励全部解冻、可全部提取。</div>
           <div class="wbtn-row" style="width:100%;margin-top:26px;">
             <button class="wbtn ghost">返回</button>
             <button class="wbtn">去激活</button>
@@ -314,194 +309,9 @@
     </div>
   </div>
 
-  <!-- ⑦ 奖励规则（1 / 18 / 90 台对照） -->
-  <div class="slide">
-    <div class="slide-label"><span class="no">7</span><span class="nm">奖励规则（1 / 18 / 90 台奖励对照）</span></div>
-    <div class="phone">
-      <div class="notch"></div>
-      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">奖励规则</span></div>
-      <div class="content">
-        <div class="sect" style="font-size:15px;">级别与购买规模奖励对照</div>
-        <div style="font-size:11px;color:var(--text2);margin:-6px 2px 4px;">按<b style="color:#8fb0ff;">当前在售批次返佣表</b>计 · 单台奖励（U）</div>
-        <div class="note" style="margin:2px 0 8px;"><span>🟢</span><span>当前在售：<b style="color:#fff;">第 4 期</b></span></div>
-        <table class="ttab t4">
-          <thead><tr><th>级别</th><th class="tnum">单台奖励（U）</th></tr></thead>
-          <tbody>
-            <tr><td class="lv">普通</td><td class="tnum tg">380</td></tr>
-            <tr><td class="lv">V0</td><td class="tnum tg">380</td></tr>
-            <tr><td class="lv">V1</td><td class="tnum tg">480</td></tr>
-            <tr><td class="lv">V2</td><td class="tnum tg">580</td></tr>
-            <tr><td class="lv">V3</td><td class="tnum tg">680</td></tr>
-            <tr><td class="lv">V4</td><td class="tnum tg">730</td></tr>
-            <tr><td class="lv">V5</td><td class="tnum tg">780</td></tr>
-            <tr><td class="lv">V6</td><td class="tnum tg">830</td></tr>
-            <tr><td class="lv">V7</td><td class="tnum tg">880</td></tr>
-            <tr><td class="lv">V8</td><td class="tnum tg">930</td></tr>
-            <tr><td class="lv">V9</td><td class="tnum tg">960</td></tr>
-            <tr><td class="lv">V10</td><td class="tnum tg">980</td></tr>
-          </tbody>
-        </table>
-        <div class="note warn" style="margin-top:14px;"><span>⚠</span><span>收益随全网算力与币价浮动，不构成保本或固定回报承诺。</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑧ 矿机转赠（按编号勾选） -->
-  <div class="slide">
-    <div class="slide-label"><span class="no">8</span><span class="nm">矿机转赠（按矿机编号勾选转赠）</span></div>
-    <div class="phone">
-      <div class="notch"></div>
-      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
-      <div class="topbar">
-        <div class="logo"><span class="mark"></span>CaryPact</div>
-        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div>
-      </div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机转赠</span></div>
-      <div class="content">
-        <div class="hero">
-          <div class="h-lbl">我的矿机 · 可转赠</div>
-          <div class="h-big">65 <small>台</small></div>
-          <div class="h-row">
-            <div class="h-cell"><div class="c-l">累计购买</div><div class="c-v">120 台</div></div>
-            <div class="h-cell"><div class="c-l">已转赠</div><div class="c-v">55 台</div></div>
-            <div class="h-cell"><div class="c-l">当前持有</div><div class="c-v">65 台</div></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-t">转赠矿机</div>
-          <div style="font-size:12px;color:var(--text2);margin:4px 2px;">接收地址</div>
-          <input class="input" value="0x1234…abcd" placeholder="输入接收方地址 0x…" style="margin-bottom:0;">
-          <div class="addr-msg" style="color:#fb7185;">该账户未注册，无法转赠矿机</div>
-          <div class="sel-head"><span>选择要转赠的矿机 · <b>已选 2 台</b></span><span class="selall">☑ 全选</span></div>
-          <div class="mrow sel"><div class="mck">✓</div><div class="mmain"><div class="mno">矿机 #100228</div><div class="msub">算力 1000 T/H · 3 期批次</div></div></div>
-          <div class="mrow sel"><div class="mck">✓</div><div class="mmain"><div class="mno">矿机 #100229</div><div class="msub">算力 1000 T/H · 3 期批次</div></div></div>
-          <div class="mrow"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100230</div><div class="msub">算力 1300 T/H · 特价 · 4 期批次</div></div></div>
-          <div class="mrow"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100231</div><div class="msub">算力 1000 T/H · 4 期批次</div></div></div>
-          <div class="list-more">共 65 台可转赠 · 滑动查看更多</div>
-          <div class="wbtn-row" style="margin-top:6px;">
-            <button class="wbtn">确认转赠（2 台）</button>
-            <button class="wbtn ghost">转赠记录</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑨ 转赠记录（弹框） -->
-  <div class="slide">
-    <div class="slide-label"><span class="no">9</span><span class="nm">转赠记录（居中弹框 · 矿机编号 · 成功/失败）</span></div>
-    <div class="phone">
-      <div class="notch"></div>
-      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
-      <div class="topbar">
-        <div class="logo"><span class="mark"></span>CaryPact</div>
-        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div>
-      </div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机转赠</span></div>
-      <div class="content" style="position:relative;overflow:hidden;min-height:560px;padding-bottom:0;">
-        <div class="hero" style="opacity:.28;">
-          <div class="h-lbl">我的矿机 · 可转赠</div>
-          <div class="h-big">65 <small>台</small></div>
-        </div>
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,.6);"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 18px;">
-          <div style="width:100%;max-width:300px;background:#12141a;border:1px solid #262a34;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);">
-            <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x">×</span></div>
-            <div class="sheet-b">
-              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 18 台</div><div class="rsub">接收 0x9f2c…a1b · 2026-06-25 14:32:07</div><div class="idlink">编号 #100201–#100210、#100221 等 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 7 台</div><div class="rsub">接收 0x33de…7c0 · 2026-06-24 10:15:43</div><div class="idlink">编号 #100211–#100217 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 6 台</div><div class="rsub">接收 0x5b71…9d2 · 2026-06-22 18:07:21</div><div class="idlink">编号 #100250–#100255 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 5 台</div><div class="rsub">接收 0xa4e0…3fc · 2026-06-20 09:41:55</div><div class="idlink">编号 #100260–#100264 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-              <div class="row"><div class="ic green">📤</div><div class="rmain"><div class="rtitle">转赠 4 台</div><div class="rsub">接收 0xc812…7b5 · 2026-06-18 21:03:12</div><div class="idlink">编号 #100270–#100273 · 查看全部 ›</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
-            </div>
-            <div class="pager">
-              <span class="pg-btn disabled">‹</span>
-              <span class="pg-btn active">1</span>
-              <span class="pg-btn">2</span>
-              <span class="pg-btn">›</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑩ 转赠编号详情（居中弹框 · 区间压缩支持不连续设备号） -->
-  <div class="slide">
-    <div class="slide-label"><span class="no">10</span><span class="nm">转赠编号详情（点记录查看 · 区间压缩支持不连续）</span></div>
-    <div class="phone">
-      <div class="notch"></div>
-      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
-      <div class="topbar">
-        <div class="logo"><span class="mark"></span>CaryPact</div>
-        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div>
-      </div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机转赠</span></div>
-      <div class="content" style="position:relative;overflow:hidden;min-height:560px;padding-bottom:0;">
-        <div class="hero" style="opacity:.28;">
-          <div class="h-lbl">我的矿机 · 可转赠</div>
-          <div class="h-big">65 <small>台</small></div>
-        </div>
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,.6);"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 18px;">
-          <div style="width:100%;max-width:300px;background:#12141a;border:1px solid #262a34;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);">
-            <div class="sheet-h"><span class="st">转赠编号（18 台）</span><span class="sheet-x">×</span></div>
-            <div class="sheet-b">
-              <div class="idsub">连续编号已合并为区间，共 4 段 / 18 台 · 算力 1300 T/H（不连续设备号也能干净展示）</div>
-              <div class="idwrap">
-                <span class="idchip">#100201–#100210 · 1300 T/H</span>
-                <span class="idchip">#100221 · 1300 T/H</span>
-                <span class="idchip">#100223 · 1300 T/H</span>
-                <span class="idchip">#100240–#100245 · 1300 T/H</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- ⑪ 转赠二次确认弹框 -->
-  <div class="slide">
-    <div class="slide-label"><span class="no">11</span><span class="nm">确认转赠 · 二次确认弹框</span></div>
-    <div class="phone">
-      <div class="notch"></div>
-      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
-      <div class="topbar">
-        <div class="logo"><span class="mark"></span>CaryPact</div>
-        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div>
-      </div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机转赠</span></div>
-      <div class="content" style="position:relative;overflow:hidden;min-height:560px;padding-bottom:0;">
-        <div class="hero" style="opacity:.28;">
-          <div class="h-lbl">我的矿机 · 可转赠</div>
-          <div class="h-big">65 <small>台</small></div>
-        </div>
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,.6);"></div>
-        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:0 18px;">
-          <div style="width:100%;max-width:300px;background:#12141a;border:1px solid #262a34;border-radius:20px;overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6);">
-            <div class="sheet-h"><span class="st">确认转赠</span><span class="sheet-x">×</span></div>
-            <div class="sheet-b">
-              <div class="note warn"><span>⚠</span><span>转赠成功后，所选矿机及其<b style="color:#e7b667;">算力与收益权益</b>将转移至接收地址，<b style="color:#e7b667;">不可撤销</b>，请核对。</span></div>
-              <div class="kv"><span class="k">接收地址</span><span class="v" style="font-size:12px;">0x88F3…2F13</span></div>
-              <div class="kv"><span class="k">转赠台数</span><span class="v">2 台</span></div>
-              <div style="font-size:12px;color:var(--text2);margin:12px 2px 6px;">矿机编号</div>
-              <div class="idwrap"><span class="idchip">#100228 · 1000 T/H</span><span class="idchip">#100229 · 1000 T/H</span></div>
-            </div>
-            <div style="padding:12px 16px;display:flex;gap:10px;border-top:1px solid var(--border);">
-              <button class="wbtn ghost">取消</button>
-              <button class="wbtn">确认转赠</button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- ⑫ 算力服务器发售（对齐后台矿机批次售卖设置） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">12</span><span class="nm">算力服务器发售（对齐后台批次 · 1000 T/H · 多状态）</span></div>
+    <div class="slide-label"><span class="no">7</span><span class="nm">算力服务器发售（对齐后台批次 · 1000 T/H · 多状态）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -587,9 +397,9 @@
     </div>
   </div>
 
-  <!-- ⑬ 矿机发售历史弹框（历史批次发售信息） -->
+  <!-- ⑬→8 矿机发售历史（独立页 · 历史批次发售信息） -->
   <div class="slide">
-    <div class="slide-label"><span class="no">13</span><span class="nm">矿机发售历史（弹框 · 历史批次发售信息）</span></div>
+    <div class="slide-label"><span class="no">8</span><span class="nm">矿机发售历史（独立页 · 历史批次发售信息）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -597,33 +407,24 @@
         <div class="logo"><span class="mark"></span>CaryPact</div>
         <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div>
       </div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">算力服务器发售</span></div>
-      <div class="content" style="position:relative;overflow:hidden;min-height:560px;padding-bottom:0;">
-        <div class="note" style="margin-top:8px;opacity:.28;"><span>🖥</span><span><b style="color:#fff;">第 4 期</b> 发售中 · 剩余 280 台</span></div>
-        <div style="opacity:.28;margin-top:12px;font-size:13px;color:var(--text2);line-height:2;">购买规模 · 数量 · 支付方式 · 费用 · 确认购买 …<br>（🕘 矿机发售历史入口）</div>
-        <div style="position:absolute;inset:0;background:rgba(0,0,0,.62);"></div>
-        <div style="position:absolute;left:0;right:0;bottom:0;background:#12141a;border-top:1px solid #262a34;border-radius:22px 22px 0 0;max-height:90%;display:flex;flex-direction:column;">
-          <div class="grab"></div>
-          <div class="sheet-h"><span class="st">矿机发售历史</span><span class="sheet-x">×</span></div>
-          <div class="sheet-b" style="overflow-y:auto;">
-            <div class="card" style="padding:12px 14px;margin-bottom:10px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 5 期</span><span class="b b-wait">未开售</span></div>
-              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.8;">基准算力 1,000 T/H/台 · 编号 #102301–#103100<br>发售 800 · 已售 <b style="color:#34d399;">0</b> · 剩余 <b style="color:#e7b667;">800</b><br>单价 单台 3,980 · 组 69,300 · 集群 342,000 U<br>开售 2026-08-11 10:00:00</div>
-            </div>
-            <div class="card" style="padding:12px 14px;margin-bottom:10px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 4 期</span><span class="b b-done">发售中</span></div>
-              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.8;">基准算力 1,000 T/H/台 · 编号 #101201–#102000<br>发售 800 · 已售 <b style="color:#34d399;">520</b> · 剩余 <b style="color:#e7b667;">280</b><br>单价 单台 3,980 · 组 69,300 · 集群 342,000 U<br>开售 2026-06-20 10:00:00</div>
-            </div>
-            <div class="card" style="padding:12px 14px;margin-bottom:10px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 3 期</span><span class="b" style="background:#20222c;color:#8b909e;">已售罄</span></div>
-              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.8;">基准算力 1,000 T/H/台 · 编号 #100201–#101200<br>发售 1,000 · 已售 <b style="color:#34d399;">1,000</b> · 剩余 <b style="color:#e7b667;">0</b><br>单价 单台 3,980 · 组 69,300 · 集群 342,000 U<br>售罄 2026-06-30 21:14:02</div>
-            </div>
-            <div class="card" style="padding:12px 14px;margin-bottom:4px;">
-              <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 2 期</span><span class="b" style="background:#20222c;color:#8b909e;">已结束</span></div>
-              <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.8;">基准算力 1,000 T/H/台 · 编号 #099401–#100200<br>发售 800 · 已售 <b style="color:#34d399;">800</b> · 剩余 <b style="color:#e7b667;">0</b><br>单价 单台 3,980 · 组 69,300 · 集群 342,000 U<br>结束 2026-05-31 23:59:59</div>
-            </div>
-            <div class="list-more">共 5 期批次 · 下拉查看更多</div>
-          </div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">矿机发售历史</span></div>
+      <div class="content">
+        <div class="sect" style="font-size:15px;margin:8px 2px 10px;">历史批次发售信息</div>
+        <div class="card" style="padding:12px 14px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 5 期</span><span class="b b-wait">未开售</span></div>
+          <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.9;">基准算力 1,000 T/H/台 · 编号 #102301–#103100<br>发售 800 · 已售 <b style="color:#34d399;">0</b> · 剩余 <b style="color:#e7b667;">800</b><br>单价 单台 3,980 · 组 69,300 · 集群 342,000 U<br>开售 2026-08-11 10:00:00<br>结束 2026-09-10 22:00:00</div>
+        </div>
+        <div class="card" style="padding:12px 14px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 4 期</span><span class="b b-done">发售中</span></div>
+          <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.9;">基准算力 1,000 T/H/台 · 编号 #101201–#102000<br>发售 800 · 已售 <b style="color:#34d399;">520</b> · 剩余 <b style="color:#e7b667;">280</b><br>单价 单台 3,980 · 组 69,300 · 集群 342,000 U<br>开售 2026-06-20 10:00:00<br>结束 2026-08-10 22:00:00</div>
+        </div>
+        <div class="card" style="padding:12px 14px;margin-bottom:10px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 3 期</span><span class="b" style="background:#20222c;color:#8b909e;">已售罄</span></div>
+          <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.9;">基准算力 1,000 T/H/台 · 编号 #100201–#101200<br>发售 1,000 · 已售 <b style="color:#34d399;">1,000</b> · 剩余 <b style="color:#e7b667;">0</b><br>单价 单台 3,980 · 组 69,300 · 集群 342,000 U<br>开售 2026-06-01 10:00:00<br>售罄 2026-06-30 21:14:02</div>
+        </div>
+        <div class="card" style="padding:12px 14px;margin-bottom:4px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;"><span style="font-size:14px;font-weight:700;color:#fff;">第 2 期</span><span class="b" style="background:#20222c;color:#8b909e;">已结束</span></div>
+          <div style="font-size:11.5px;color:var(--text2);margin-top:7px;line-height:1.9;">基准算力 1,000 T/H/台 · 编号 #099401–#100200<br>发售 800 · 已售 <b style="color:#34d399;">800</b> · 剩余 <b style="color:#e7b667;">0</b><br>单价 单台 3,980 · 组 69,300 · 集群 342,000 U<br>开售 2026-05-01 10:00:00<br>结束 2026-05-31 23:59:59</div>
         </div>
       </div>
     </div>
@@ -631,7 +432,7 @@
 
   <!-- ⑭ 算力服务器发售 · 暂停发售（批次下架）态 -->
   <div class="slide">
-    <div class="slide-label"><span class="no">14</span><span class="nm">算力服务器发售 · 暂停发售（批次下架）态</span></div>
+    <div class="slide-label"><span class="no">9</span><span class="nm">算力服务器发售 · 暂停发售（批次下架）态</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">\U0001F4F6 \U0001F50B</span></div>
@@ -666,7 +467,7 @@
 <!-- LIVE START -->
 <div class="live-head">
   <h2>高保真动态原型（可交互）</h2>
-  <p>☰ → 个人中心 → 销售奖励；提币 → 奖励提币页 → 确认提币（未入金跳「暂无法提取」独立页）；提币记录（弹层）；明细右侧「奖励规则 ›」；☰ → 矿机转赠（按编号勾选 + 转赠记录）</p>
+  <p>☰ → 个人中心 → 销售奖励；提币 → 奖励提币页 → 确认提币（未激活跳「暂无法提取」独立页）；提币记录（弹层）。矿机转赠已移至运营后台，奖励规则不再展示。</p>
 </div>
 <div class="live-wrap"><div class="live">
   <div class="phone">
@@ -697,7 +498,7 @@
       <!-- 销售奖励 -->
       <div class="page" id="p-rebate">
         <div class="hero">
-          <div class="h-lbl">已发放</div>
+          <div class="h-lbl">可提取</div>
           <div class="h-big">6,400.00 <small>USDT</small></div>
           <div class="h-row">
             <div class="h-cell"><div class="c-l">总奖励</div><div class="c-v">8,420 U</div></div>
@@ -706,7 +507,7 @@
           </div>
         </div>
         <div class="wbtn-row"><button class="wbtn" onclick="goPage('withdraw','奖励提币')">提币</button><button class="wbtn ghost" onclick="openSheet('recSheet')">提币记录</button></div>
-        <div class="sect" style="display:flex;align-items:center;justify-content:space-between;">销售奖励明细<span class="more" style="font-size:12px;" onclick="goPage('rules','奖励规则')">奖励规则 ›</span></div>
+        <div class="sect">销售奖励明细</div>
         <div class="card" style="padding:2px 16px;">
           <div class="row"><div class="ic green">🎁</div><div class="rmain"><div class="rtitle">地址 0x6a1f…0c2</div><div class="rsub">购买 18 台 · 2026-07-02 14:32:07</div></div><div class="rright"><div class="rval usdt">+1,480</div><div class="rdate"><span class="b b-done">已发放</span></div></div></div>
           <div class="row"><div class="ic amber">🎁</div><div class="rmain"><div class="rtitle">地址 0x93cd…7a1</div><div class="rsub">购买 1 台 · 2026-07-01 10:15:43</div></div><div class="rright"><div class="rval usdt">+1,030</div><div class="rdate"><span class="b b-wait">待发放</span></div></div></div>
@@ -734,55 +535,10 @@
         <div class="blockp">
           <div class="bic">❄️</div>
           <div class="bt">暂无法提取奖励</div>
-          <div class="bx">您的账号尚未激活，暂无法提取奖励。<br>满足以下<b style="color:#bcd3ff;">任一条件</b>即可激活账号：<br><b style="color:#bcd3ff;">① 算力入金满 100U</b><br><b style="color:#bcd3ff;">② 质押额达到 100U</b><br><b style="color:#bcd3ff;">③ 自身拥有算力服务器</b><br>激活后奖励全部解冻、可全部提取。</div>
+          <div class="bx">您的账号尚未激活，暂无法提取奖励。<br>满足以下<b style="color:#bcd3ff;">任一条件</b>即可激活账号：<br><b style="color:#bcd3ff;">① 算力入金业绩满 100U</b><br><b style="color:#bcd3ff;">② POS 质押 ≥ 360 天、质押额达到 100U</b><br><b style="color:#bcd3ff;">③ 自身购买并持有算力服务器</b><br>激活后奖励全部解冻、可全部提取。</div>
           <div class="wbtn-row" style="width:100%;margin-top:26px;">
             <button class="wbtn ghost" onclick="goPage('rebate','销售奖励')">返回</button>
             <button class="wbtn" onclick="showT('前往账号激活页面')">去激活</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- 奖励规则 -->
-      <div class="page" id="p-rules">
-        <div class="sect" style="font-size:15px;">级别与购买规模奖励对照</div>
-        <div style="font-size:11px;color:var(--text2);margin:-6px 2px 4px;">按<b style="color:#8fb0ff;">当前在售批次返佣表</b>计 · 单台奖励（U）</div>
-        <div class="note" style="margin:2px 0 6px;"><span>🟢</span><span>当前在售：<b style="color:#fff;" id="ruleBatch">第 4 期</b></span></div>
-        <div style="display:flex;align-items:center;gap:6px;margin:0 2px 8px;flex-wrap:wrap;"><span style="font-size:10.5px;color:var(--muted);">演示切换：</span><span class="rulepill on" id="rulePillStd" onclick="renderRules('std')">第 4 期 · 标准原价（在售）</span><span class="rulepill" id="rulePillPromo" onclick="renderRules('promo')">第 5 期 · 促销减半（预览）</span></div>
-        <table class="ttab t4">
-          <thead><tr><th>级别</th><th class="tnum">单台奖励（U）</th></tr></thead>
-          <tbody id="rulesTbody"></tbody>
-        </table>
-        <div class="note warn" style="margin-top:14px;"><span>⚠</span><span>收益随全网算力与币价浮动，不构成保本或固定回报承诺。</span></div>
-      </div>
-
-      <!-- 矿机转赠 -->
-      <div class="page" id="p-transfer">
-        <div class="hero">
-          <div class="h-lbl">我的矿机 · 可转赠</div>
-          <div class="h-big">65 <small>台</small></div>
-          <div class="h-row">
-            <div class="h-cell"><div class="c-l">累计购买</div><div class="c-v">120 台</div></div>
-            <div class="h-cell"><div class="c-l">已转赠</div><div class="c-v">55 台</div></div>
-            <div class="h-cell"><div class="c-l">当前持有</div><div class="c-v">65 台</div></div>
-          </div>
-        </div>
-        <div class="card">
-          <div class="card-t">转赠矿机</div>
-          <div style="font-size:12px;color:var(--text2);margin:4px 2px;">接收地址</div>
-          <input class="input" id="recvAddr" oninput="checkRecvAddr()" placeholder="输入接收方地址 0x…" style="margin-bottom:0;">
-          <div class="addr-msg" id="recvAddrMsg"></div>
-          <div class="idlink" style="cursor:pointer;" onclick="fillDemoAddr()">试填已注册示例地址</div>
-          <div class="sel-head"><span>选择要转赠的矿机 · <b id="selCount">已选 0 台</b></span><span class="selall" id="selAllBtn" onclick="toggleSelectAll()">☑ 全选</span></div>
-          <div class="mrow" onclick="toggleMiner(this)"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100228</div><div class="msub">算力 1000 T/H · 3 期批次</div></div></div>
-          <div class="mrow" onclick="toggleMiner(this)"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100229</div><div class="msub">算力 1000 T/H · 3 期批次</div></div></div>
-          <div class="mrow" onclick="toggleMiner(this)"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100230</div><div class="msub">算力 1300 T/H · 特价 · 4 期批次</div></div></div>
-          <div class="mrow" onclick="toggleMiner(this)"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100231</div><div class="msub">算力 1000 T/H · 4 期批次</div></div></div>
-          <div class="mrow" onclick="toggleMiner(this)"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100232</div><div class="msub">算力 1000 T/H · 4 期批次</div></div></div>
-          <div class="mrow" onclick="toggleMiner(this)"><div class="mck"></div><div class="mmain"><div class="mno">矿机 #100233</div><div class="msub">算力 1300 T/H · 特价 · 4 期批次</div></div></div>
-          <div class="list-more">共 65 台可转赠 · 滑动查看更多</div>
-          <div class="wbtn-row" style="margin-top:6px;">
-            <button class="wbtn" id="confirmTransferBtn" onclick="confirmTransfer()">确认转赠</button>
-            <button class="wbtn ghost" onclick="openTransferRec()">转赠记录</button>
           </div>
         </div>
       </div>
@@ -799,9 +555,6 @@
         <div class="menu-item dim" onclick="showT('CA 既有：等级规则 / 社区概况 / 推荐列表')">等级规则</div>
         <div class="menu-item dim" onclick="showT('CA 既有模块，已实现')">算力服务器发售</div>
         <div class="menu-item active" data-page="member" onclick="goPage('member','个人中心')">个人中心</div>
-        <div class="menu-sep"></div>
-        <div class="menu-cap">矿机（本次新增）</div>
-        <div class="menu-item" data-page="transfer" onclick="goPage('transfer','矿机转赠')">矿机转赠</div>
       </nav>
     </aside>
 
@@ -816,44 +569,6 @@
         <div class="row"><div class="ic green">↗</div><div class="rmain"><div class="rtitle">提币 2,000 USDT</div><div class="rsub">2026-06-30 12:04</div><div class="rsub">手续费 2.00 USDT（0.1%）</div><div class="rsub">到账 0x2236…dEF2</div><div class="idlink" onclick="showT('已复制 TX Hash')">TX 0x9f3a1c…4b7e0d ⧉</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
         <div class="row"><div class="ic amber">↗</div><div class="rmain"><div class="rtitle">提币 500 USDT</div><div class="rsub">2026-07-02 09:10</div><div class="rsub">手续费 0.50 USDT（0.1%）</div><div class="rsub">到账 0x2236…dEF2</div><div class="idlink" onclick="showT('已复制 TX Hash')">TX 0x7c22b8…e9a1 ⧉ · 确认中</div></div><div class="rright"><div class="rdate"><span class="b b-wait">提币中</span></div></div></div>
         <div class="row"><div class="ic red">↗</div><div class="rmain"><div class="rtitle">提币 800 USDT</div><div class="rsub">2026-06-18 15:33</div><div class="rsub">手续费 —（未扣）</div><div class="rsub">到账 0x2236…dEF2</div><div class="rsub" style="color:var(--muted);">TX —（未上链）</div></div><div class="rright"><div class="rdate"><span class="b b-fail">失败</span></div></div></div>
-      </div>
-    </div>
-
-    <!-- 转赠记录（居中弹框） -->
-    <div class="cmodal" id="transferRecSheet" onclick="closeSheets()">
-      <div class="cbox" onclick="event.stopPropagation()">
-        <div class="sheet-h"><span class="st">转赠记录</span><span class="sheet-x" onclick="closeSheets()">×</span></div>
-        <div class="sheet-b" id="transferRecList"></div>
-        <div class="pager" id="transferPager"></div>
-      </div>
-    </div>
-
-    <!-- 转赠编号详情（居中弹框，叠加于转赠记录之上） -->
-    <div class="cmodal" id="idModal" style="z-index:112;background:rgba(0,0,0,.55);" onclick="closeIdModal()">
-      <div class="cbox" onclick="event.stopPropagation()">
-        <div class="sheet-h"><span class="st" id="idModalTitle">转赠编号</span><span class="sheet-x" onclick="closeIdModal()">×</span></div>
-        <div class="sheet-b">
-          <div class="idsub" id="idModalSub"></div>
-          <div id="idModalBody"></div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 转赠二次确认弹框 -->
-    <div class="cmodal" id="transferConfirmModal" style="z-index:114;background:rgba(0,0,0,.6);" onclick="closeTransferConfirm()">
-      <div class="cbox" onclick="event.stopPropagation()">
-        <div class="sheet-h"><span class="st">确认转赠</span><span class="sheet-x" onclick="closeTransferConfirm()">×</span></div>
-        <div class="sheet-b">
-          <div class="note warn"><span>⚠</span><span>转赠成功后，所选矿机及其<b style="color:#e7b667;">算力与收益权益</b>将转移至接收地址，<b style="color:#e7b667;">不可撤销</b>，请核对。</span></div>
-          <div class="kv"><span class="k">接收地址</span><span class="v" id="tcAddr" style="font-size:12px;">0x…</span></div>
-          <div class="kv"><span class="k">转赠台数</span><span class="v" id="tcCount">0 台</span></div>
-          <div style="font-size:12px;color:var(--text2);margin:12px 2px 6px;">矿机编号</div>
-          <div class="idwrap" id="tcIds"></div>
-        </div>
-        <div style="padding:12px 16px;display:flex;gap:10px;border-top:1px solid var(--border);">
-          <button class="wbtn ghost" onclick="closeTransferConfirm()">取消</button>
-          <button class="wbtn" onclick="doTransfer()">确认转赠</button>
-        </div>
       </div>
     </div>
 
@@ -875,151 +590,13 @@
     document.getElementById('lvContent').scrollTop = 0;
   }
   function goBack(){
-    if(curPage==='rules') goPage('rebate','销售奖励');
-    else if(curPage==='withdrawBlock') goPage('withdraw','奖励提币');
+    if(curPage==='withdrawBlock') goPage('withdraw','奖励提币');
     else if(curPage==='withdraw') goPage('rebate','销售奖励');
     else if(curPage==='rebate') goPage('member','个人中心');
     else showT('返回 CA 上级页面');
   }
   function openSheet(id){ if(window.event && window.event.stopPropagation){ window.event.stopPropagation(); } document.getElementById('mask').classList.add('show'); document.getElementById(id).classList.add('show'); }
   function closeSheets(){ document.getElementById('mask').classList.remove('show'); document.querySelectorAll('.sheet, .cmodal').forEach(function(s){ s.classList.remove('show'); }); }
-  function updateTransferUI(){
-    var rows = document.querySelectorAll('#p-transfer .mrow');
-    var n = document.querySelectorAll('#p-transfer .mrow.sel').length;
-    document.getElementById('selCount').textContent = '已选 ' + n + ' 台';
-    document.getElementById('confirmTransferBtn').textContent = n>0 ? ('确认转赠（' + n + ' 台）') : '确认转赠';
-    document.getElementById('selAllBtn').textContent = (n===rows.length && n>0) ? '☑ 取消全选' : '☑ 全选';
-  }
-  function toggleMiner(el){
-    el.classList.toggle('sel');
-    el.querySelector('.mck').textContent = el.classList.contains('sel') ? '✓' : '';
-    updateTransferUI();
-  }
-  function toggleSelectAll(){
-    var rows = document.querySelectorAll('#p-transfer .mrow');
-    var allSel = document.querySelectorAll('#p-transfer .mrow.sel').length === rows.length;
-    rows.forEach(function(r){
-      if(allSel){ r.classList.remove('sel'); r.querySelector('.mck').textContent=''; }
-      else { r.classList.add('sel'); r.querySelector('.mck').textContent='✓'; }
-    });
-    updateTransferUI();
-  }
-  function confirmTransfer(){
-    var el=document.getElementById('recvAddr'); var v=el?el.value.trim():'';
-    if(!v){ showT('请输入接收地址'); return; }
-    if(!isRegistered(v)){ showT('该账户未注册，无法转赠矿机'); checkRecvAddr(); return; }
-    var sel = document.querySelectorAll('#p-transfer .mrow.sel');
-    if(sel.length===0){ showT('请先勾选要转赠的矿机'); return; }
-    document.getElementById('tcAddr').textContent = v;
-    document.getElementById('tcCount').textContent = sel.length + ' 台';
-    var chips=[]; sel.forEach(function(r){
-      var no=(r.querySelector('.mno').textContent.match(/#\d+/)||[''])[0];
-      var hm=r.querySelector('.msub').textContent.match(/算力\s*(\d+)\s*T\/H/);
-      chips.push('<span class="idchip">'+no+(hm?' · '+hm[1]+' T/H':'')+'</span>');
-    });
-    document.getElementById('tcIds').innerHTML = chips.join('');
-    document.getElementById('transferConfirmModal').classList.add('show');
-  }
-  function closeTransferConfirm(){ document.getElementById('transferConfirmModal').classList.remove('show'); }
-  function doTransfer(){
-    var n = document.querySelectorAll('#p-transfer .mrow.sel').length;
-    closeTransferConfirm();
-    showT('已提交转赠 ' + n + ' 台矿机');
-  }
-  // ── 接收地址校验（是否 CA 注册地址）──
-  var DEMO_REGISTERED = ['0x88f3a24c9b7e5d106a3f2c8b1a9e4d7c5b0a2f13'];
-  function normAddr(v){ return (v||'').trim().toLowerCase(); }
-  function isRegistered(v){ return DEMO_REGISTERED.indexOf(normAddr(v))>=0; }
-  function checkRecvAddr(){
-    var el=document.getElementById('recvAddr'); if(!el) return null;
-    var v=el.value.trim(), msg=document.getElementById('recvAddrMsg');
-    if(!v){ msg.textContent=''; return null; }
-    if(isRegistered(v)){ msg.textContent='✓ 已注册地址，可转赠'; msg.style.color='#34d399'; return true; }
-    msg.textContent='该账户未注册，无法转赠矿机'; msg.style.color='#fb7185'; return false;
-  }
-  function fillDemoAddr(){ var el=document.getElementById('recvAddr'); if(el){ el.value='0x88F3a24C9b7E5D106a3F2C8b1A9e4D7c5B0a2F13'; checkRecvAddr(); } }
-
-  // ── 转赠记录 + 编号区间压缩（支持不连续设备号）+ 分页（每页 5 条）──
-  function idRange(a,b){ var r=[]; for(var i=a;i<=b;i++) r.push(i); return r; }
-  var transferRecords = [
-    { n:18, addr:'0x9f2c…a1b', date:'2026-06-25 14:32:07', ok:true, hash:1300, ids: idRange(100201,100210).concat([100221,100223]).concat(idRange(100240,100245)) },
-    { n:7,  addr:'0x33de…7c0', date:'2026-06-24 10:15:43', ok:true, hash:1000, ids: idRange(100211,100217) },
-    { n:6,  addr:'0x5b71…9d2', date:'2026-06-22 18:07:21', ok:true, hash:1000, ids: idRange(100250,100255) },
-    { n:5,  addr:'0xa4e0…3fc', date:'2026-06-20 09:41:55', ok:true, hash:1000, ids: idRange(100260,100264) },
-    { n:4,  addr:'0xc812…7b5', date:'2026-06-18 21:03:12', ok:true, hash:1000, ids: idRange(100270,100273) },
-    { n:8,  addr:'0x6d90…1a4', date:'2026-06-15 08:26:39', ok:true, hash:1000, ids: idRange(100300,100307) },
-    { n:3,  addr:'0x2f47…e88', date:'2026-06-12 16:52:04', ok:true, hash:1000, ids: idRange(100310,100312) },
-    { n:2,  addr:'0x9012…c3d', date:'2026-06-10 11:18:47', ok:true, hash:1000, ids: idRange(100320,100321) },
-    { n:2,  addr:'0xbb34…07a', date:'2026-06-05 20:34:15', ok:true, hash:1000, ids: idRange(100330,100331) }
-  ];
-  var transferPage = 1, TRANSFER_PAGE_SIZE = 5;
-  function compressIds(ids){
-    ids = ids.slice().sort(function(a,b){ return a-b; });
-    var segs=[], i=0;
-    while(i<ids.length){
-      var s=ids[i], e=ids[i];
-      while(i+1<ids.length && ids[i+1]===e+1){ e=ids[++i]; }
-      segs.push(s===e ? ('#'+s) : ('#'+s+'–#'+e));
-      i++;
-    }
-    return segs;
-  }
-  function transferPageCount(){ return Math.max(1, Math.ceil(transferRecords.length / TRANSFER_PAGE_SIZE)); }
-  function renderTransferRecords(){
-    var el=document.getElementById('transferRecList'); if(!el) return;
-    var total=transferPageCount(); if(transferPage>total) transferPage=total;
-    var start=(transferPage-1)*TRANSFER_PAGE_SIZE;
-    el.innerHTML = transferRecords.slice(start, start+TRANSFER_PAGE_SIZE).map(function(r, li){
-      var idx=start+li, segs=compressIds(r.ids);
-      var preview=segs.slice(0,2).join('、') + (segs.length>2 ? ' 等' : '');
-      var badge='<span class="b b-done">成功</span>';
-      return '<div class="row" onclick="openIdModal('+idx+')">'
-        + '<div class="ic green">📤</div>'
-        + '<div class="rmain"><div class="rtitle">转赠 '+r.n+' 台</div>'
-        + '<div class="rsub">接收 '+r.addr+' · '+r.date+'</div>'
-        + '<div class="idlink">编号 '+preview+' · 查看全部 ›</div></div>'
-        + '<div class="rright"><div class="rdate">'+badge+'</div></div></div>';
-    }).join('');
-    renderTransferPager();
-  }
-  function renderTransferPager(){
-    var el=document.getElementById('transferPager'); if(!el) return;
-    var total=transferPageCount();
-    var h='<span class="pg-btn'+(transferPage===1?' disabled':'')+'" onclick="gotoTransferPage('+(transferPage-1)+')">‹</span>';
-    for(var p=1;p<=total;p++){ h+='<span class="pg-btn'+(p===transferPage?' active':'')+'" onclick="gotoTransferPage('+p+')">'+p+'</span>'; }
-    h+='<span class="pg-btn'+(transferPage===total?' disabled':'')+'" onclick="gotoTransferPage('+(transferPage+1)+')">›</span>';
-    el.innerHTML=h;
-  }
-  function gotoTransferPage(p){ var total=transferPageCount(); if(p<1||p>total) return; transferPage=p; renderTransferRecords(); var l=document.getElementById('transferRecList'); if(l) l.scrollTop=0; }
-  function openTransferRec(){ transferPage=1; renderTransferRecords(); openSheet('transferRecSheet'); }
-  function openIdModal(idx){
-    if(window.event && window.event.stopPropagation){ window.event.stopPropagation(); }
-    var r=transferRecords[idx], segs=compressIds(r.ids);
-    document.getElementById('idModalTitle').textContent='转赠编号（'+r.n+' 台）';
-    document.getElementById('idModalSub').textContent='连续编号已合并为区间，共 '+segs.length+' 段 / '+r.n+' 台 · 算力 '+r.hash+' T/H';
-    document.getElementById('idModalBody').innerHTML='<div class="idwrap">'+segs.map(function(s){ return '<span class="idchip">'+s+' · '+r.hash+' T/H</span>'; }).join('')+'</div>';
-    document.getElementById('idModal').classList.add('show');
-  }
-  function closeIdModal(){ document.getElementById('idModal').classList.remove('show'); }
-  var MY_LEVEL='V8';
-  var RULE_TABLES={
-    std:{batch:'第 4 期',name:'标准原价返佣表',rows:[['普通',380],['V0',380],['V1',480],['V2',580],['V3',680],['V4',730],['V5',780],['V6',830],['V7',880],['V8',930],['V9',960],['V10',980]]},
-    promo:{batch:'第 5 期',name:'促销减半返佣表',rows:[['普通',190],['V0',190],['V1',240],['V2',290],['V3',340],['V4',365],['V5',390],['V6',415],['V7',440],['V8',465],['V9',480],['V10',490]]}
-  };
-  function renderRules(key){
-    var t=RULE_TABLES[key]; if(!t) return;
-    var rb=document.getElementById('ruleBatch'); if(rb) rb.textContent=t.batch;
-    var rt=document.getElementById('ruleTable'); if(rt) rt.textContent=t.name;
-    var tb=document.getElementById('rulesTbody'); if(!tb) return;
-    tb.innerHTML=t.rows.map(function(r){
-      return '<tr><td class="lv">'+r[0]+'</td><td class="tnum tg">'+r[1]+'</td></tr>';
-    }).join('');
-    var ps=document.getElementById('rulePillStd'), pp=document.getElementById('rulePillPromo');
-    if(ps) ps.className='rulepill'+(key==='std'?' on':'');
-    if(pp) pp.className='rulepill'+(key==='promo'?' on':'');
-  }
-  renderTransferRecords();
-  renderRules('std');
   var toastTimer;
   function showT(msg){ var t=document.getElementById('mtoast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2200); }
 </script>
