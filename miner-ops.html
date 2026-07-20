@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CaryPact · 矿机运营（托管费 / 以旧换新 / 销售代理）</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#08090c; --panel:#111318; --panel2:#171a21; --border:#242833;
+    --text:#f2f3f7; --text2:#9aa0ad; --muted:#5f6573;
+    --purple:#7c5cff; --pg:linear-gradient(135deg,#8b5cf6,#6d5cf7);
+    --pink:#ff5277; --green:#22c55e; --bot:#a78bfa; --usdt:#2dd4bf;
+  }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#e7e9f0; color:var(--text); padding:34px 28px 60px; }
+  .gallery-head { text-align:center; margin-bottom:28px; color:#1a1a2e; }
+  .gallery-head h1 { font-size:22px; font-weight:800; }
+  .gallery-head p { font-size:13px; color:#6b7280; margin-top:6px; line-height:1.6; }
+
+  .gallery { display:flex; flex-wrap:wrap; gap:34px 30px; align-items:flex-start; justify-content:center; }
+  .slide { width:340px; }
+  .slide-label { display:flex; align-items:center; gap:8px; justify-content:center; margin-bottom:12px; }
+  .slide-label .no { width:24px; height:24px; border-radius:50%; background:var(--pg); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .slide-label .nm { font-size:13.5px; font-weight:700; color:#374151; }
+
+  /* ── Phone ── */
+  .phone { width:340px; min-height:560px; background:var(--bg); border-radius:40px; box-shadow:0 20px 50px rgba(10,11,16,.32), 0 0 0 9px #0b0c10, 0 0 0 10px #2a2d45;
+           position:relative; overflow:hidden; display:flex; flex-direction:column; }
+  .notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:126px; height:26px; background:#0b0c10; border-radius:0 0 16px 16px; z-index:60; }
+  .statusbar { height:36px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 24px; font-size:12px; font-weight:600; color:#fff; }
+  .statusbar .right { display:flex; gap:6px; font-size:10.5px; opacity:.85; }
+
+  /* top bar */
+  .topbar { height:50px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; }
+  .logo { display:flex; align-items:center; gap:7px; font-size:15px; font-weight:800; }
+  .logo .mark { width:22px; height:22px; border-radius:50%; background:conic-gradient(from 210deg,#3b82f6,#7873f5,#21d4fd,#3b82f6); box-shadow:0 0 8px rgba(124,92,255,.5); }
+  .top-actions { display:flex; align-items:center; gap:7px; }
+  .wallet { display:flex; align-items:center; gap:5px; background:var(--pg); color:#fff; border:none; height:30px; padding:0 11px; border-radius:16px; font-size:11px; font-weight:700; box-shadow:0 4px 14px rgba(124,92,255,.4); }
+  .iconbtn { width:30px; height:30px; border-radius:50%; background:#1c1f27; border:1px solid #2a2e3a; color:#cdd0db; font-size:13px; display:flex; align-items:center; justify-content:center; }
+
+  /* sub bar (← 返回 Title) */
+  .subbar { height:48px; flex-shrink:0; display:flex; align-items:center; position:relative; padding:0 14px; }
+  .subbar .bk { position:absolute; left:14px; color:#e7e9f2; font-size:14px; display:flex; align-items:center; gap:6px; }
+  .subbar .tt { flex:1; text-align:center; font-size:16px; font-weight:700; color:#fff; }
+
+  /* content */
+  .content { flex:1; padding:6px 16px 22px; }
+  .sect { font-size:17px; font-weight:800; color:#fff; margin:18px 2px 12px; }
+
+  /* hero */
+  .hero { background:var(--pg); border-radius:20px; padding:18px 18px 20px; box-shadow:0 14px 30px rgba(124,92,255,.34); position:relative; overflow:hidden; }
+  .hero .h-lbl { font-size:12.5px; opacity:.9; }
+  .hero .h-big { font-size:30px; font-weight:800; margin-top:5px; letter-spacing:.5px; } .hero .h-big small { font-size:14px; font-weight:600; opacity:.85; margin-left:5px; }
+  .hero .h-row { display:flex; gap:9px; margin-top:16px; }
+  .hero .h-cell { flex:1; background:rgba(255,255,255,.15); border-radius:12px; padding:9px 8px; }
+  .hero .h-cell .c-l { font-size:10.5px; opacity:.9; } .hero .h-cell .c-v { font-size:15px; font-weight:800; margin-top:3px; }
+
+  /* buttons */
+  .wbtn-row { display:flex; gap:10px; margin:14px 0 4px; }
+  .wbtn { flex:1; height:46px; border:none; border-radius:13px; background:var(--pg); color:#fff; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 8px 22px rgba(124,92,255,.4); }
+  .wbtn.ghost { background:#171a21; color:#c4b5fd; border:1px solid var(--border); box-shadow:none; }
+  .input { width:100%; height:46px; background:var(--panel2); border:1px solid var(--border); border-radius:12px; padding:0 14px; color:#fff; font-size:15px; outline:none; margin:8px 0; }
+  .input::placeholder { color:var(--muted); }
+
+  /* cards / rows */
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:14px 16px; margin-bottom:14px; }
+  .card-t { font-size:14px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+  .card-t .more { font-size:12px; color:var(--purple); font-weight:600; }
+  .row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .row:last-child { border-bottom:none; }
+  .row .ic { width:38px; height:38px; border-radius:11px; background:#241f3a; color:var(--bot); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .row .ic.green { background:#10301f; color:#34d399; } .row .ic.amber { background:#3a2c12; color:#fbbf24; } .row .ic.red { background:#3a1620; color:#fb7185; }
+  .row .rmain { flex:1; min-width:0; }
+  .row .rtitle { font-size:14px; font-weight:600; color:#fff; display:flex; align-items:center; }
+  .row .rsub { font-size:11px; color:var(--text2); margin-top:3px; line-height:1.4; }
+  .row .rright { text-align:right; flex-shrink:0; }
+  .row .rval { font-size:15px; font-weight:800; }
+  .row .rval.usdt { color:var(--usdt); }
+  .row .rdate { font-size:10.5px; color:var(--muted); margin-top:3px; }
+  .row .rtag { font-size:12px; color:var(--text2); display:flex; align-items:center; gap:5px; }
+  .chev { color:#4b4f5e; font-size:16px; flex-shrink:0; }
+
+  .b { display:inline-flex; align-items:center; padding:1px 7px; border-radius:8px; font-size:10.5px; font-weight:700; }
+  .b-done { background:#10301f; color:#34d399; } .b-wait { background:#3a2c12; color:#fbbf24; } .b-fail { background:#3a1620; color:#fb7185; }
+  .b-usdt { background:#0e2e2b; color:var(--usdt); } .b-info { background:#1c2440; color:#7da2ff; }
+  .pill { display:inline-block; padding:0 7px; border-radius:6px; font-size:11px; font-weight:700; background:#1c2440; color:#8fb0ff; }
+
+  /* note */
+  .note { background:#1a1726; border:1px solid #2e2942; border-radius:12px; padding:10px 12px; font-size:11px; color:#b9a8e8; line-height:1.6; margin-bottom:14px; display:flex; gap:7px; }
+  .note.warn { background:#241a10; border-color:#3d2c12; color:#e7b667; }
+
+  .kv { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px dashed var(--border); font-size:13px; }
+  .kv:last-child { border-bottom:none; } .kv .k { color:var(--text2); } .kv .v { font-weight:700; color:#fff; }
+
+  /* level table */
+  .ttab { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  .ttab th { background:#171a21; color:var(--text2); font-weight:700; padding:8px; text-align:left; font-size:11px; }
+  .ttab td { padding:8px; border-bottom:1px solid var(--border); color:#dfe1ea; }
+  .ttab tr.me td { background:#1a1726; color:#fff; font-weight:700; }
+  .tnum { text-align:right; } .tg { color:#34d399; font-weight:700; }
+  .ttab.t4 th, .ttab.t4 td { padding:7px 6px; font-size:11px; }
+  .ttab.t4 .lv { font-weight:700; color:#fff; }
+
+  /* block page (未入金拦截，另开一页) */
+  .blockp { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:430px; padding:0 22px; }
+  .blockp .bic { width:66px; height:66px; border-radius:50%; background:#101a2a; color:#7da2ff; display:flex; align-items:center; justify-content:center; font-size:30px; }
+  .blockp .bt { font-size:18px; font-weight:800; color:#fff; margin-top:16px; }
+  .blockp .bx { font-size:13.5px; color:var(--text2); line-height:1.75; margin-top:10px; }
+
+  /* selectable miner list */
+  .mrow { display:flex; align-items:center; gap:12px; padding:12px 2px; border-bottom:1px solid var(--border); cursor:pointer; }
+  .mrow:last-child { border-bottom:none; }
+  .mck { width:22px; height:22px; border-radius:7px; border:2px solid #3a3f4d; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:transparent; }
+  .mrow.sel .mck { background:var(--pg); border-color:transparent; color:#fff; }
+  .mrow .mmain { flex:1; min-width:0; } .mrow .mno { font-size:14px; font-weight:700; color:#fff; } .mrow .msub { font-size:11px; color:var(--text2); margin-top:2px; }
+  .sel-head { display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text2); margin:10px 2px 2px; } .sel-head b { color:var(--purple); }
+  .selall { font-size:12px; color:var(--purple); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px; }
+  .list-more { font-size:11px; color:var(--muted); text-align:center; padding:9px 0 2px; }
+
+  /* menu (drawer content) */
+  .menu-logo { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:800; padding:16px 20px 12px; border-bottom:1px solid #1b1e26; }
+  .menu-logo .mark { width:22px; height:22px; border-radius:50%; background:conic-gradient(from 210deg,#3b82f6,#7873f5,#21d4fd,#3b82f6); }
+  .menu-item { padding:12px 20px; font-size:14px; color:#c7cad4; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+  .menu-item.dim { color:#6b7180; }
+  .menu-item.active { color:var(--pink); font-weight:700; }
+  .menu-cap { font-size:10.5px; letter-spacing:1px; color:#565b69; padding:12px 20px 4px; text-transform:uppercase; }
+  .menu-sep { height:1px; background:#1b1e26; margin:6px 16px; }
+
+  /* ── live overrides ── */
+  .live-head { text-align:center; margin:72px auto 22px; color:#1a1a2e; }
+  .live-head h2 { font-size:20px; font-weight:800; } .live-head p { font-size:12.5px; color:#6b7280; margin-top:6px; }
+  .live-wrap { display:flex; justify-content:center; }
+  .live .phone { width:390px; height:844px; min-height:0; overflow:hidden; }
+  .live .content { flex:1; overflow-y:auto; } .live .content::-webkit-scrollbar { width:0; }
+  .live .page { display:none; } .live .page.active { display:block; }
+  .live .menu-item, .live .row, .live .mrow, .live .wallet, .live .iconbtn, .live .more, .live .chev, .live .sheet-x, .live .subbar .bk, .live .wbtn { cursor:pointer; }
+  .drawer-mask { position:absolute; inset:0; background:rgba(0,0,0,.55); z-index:90; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .drawer-mask.show { opacity:1; pointer-events:all; }
+  .drawer { position:absolute; top:0; left:0; bottom:0; width:250px; background:#0d0e13; border-right:1px solid #20222c; z-index:91; transform:translateX(-100%); transition:transform .26s cubic-bezier(.4,1,.5,1); display:flex; flex-direction:column; }
+  .drawer.show { transform:none; } .drawer .menu { flex:1; overflow-y:auto; padding:6px 0; } .drawer .menu::-webkit-scrollbar { width:0; }
+  .sheet-mask { position:absolute; inset:0; background:rgba(0,0,0,.6); z-index:100; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .sheet-mask.show { opacity:1; pointer-events:all; }
+  .sheet { position:absolute; left:0; right:0; bottom:0; background:#12141a; border-top:1px solid #262a34; border-radius:22px 22px 0 0; z-index:101; transform:translateY(100%); transition:transform .28s cubic-bezier(.4,1.2,.5,1); max-height:86%; display:flex; flex-direction:column; }
+  .sheet.show { transform:none; }
+  .sheet-h { padding:16px 18px 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+  .sheet-h .st { font-size:16px; font-weight:800; color:#fff; } .sheet-x { font-size:22px; color:var(--muted); }
+  .sheet-b { padding:14px 18px 20px; overflow-y:auto; }
+  .grab { width:38px; height:4px; background:#33353f; border-radius:3px; margin:8px auto 0; }
+  /* centered modal (居中弹框) */
+  .cmodal { position:absolute; inset:0; z-index:101; display:flex; align-items:center; justify-content:center; padding:0 18px; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .cmodal.show { opacity:1; pointer-events:all; }
+  .cmodal .cbox { width:100%; max-width:330px; max-height:74%; background:#12141a; border:1px solid #262a34; border-radius:20px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.6); transform:scale(.92); transition:transform .22s; }
+  .cmodal.show .cbox { transform:none; }
+  .cmodal .sheet-b { flex:1; min-height:0; }
+  /* pagination */
+  .pager { display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-top:1px solid var(--border); flex-shrink:0; }
+  .pager .pg-btn { min-width:30px; height:30px; padding:0 9px; border-radius:8px; background:#171a21; border:1px solid var(--border); color:#c7cad4; font-size:13px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+  .pager .pg-btn.active { background:var(--pg); color:#fff; border-color:transparent; }
+  .pager .pg-btn.disabled { opacity:.35; pointer-events:none; }
+  .addr-msg { font-size:11.5px; margin:3px 2px 0; min-height:15px; }
+  /* miner id chips (编号详情) */
+  .idwrap { display:flex; flex-wrap:wrap; gap:8px; }
+  .idchip { background:#171a21; border:1px solid var(--border); border-radius:8px; padding:5px 10px; font-size:12.5px; color:#dfe1ea; font-weight:600; }
+  .idsub { font-size:11.5px; color:var(--muted); padding:2px 0 12px; }
+  .idlink { font-size:11px; color:#8fb0ff; margin-top:3px; }
+  .mtoast { position:absolute; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:#2a2c38; color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; z-index:200; opacity:0; transition:all .25s; white-space:nowrap; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #393b48; }
+  .mtoast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .prog { height:8px; background:#1c1f27; border-radius:5px; overflow:hidden; margin:8px 0; }
+  .prog > i { display:block; height:100%; background:var(--pg); border-radius:5px; }
+  .pill2 { display:inline-block; padding:7px 15px; border-radius:11px; background:#171a21; border:1px solid var(--border); color:var(--text2); font-size:13px; font-weight:700; cursor:pointer; }
+  .pill2.on { background:var(--pg); color:#fff; border-color:transparent; }
+  .b-grey { background:#20222c; color:#8b909e; }
+  .b-usdt2 { background:#0e2e2b; color:var(--usdt); }
+  .stat2 { display:flex; gap:10px; margin:10px 0; } .stat2 > div { flex:1; background:var(--panel2); border:1px solid var(--border); border-radius:13px; padding:11px 12px; }
+  .stat2 .l { font-size:11px; color:var(--text2); } .stat2 .v { font-size:16px; font-weight:800; color:#fff; margin-top:3px; }
+</style>
+</head>
+<body>
+
+<div class="gallery-head">
+  <h1>CaryPact · 矿机运营（托管费 / 以旧换新 / 销售代理）· C 端</h1>
+  <p>算力服务器全生命周期运营三大功能的 C 端界面：<b>托管费</b>（我的托管 / 续费·预充值 / 欠费停机处置）· <b>以旧换新</b>（降益提示 / 换新页 / 换新记录）· <b>销售代理</b>（身份·达标进度 / 线下申请 / 代理收益）。<br>上方多屏走查便于讲解，页面底部为可交互动态原型（续费金额随时长/折扣实时计算、换新补差价计算）。</p>
+</div>
+
+<div class="gallery">
+  <div class="slide"><div class="slide-label"><span class="no">1</span><span class="nm">托管费 · 我的托管（多状态）</span></div><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div><div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div><div class="subbar"><span class="bk">← 返回</span><span class="tt">我的托管</span></div><div class="content"><div class="hero">
+  <div class="h-lbl">托管中矿机</div>
+  <div class="h-big">64 <small>台</small></div>
+  <div class="h-row">
+    <div class="h-cell"><div class="c-l">免费剩余</div><div class="c-v">320 天</div></div>
+    <div class="h-cell"><div class="c-l">本月应缴</div><div class="c-v">210 U</div></div>
+    <div class="h-cell"><div class="c-l">预充余额</div><div class="c-v">399 U</div></div>
+  </div>
+</div>
+<div class="wbtn-row"><button class="wbtn">续费 · 预充值</button><button class="wbtn ghost">欠费处理</button></div>
+<div class="sect" style="font-size:15px;">矿机托管</div>
+<div class="card" style="padding:2px 16px;">
+  <div class="row"><div class="ic green">🖥</div><div class="rmain"><div class="rtitle">矿机 #101201</div><div class="rsub">算力 1000 T/H · <span class="b b-info">免费中</span> 剩 320 天 · 到期 2027-05-01</div></div><div class="rright"><div class="rval" style="font-size:13px;color:var(--text2);">70 U/月</div></div></div>
+  <div class="row"><div class="ic green">🖥</div><div class="rmain"><div class="rtitle">矿机 #101250</div><div class="rsub">算力 1000 T/H · <span class="b b-done">计费中</span> 剩 142 天 · 预充 399 U</div></div><div class="rright"><div class="rval" style="font-size:13px;color:var(--text2);">70 U/月</div></div></div>
+  <div class="row"><div class="ic red">🖥</div><div class="rmain"><div class="rtitle">矿机 #101300</div><div class="rsub">算力 1000 T/H · <span class="b b-fail">欠费停机·犹豫期</span> <span style="color:#fb7185;">剩 18 天</span></div></div><div class="rright"><div class="idlink" style="color:var(--purple);font-weight:700;">去处理 ›</div></div></div>
+  <div class="row"><div class="ic amber">🖥</div><div class="rmain"><div class="rtitle">矿机 #101320</div><div class="rsub">算力 1000 T/H · <span class="b b-wait">已提货</span> · 实体机已寄出，自行挖矿</div></div><div class="rright"></div></div>
+</div></div></div></div>
+  <div class="slide"><div class="slide-label"><span class="no">2</span><span class="nm">托管费 · 续费·预充值（折扣计算）</span></div><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div><div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div><div class="subbar"><span class="bk">← 返回</span><span class="tt">续费 · 预充值</span></div><div class="content"><div class="sect" style="font-size:15px;margin-top:12px;">续费 · 预充值</div>
+<div class="card">
+  <div class="card-t">选择矿机</div>
+  <div class="kv"><span class="k">已选矿机</span><span class="v">3 台 · <span style="color:var(--purple);">全选 ›</span></span></div>
+  <div style="font-size:13px;color:var(--text2);margin:12px 2px 8px;">预充时长（预缴越多折扣越大）</div>
+  <div style="display:flex;gap:8px;"><span class="pill2">3 个月</span><span class="pill2">6 个月 · 95 折</span><span class="pill2 on">12 个月 · 9 折</span></div>
+</div>
+<div class="card">
+  <div class="kv"><span class="k">月单价</span><span class="v">70 U/月·台</span></div>
+  <div class="kv"><span class="k">台数 × 时长</span><span class="v">3 台 × 12 月</span></div>
+  <div class="kv"><span class="k">折扣</span><span class="v" style="color:var(--usdt);">9 折</span></div>
+  <div class="kv"><span class="k">合计</span><span class="v" style="font-size:18px;">2,268.00 USDT</span></div>
+</div>
+<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 14px;"><span>余额：9,490.00 USDT</span><span>原价 2,520 · 省 252 U</span></div>
+<button class="wbtn" style="width:100%;height:50px;">确认支付 · 2,268 USDT</button></div></div></div>
+  <div class="slide"><div class="slide-label"><span class="no">3</span><span class="nm">托管费 · 欠费停机处置（犹豫期·三选一）</span></div><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div><div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div><div class="subbar"><span class="bk">← 返回</span><span class="tt">托管到期处理</span></div><div class="content"><div class="blockp" style="min-height:390px;">
+  <div class="bic" style="background:#241a10;color:#fbbf24;">⏸</div>
+  <div class="bt">托管已到期 · 挖矿已停止</div>
+  <div class="bx">矿机 #101300 托管到期未续费，已欠费停机、停止产币。<br><b style="color:#e7b667;">犹豫期剩 18 天</b>，请尽快处理；<br>逾期未处理将由<b style="color:#fb7185;">平台回收、算力清零</b>。</div>
+</div>
+<div class="card" style="margin-top:4px;"><div class="row"><div class="ic green">▶</div><div class="rmain"><div class="rtitle">续托管费 · 开机挖矿</div><div class="rsub">续费后排期开机重新挖矿（排期开机有间隔时间）</div></div><span class="chev">›</span></div></div>
+<div class="card"><div class="row"><div class="ic amber">📦</div><div class="rmain"><div class="rtitle">支付物流费 · 邮寄实体机</div><div class="rsub">平台邮寄实体矿机给您，自行挖矿（脱离平台托管）</div></div><span class="chev">›</span></div></div>
+<div class="note warn" style="margin-top:10px;"><span>⚠</span><span>逾期未处理（既不续费也不邮寄）→ 平台回收该矿机、<b style="color:#fb7185;">算力清零</b>；此前已产收益仍可提取。</span></div></div></div></div>
+  <div class="slide"><div class="slide-label"><span class="no">4</span><span class="nm">以旧换新 · 降益提示 + 入口</span></div><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div><div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div><div class="subbar"><span class="bk">← 返回</span><span class="tt">我的矿机</span></div><div class="content"><div class="note warn" style="margin-top:8px;align-items:center;"><span style="font-size:16px;">📈</span><span>您的<b style="color:#fff;">第 3 期</b>矿机算力 <b>1000 T/H</b>，最新<b style="color:#fff;">第 7 期</b>已达 <b style="color:#8fb0ff;">1200 T/H</b>；换新可提升收益约 <b style="color:#34d399;">20%</b>。 <span style="color:var(--purple);font-weight:700;">以旧换新 ›</span></span></div>
+<div class="sect" style="font-size:15px;">可换新矿机</div>
+<div class="card" style="padding:2px 16px;">
+  <div class="row"><div class="ic green">🖥</div><div class="rmain"><div class="rtitle">矿机 #100301</div><div class="rsub">当前算力 1000 T/H · 第 3 期</div></div><div class="rright"><span class="b b-info">可换新</span></div></div>
+  <div class="row"><div class="ic green">🖥</div><div class="rmain"><div class="rtitle">矿机 #100305</div><div class="rsub">当前算力 1000 T/H · 第 3 期</div></div><div class="rright"><span class="b b-info">可换新</span></div></div>
+</div></div></div></div>
+  <div class="slide"><div class="slide-label"><span class="no">5</span><span class="nm">以旧换新 · 换新页（补差价）</span></div><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div><div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div><div class="subbar"><span class="bk">← 返回</span><span class="tt">以旧换新</span></div><div class="content"><div class="sect" style="font-size:15px;margin-top:12px;">以旧换新</div>
+<div class="card"><div class="card-t">旧机（折价回收）</div><div class="kv"><span class="k">矿机编号</span><span class="v">#100301</span></div><div class="kv"><span class="k">当前算力</span><span class="v">1000 T/H</span></div><div class="kv"><span class="k">折价</span><span class="v" style="color:var(--usdt);">1,990 U</span></div></div>
+<div style="text-align:center;color:var(--purple);font-size:20px;margin:-6px 0 6px;">↓ 换新</div>
+<div class="card"><div class="card-t">新机（最新批次）</div><div class="kv"><span class="k">批次</span><span class="v">第 7 期</span></div><div class="kv"><span class="k">算力</span><span class="v" style="color:#8fb0ff;">1,200 T/H</span></div></div>
+<div class="card">
+  <div class="kv"><span class="k">最新批次价</span><span class="v">3,980 U</span></div>
+  <div class="kv"><span class="k">旧机折价</span><span class="v" style="color:var(--usdt);">− 1,990 U</span></div>
+  <div class="kv"><span class="k">补差价</span><span class="v" style="font-size:18px;">1,990 USDT</span></div>
+</div>
+<div class="note"><span>ℹ</span><span>换新<b style="color:#c4b5fd;">不产生销售返佣</b>；换新后按<b style="color:#c4b5fd;">最新算力</b>计收益；新算力<b style="color:#c4b5fd;">计入个人算力</b>（不计入团队业绩）。</span></div>
+<button class="wbtn" style="width:100%;height:50px;">确认换新 · 支付补差价 1,990 USDT</button></div></div></div>
+  <div class="slide"><div class="slide-label"><span class="no">6</span><span class="nm">以旧换新 · 换新记录</span></div><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div><div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div><div class="subbar"><span class="bk">← 返回</span><span class="tt">换新记录</span></div><div class="content"><div class="sect" style="font-size:15px;margin-top:12px;">换新记录</div>
+<div class="card" style="padding:2px 16px;">
+  <div class="row"><div class="ic green">♻</div><div class="rmain"><div class="rtitle">#100301 → #101801</div><div class="rsub">算力 1000 → <span style="color:#8fb0ff;">1200 T/H</span> · 补差价 1,990 U</div><div class="rsub">2026-07-15 10:22:03</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+  <div class="row"><div class="ic green">♻</div><div class="rmain"><div class="rtitle">#100208 → #101790</div><div class="rsub">算力 1000 → <span style="color:#8fb0ff;">1200 T/H</span> · 补差价 1,990 U</div><div class="rsub">2026-06-28 14:02:55</div></div><div class="rright"><div class="rdate"><span class="b b-done">成功</span></div></div></div>
+</div></div></div></div>
+  <div class="slide"><div class="slide-label"><span class="no">7</span><span class="nm">销售代理 · 身份（已开通·收益）</span></div><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div><div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div><div class="subbar"><span class="bk">← 返回</span><span class="tt">销售代理</span></div><div class="content"><div class="hero">
+  <div class="h-lbl">销售代理身份</div>
+  <div class="h-big" style="font-size:24px;">已开通 <small style="font-size:13px;">· L1 代理</small></div>
+  <div class="h-row">
+    <div class="h-cell"><div class="c-l">代理返佣</div><div class="c-v">12%</div></div>
+    <div class="h-cell"><div class="c-l">累计代理返佣</div><div class="c-v">18,600 U</div></div>
+    <div class="h-cell"><div class="c-l">托管费分润</div><div class="c-v">3,420 U</div></div>
+  </div>
+</div>
+<div class="card">
+  <div class="card-t">达标进度</div>
+  <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);"><span>团队累计销量</span><span><b style="color:#34d399;">1,250</b> / 500 台 · 已达标</span></div>
+  <div class="prog"><i style="width:100%;"></i></div>
+</div>
+<div class="sect" style="font-size:15px;">代理收益明细</div>
+<div class="card" style="padding:2px 16px;">
+  <div class="row"><div class="ic green">💰</div><div class="rmain"><div class="rtitle">代理返佣 · 下级购机</div><div class="rsub">2026-07-15 · 订单 ORD-77420</div></div><div class="rright"><div class="rval usdt">+1,440</div></div></div>
+  <div class="row"><div class="ic amber">🧾</div><div class="rmain"><div class="rtitle">托管费分润 · 团队托管</div><div class="rsub">2026-07-01 · 42 台</div></div><div class="rright"><div class="rval usdt">+294</div></div></div>
+</div></div></div></div>
+  <div class="slide"><div class="slide-label"><span class="no">8</span><span class="nm">销售代理 · 申请（未达标）</span></div><div class="phone"><div class="notch"></div><div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div><div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div><div class="subbar"><span class="bk">← 返回</span><span class="tt">销售代理</span></div><div class="content"><div class="sect" style="font-size:15px;margin-top:12px;">申请销售代理</div>
+<div class="card">
+  <div class="card-t">达标进度</div>
+  <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);"><span>团队累计销量</span><span><b style="color:#e7b667;">120</b> / 500 台</span></div>
+  <div class="prog"><i style="width:24%;"></i></div>
+  <div style="font-size:11px;color:var(--muted);margin-top:6px;">还差 380 台达标</div>
+</div>
+<div class="note"><span>ℹ</span><span>个人团队累计算力服务器销量达 <b style="color:#c4b5fd;">500 台</b>后可申请销售代理，享<b style="color:#c4b5fd;">专属返佣 + 多层级极差 + 托管费分润</b>。</span></div>
+<div class="card">
+  <div class="card-t">申请方式</div>
+  <div class="kv"><span class="k">① 线下申请</span><span class="v" style="font-weight:400;color:var(--text2);font-size:12px;">联系平台/上级提交资料</span></div>
+  <div class="kv"><span class="k">② 后台开通</span><span class="v" style="font-weight:400;color:var(--text2);font-size:12px;">运营核对达标后开通</span></div>
+</div>
+<button class="wbtn" style="width:100%;height:50px;background:#20222c;color:#5f6573;box-shadow:none;">未达标 · 暂不可申请</button></div></div></div>
+</div>
+
+<!-- LIVE -->
+<div class="live-head"><h2>高保真动态原型（可交互）</h2><p>☰ 切换 我的托管 / 以旧换新 / 销售代理；续费页选时长实时算折扣金额；换新页显示补差价。</p></div>
+<div class="live-wrap"><div class="live">
+  <div class="phone">
+    <div class="notch"></div>
+    <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+    <div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn" onclick="openDrawer()">☰</button></div></div>
+    <div class="subbar"><span class="bk" onclick="goBack()">← 返回</span><span class="tt" id="lvTitle">我的托管</span></div>
+    <div class="content" id="lvContent">
+
+      <div class="page active" id="p-hosting">
+        <div class="hero"><div class="h-lbl">托管中矿机</div><div class="h-big">64 <small>台</small></div>
+          <div class="h-row"><div class="h-cell"><div class="c-l">免费剩余</div><div class="c-v">320 天</div></div><div class="h-cell"><div class="c-l">本月应缴</div><div class="c-v">210 U</div></div><div class="h-cell"><div class="c-l">预充余额</div><div class="c-v">399 U</div></div></div></div>
+        <div class="wbtn-row"><button class="wbtn" onclick="goPage('renew','续费 · 预充值')">续费 · 预充值</button><button class="wbtn ghost" onclick="showT('前往欠费处理')">欠费处理</button></div>
+        <div class="sect" style="font-size:15px;">矿机托管</div>
+        <div class="card" style="padding:2px 16px;">
+          <div class="row"><div class="ic green">🖥</div><div class="rmain"><div class="rtitle">矿机 #101201</div><div class="rsub">1000 T/H · <span class="b b-info">免费中</span> 剩 320 天</div></div><div class="rright" style="font-size:12px;color:var(--text2);">70 U/月</div></div>
+          <div class="row"><div class="ic green">🖥</div><div class="rmain"><div class="rtitle">矿机 #101250</div><div class="rsub">1000 T/H · <span class="b b-done">计费中</span> 剩 142 天</div></div><div class="rright" style="font-size:12px;color:var(--text2);">预充 399 U</div></div>
+          <div class="row"><div class="ic red">🖥</div><div class="rmain"><div class="rtitle">矿机 #101300</div><div class="rsub">1000 T/H · <span class="b b-fail">欠费停机</span> 剩 18 天</div></div><div class="rright"><span class="idlink" style="color:var(--purple);font-weight:700;" onclick="showT('去处理：续费/邮寄/回收')">去处理 ›</span></div></div>
+        </div>
+      </div>
+
+      <div class="page" id="p-renew">
+        <div class="card"><div class="card-t">选择矿机</div><div class="kv"><span class="k">已选矿机</span><span class="v">3 台</span></div>
+          <div style="font-size:13px;color:var(--text2);margin:12px 2px 8px;">预充时长</div>
+          <div style="display:flex;gap:8px;"><span class="pill2" onclick="setRenew(3,1)">3 个月</span><span class="pill2" onclick="setRenew(6,0.95)">6 个月·95折</span><span class="pill2 on" id="rp12" onclick="setRenew(12,0.9)">12 个月·9折</span></div>
+        </div>
+        <div class="card">
+          <div class="kv"><span class="k">月单价 × 台数 × 时长</span><span class="v" id="rBase">70 × 3 × 12</span></div>
+          <div class="kv"><span class="k">折扣</span><span class="v" style="color:var(--usdt);" id="rDisc">9 折</span></div>
+          <div class="kv"><span class="k">合计</span><span class="v" style="font-size:18px;" id="rTotal">2,268.00 USDT</span></div>
+        </div>
+        <button class="wbtn" style="width:100%;height:50px;" id="rBtn" onclick="showT('已支付续费')">确认支付 · 2,268 USDT</button>
+      </div>
+
+      <div class="page" id="p-tradein">
+        <div class="note warn" style="align-items:center;"><span style="font-size:16px;">📈</span><span>第 3 期 1000 T/H → 最新第 7 期 <b style="color:#8fb0ff;">1200 T/H</b>，换新提升收益约 <b style="color:#34d399;">20%</b>。</span></div>
+        <div class="card"><div class="card-t">旧机 → 新机</div><div class="kv"><span class="k">旧机 #100301</span><span class="v">1000 T/H · 折价 1,990 U</span></div><div class="kv"><span class="k">新机（第 7 期）</span><span class="v" style="color:#8fb0ff;">1200 T/H</span></div></div>
+        <div class="card"><div class="kv"><span class="k">最新批次价</span><span class="v">3,980 U</span></div><div class="kv"><span class="k">旧机折价</span><span class="v" style="color:var(--usdt);">− 1,990 U</span></div><div class="kv"><span class="k">补差价</span><span class="v" style="font-size:18px;">1,990 USDT</span></div></div>
+        <div class="note"><span>ℹ</span><span>不产生销售返佣 · 按最新算力计收益 · 计入个人算力（不计团队业绩）。</span></div>
+        <button class="wbtn" style="width:100%;height:50px;" onclick="showT('已确认换新，支付补差价 1,990 USDT')">确认换新 · 补差价 1,990 USDT</button>
+      </div>
+
+      <div class="page" id="p-agent">
+        <div class="hero"><div class="h-lbl">销售代理身份</div><div class="h-big" style="font-size:24px;">已开通 <small style="font-size:13px;">· L1</small></div>
+          <div class="h-row"><div class="h-cell"><div class="c-l">代理返佣</div><div class="c-v">12%</div></div><div class="h-cell"><div class="c-l">代理返佣累计</div><div class="c-v">18,600 U</div></div><div class="h-cell"><div class="c-l">托管分润</div><div class="c-v">3,420 U</div></div></div></div>
+        <div class="card"><div class="card-t">达标进度</div><div style="display:flex;justify-content:space-between;font-size:12px;color:var(--text2);"><span>团队累计销量</span><span><b style="color:#34d399;">1,250</b> / 500 台 · 已达标</span></div><div class="prog"><i style="width:100%;"></i></div></div>
+        <div class="sect" style="font-size:15px;">代理收益明细</div>
+        <div class="card" style="padding:2px 16px;">
+          <div class="row"><div class="ic green">💰</div><div class="rmain"><div class="rtitle">代理返佣 · 下级购机</div><div class="rsub">2026-07-15 · ORD-77420</div></div><div class="rright"><div class="rval usdt">+1,440</div></div></div>
+          <div class="row"><div class="ic amber">🧾</div><div class="rmain"><div class="rtitle">托管费分润 · 团队托管</div><div class="rsub">2026-07-01 · 42 台</div></div><div class="rright"><div class="rval usdt">+294</div></div></div>
+        </div>
+      </div>
+
+    </div>
+    <div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
+    <aside class="drawer" id="drawer">
+      <div class="menu-logo"><span class="mark"></span>CaryPact</div>
+      <nav class="menu">
+        <div class="menu-cap">矿机运营</div>
+        <div class="menu-item active" data-page="hosting" onclick="goPage('hosting','我的托管')">我的托管（托管费）</div>
+        <div class="menu-item" data-page="tradein" onclick="goPage('tradein','以旧换新')">以旧换新</div>
+        <div class="menu-item" data-page="agent" onclick="goPage('agent','销售代理')">销售代理</div>
+      </nav>
+    </aside>
+    <div class="mtoast" id="mtoast">操作成功</div>
+  </div>
+</div></div>
+<script>
+  var curPage='hosting';
+  function openDrawer(){ document.getElementById('drawerMask').classList.add('show'); document.getElementById('drawer').classList.add('show'); }
+  function closeDrawer(){ document.getElementById('drawerMask').classList.remove('show'); document.getElementById('drawer').classList.remove('show'); }
+  function goPage(page,title){
+    document.querySelectorAll('.live .page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('p-'+page).classList.add('active');
+    document.querySelectorAll('.live .menu-item').forEach(function(m){ m.classList.toggle('active', m.getAttribute('data-page')===page); });
+    document.getElementById('lvTitle').textContent=title; curPage=page; closeDrawer(); document.getElementById('lvContent').scrollTop=0;
+  }
+  function goBack(){ if(curPage==='renew') goPage('hosting','我的托管'); else showT('返回上级'); }
+  var toastTimer;
+  function showT(msg){ var t=document.getElementById('mtoast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2200); }
+  // 续费金额计算：台数固定 3，单价 70
+  function setRenew(months,disc){
+    var qty=3, unit=70, total=qty*months*unit*disc;
+    document.querySelectorAll('#p-renew .pill2').forEach(function(p){ p.classList.remove('on'); });
+    event.target.classList.add('on');
+    document.getElementById('rBase').textContent=unit+' × '+qty+' × '+months;
+    document.getElementById('rDisc').textContent=(disc===1?'无折扣':((disc*10)+' 折'));
+    document.getElementById('rTotal').textContent=total.toLocaleString(undefined,{minimumFractionDigits:2})+' USDT';
+    document.getElementById('rBtn').textContent='确认支付 · '+total.toLocaleString()+' USDT';
+  }
+</script>
+</body>
+</html>

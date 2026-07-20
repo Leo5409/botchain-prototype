@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BOT 算力服务器 — 矿机运营（托管费 / 以旧换新 / 销售代理）</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 13px; display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 240px; background: #141627; display: flex; flex-direction: column; flex-shrink: 0; }
+  .logo { padding: 20px 20px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .logo-text { color: #fff; font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .logo-text small { display: block; font-size: 10px; color: rgba(255,255,255,.45); font-weight: 400; margin-top: 2px; letter-spacing: .5px; }
+  .nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .nav-group-title { color: rgba(255,255,255,.3); font-size: 11px; letter-spacing: 1px; padding: 14px 20px 6px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,.55); cursor: pointer; transition: all .15s; font-size: 13px; }
+  .nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.9); }
+  .nav-item.active { background: rgba(91,106,240,.2); color: #7c8ff7; border-right: 2px solid #5b6af0; }
+  .nav-item .ic { width: 16px; text-align: center; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 10px; }
+  .nav-badge.warn { background: #f59e0b; }
+  .nav-badge.new { background: #10b981; }
+  .sidebar-bottom { padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 28px; height: 28px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 600; }
+  .admin-name { color: rgba(255,255,255,.75); font-size: 12px; line-height: 1.2; }
+  .admin-role { color: rgba(255,255,255,.4); font-size: 10px; }
+
+  /* ── Main ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { height: 52px; background: #fff; border-bottom: 1px solid #e8eaed; display: flex; align-items: center; padding: 0 24px; gap: 8px; flex-shrink: 0; }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px; }
+  .breadcrumb .current { color: #1a1a2e; font-weight: 500; }
+  .breadcrumb-sep { color: #d1d5db; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .session-badge { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+  .session-badge .s-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
+
+  /* ── Content ── */
+  .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .page-title { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+  .page-subtitle { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+  .tag-module { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #eef0fe; color: #5b6af0; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+  .tag-new { background: #d1fae5; color: #065f46; }
+
+  /* ── Card ── */
+  .card { background: #fff; border-radius: 10px; border: 1px solid #e8eaed; margin-bottom: 14px; }
+  .card-header { padding: 14px 20px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 13px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 7px; }
+  .card-title::before { content: ''; width: 3px; height: 14px; background: #5b6af0; border-radius: 2px; display: inline-block; }
+  .card-body { padding: 16px 20px; }
+
+  /* ── Stat Grid ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  .stat-card { background: #fff; border: 1px solid #e8eaed; border-radius: 10px; padding: 14px 16px; }
+  .stat-label { font-size: 11px; color: #9ca3af; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .stat-value { font-size: 20px; font-weight: 700; color: #1a1a2e; font-variant-numeric: tabular-nums; }
+  .stat-value small { font-size: 11px; font-weight: 400; color: #9ca3af; margin-left: 4px; }
+  .stat-trend { font-size: 11px; margin-top: 4px; }
+  .stat-trend.up { color: #ef4444; }
+  .stat-trend.down { color: #10b981; }
+  .stat-trend.neutral { color: #9ca3af; }
+  .stat-card.alert { border-color: #fecaca; background: linear-gradient(135deg, #fef2f2, #fff); }
+  .stat-card.warn { border-color: #fde68a; background: linear-gradient(135deg, #fffbeb, #fff); }
+  .stat-card.ok { border-color: #a7f3d0; background: linear-gradient(135deg, #ecfdf5, #fff); }
+
+  /* ── Filter ── */
+  .filter-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+  .form-group.wide { flex: 1.5; }
+  .form-label { font-size: 12px; color: #6b7280; }
+  .req { color: #ef4444; }
+  .form-input, .form-select { height: 32px; border: 1px solid #e0e2e7; border-radius: 6px; padding: 0 10px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; transition: border-color .15s; }
+  .form-input:focus, .form-select:focus { border-color: #5b6af0; background: #fff; }
+  .form-input::placeholder { color: #c0c4cc; }
+  .form-textarea { min-height: 70px; padding: 8px 10px; border: 1px solid #e0e2e7; border-radius: 6px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; font-family: inherit; resize: vertical; }
+  .form-textarea:focus { border-color: #5b6af0; background: #fff; }
+  .filter-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* ── Buttons ── */
+  .btn { height: 32px; padding: 0 16px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all .15s; }
+  .btn-primary { background: #5b6af0; color: #fff; }
+  .btn-primary:hover { background: #4f5de6; }
+  .btn-secondary { background: #fff; color: #374151; border: 1px solid #e0e2e7; }
+  .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
+  .btn-success { background: #10b981; color: #fff; }
+  .btn-success:hover { background: #059669; }
+  .btn-danger { background: #ef4444; color: #fff; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-warn { background: #f59e0b; color: #fff; }
+  .btn-warn:hover { background: #d97706; }
+  .btn-sm { height: 26px; padding: 0 10px; font-size: 11px; }
+  .btn-ghost { background: none; border: 1px dashed #d1d5db; color: #6b7280; }
+  .btn-ghost:hover { border-color: #5b6af0; color: #5b6af0; }
+
+  /* ── Table ── */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #f8f9fd; }
+  th { padding: 10px 14px; text-align: left; color: #6b7280; font-weight: 600; font-size: 11px; white-space: nowrap; border-bottom: 1px solid #e8eaed; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; color: #374151; white-space: nowrap; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbff; }
+  .td-address { font-family: monospace; font-size: 11px; color: #5b6af0; cursor: pointer; }
+  .td-address:hover { text-decoration: underline; }
+  .td-num { text-align: right; font-variant-numeric: tabular-nums; }
+  .td-mono { font-family: monospace; font-size: 11px; color: #4f5de6; }
+  .td-green { color: #059669; font-weight: 600; }
+  .td-red   { color: #dc2626; font-weight: 600; }
+  .td-blue  { color: #2563eb; font-weight: 500; }
+  .td-orange { color: #d97706; font-weight: 600; }
+  .ops-cell { display: flex; align-items: center; gap: 6px; }
+
+  /* ── Badges ── */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-pending { background: #fef3c7; color: #92400e; }
+  .badge-process { background: #dbeafe; color: #1d4ed8; }
+  .badge-signing { background: #ede9fe; color: #5b21b6; }
+  .badge-done    { background: #d1fae5; color: #065f46; }
+  .badge-fail    { background: #fee2e2; color: #991b1b; }
+  .badge-grey    { background: #f3f4f6; color: #6b7280; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-info    { background: #eef0fe; color: #4f5de6; }
+  .badge-usdt    { background: #ccfbf1; color: #0f766e; }
+  .badge-special { background: #ffe4e6; color: #be123c; }
+
+  /* ── Status Dot ── */
+  .dot-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .dot-on { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+  .dot-off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+  .dot-wait { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.18); }
+
+  /* ── Pagination ── */
+  .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #f3f4f6; }
+  .pagination { display: flex; align-items: center; gap: 4px; }
+  .page-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #e0e2e7; background: #fff; color: #374151; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .page-btn:hover { border-color: #5b6af0; color: #5b6af0; }
+  .page-btn.active { background: #5b6af0; border-color: #5b6af0; color: #fff; }
+  .page-btn.disabled { opacity: .4; cursor: not-allowed; }
+  .total-count { font-size: 12px; color: #9ca3af; }
+  .total-count strong { color: #374151; }
+
+  /* ── Detail / Trace ── */
+  .detail-block { padding: 16px 20px; border-top: 1px solid #f3f4f6; }
+  .detail-block:first-child { border-top: none; }
+  .trace-table th, .trace-table td { padding: 8px 12px; }
+  .trace-table tfoot td { background: #f8f9fd; font-weight: 700; color: #1a1a2e; border-top: 2px solid #e8eaed; }
+
+  /* ── Checkbox ── */
+  .ck { width: 15px; height: 15px; accent-color: #5b6af0; cursor: pointer; }
+
+  /* ── Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal { background: #fff; border-radius: 12px; width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,.2); transform: translateY(10px); transition: transform .2s; max-height: 90vh; overflow: auto; }
+  .modal.large { width: 620px; }
+  .modal.wide { width: 760px; }
+  .modal-overlay.show .modal { transform: none; }
+  .modal-header { padding: 20px 24px 12px; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid #f3f4f6; }
+  .modal-title { font-size: 15px; font-weight: 700; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+  .modal-title.danger { color: #dc2626; }
+  .modal-close { width: 28px; height: 28px; border-radius: 6px; border: none; background: none; cursor: pointer; color: #9ca3af; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #f3f4f6; color: #374151; }
+  .modal-body { padding: 16px 24px 20px; }
+  .modal-body .form-group { margin-bottom: 12px; }
+  .modal-footer { padding: 12px 24px 20px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #f3f4f6; }
+  .modal-info-row { display: flex; align-items: center; gap: 10px; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed #f3f4f6; }
+  .modal-info-row:last-child { border-bottom: none; }
+  .modal-info-row .lbl { color: #9ca3af; min-width: 96px; }
+  .modal-info-row .val { color: #1a1a2e; font-weight: 500; }
+  .modal-alert { padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.6; margin-bottom: 12px; display: flex; gap: 8px; align-items: flex-start; }
+  .modal-alert.danger { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+  .modal-alert.info { background: #eef0fe; border-color: #c7d2fe; color: #3730a3; }
+  .modal-alert .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── Misc ── */
+  .empty-hint { padding: 40px 20px; text-align: center; color: #9ca3af; font-size: 12px; }
+  .text-mute { color: #9ca3af; }
+  .text-mono { font-family: monospace; }
+  .divider-h { height: 1px; background: #f3f4f6; margin: 14px 0; }
+  .inline-tag { display: inline-block; padding: 1px 6px; background: #f3f4f6; color: #6b7280; border-radius: 4px; font-size: 10px; margin-left: 4px; }
+  .pill { display:inline-block; padding: 1px 7px; border-radius: 6px; font-size: 11px; font-weight:600; }
+  .pill-v { background:#eef0fe; color:#4f5de6; }
+  .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a2e; color: #fff; padding: 11px 20px; border-radius: 8px; font-size: 13px; z-index: 2000; opacity: 0; transition: all .25s; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<!-- ══════════ SIDEBAR ══════════ -->
+<aside class="sidebar">
+  <div class="logo">
+    <div class="logo-icon">⛓</div>
+    <div class="logo-text">BOT 算力服务器<small>矿机运营 · 运营后台</small></div>
+  </div>
+  <nav class="nav">
+    <div class="nav-group-title">矿机运营</div>
+    <div class="nav-item active" data-page="hosting" onclick="switchPage('hosting')"><span class="ic">🧾</span>托管费管理<span class="nav-badge warn">1</span></div>
+    <div class="nav-item" data-page="tradein" onclick="switchPage('tradein')"><span class="ic">♻</span>以旧换新管理</div>
+    <div class="nav-item" data-page="agent" onclick="switchPage('agent')"><span class="ic">🤝</span>销售代理管理<span class="nav-badge">1</span></div>
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="avatar">运</div>
+    <div><div class="admin-name">运营-01</div><div class="admin-role">托管 / 换新 / 代理</div></div>
+  </div>
+</aside>
+
+<!-- ══════════ MAIN ══════════ -->
+<div class="main">
+  <header class="topbar">
+    <div class="breadcrumb"><span>矿机运营</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">托管费管理</span></div>
+    <div class="topbar-right"><span class="session-badge"><span class="s-dot"></span>会话已解锁 · 03:42</span></div>
+  </header>
+
+  <div class="content">
+    <!-- ════════ 托管费管理 ════════ -->
+    <div class="page active" id="page-hosting">
+      <div class="page-header">
+        <div>
+          <div class="page-title">托管费管理<span class="tag-module">F-06</span></div>
+          <div class="page-subtitle">矿机托管计费 · 首年免费 · <strong>70U/月·台</strong> · 可预充值+折扣 · 欠费停机（1 个月犹豫期）· 逾期回收算力清零</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary" onclick="showToastMsg('已生成托管账单导出任务，前往下载中心')">⭳ 导出账单</button>
+          <button class="btn btn-primary" onclick="openModal('hostRuleModal')">⚙ 计费规则</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card ok"><div class="stat-label">托管中</div><div class="stat-value"><span id="hsHosting">0</span> <small>台</small></div><div class="stat-trend neutral">含免费/计费中</div></div>
+        <div class="stat-card"><div class="stat-label">本月应收</div><div class="stat-value"><span id="hsDue">0</span> <small>USDT</small></div><div class="stat-trend neutral">计费中 × 70U</div></div>
+        <div class="stat-card warn"><div class="stat-label">欠费停机</div><div class="stat-value"><span id="hsOverdue">0</span> <small>台</small></div><div class="stat-trend up">犹豫期内待处理</div></div>
+        <div class="stat-card"><div class="stat-label">预充余额合计</div><div class="stat-value"><span id="hsPrepaid">0</span> <small>USDT</small></div><div class="stat-trend neutral">预缴享折扣</div></div>
+      </div>
+      <div class="card" style="background:#f7f8ff;border-color:#dfe3fb;"><div class="card-body" style="font-size:12px;color:#4b5563;line-height:1.95;">
+        <strong style="color:#374151;">托管规则</strong>：① 每台矿机<strong>首年托管免费</strong>（自开机日起 12 个月）；② 首年到期后 <strong>70U/月·台</strong>，可<strong>预充值</strong>并享阶梯折扣；③ 到期未续费 → <strong>欠费停机、停止收益</strong>，进入 <strong>1 个月犹豫期</strong>；④ 犹豫期内三选一：<strong>续费开机</strong>（排期开机·有间隔）/ <strong>付物流费邮寄实体机</strong>（用户自行挖矿）/ 逾期 → <strong>平台回收·算力清零</strong>（终态「已弃权」，已产收益仍可提）。
+      </div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">托管账单</div><span class="text-mute">按矿机 · 状态实时联动（停机 = 停止产币）</span></div>
+        <div class="table-wrapper"><table>
+          <thead><tr>
+            <th>用户</th><th>矿机编号</th><th>算力</th><th>状态</th><th>开机日</th><th>免费到期</th><th>计费到期</th><th class="td-num">月费</th><th class="td-num">预充余额</th><th class="td-num">欠费</th><th>操作</th>
+          </tr></thead>
+          <tbody id="hostTbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <!-- ════════ 以旧换新管理 ════════ -->
+    <div class="page" id="page-tradein">
+      <div class="page-header">
+        <div>
+          <div class="page-title">以旧换新管理<span class="tag-module">F-07</span></div>
+          <div class="page-subtitle">到期换最新算力 · <strong>补差价 = 最新批次价 − 旧机折价</strong> · <strong>不产生销售返佣</strong> · 计入个人算力（不计团队业绩）</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary" onclick="showToastMsg('已生成换新订单导出任务，前往下载中心')">⭳ 导出</button>
+          <button class="btn btn-primary" onclick="openModal('tradeRuleModal')">⚙ 换新规则</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-label">换新订单</div><div class="stat-value">3 <small>笔</small></div></div>
+        <div class="stat-card ok"><div class="stat-label">今日换新</div><div class="stat-value">1 <small>笔</small></div></div>
+        <div class="stat-card"><div class="stat-label">补差价收入</div><div class="stat-value">6,160 <small>USDT</small></div></div>
+        <div class="stat-card"><div class="stat-label">涉及用户</div><div class="stat-value">3 <small>人</small></div></div>
+      </div>
+      <div class="card" style="background:#f7f8ff;border-color:#dfe3fb;"><div class="card-body" style="font-size:12px;color:#4b5563;line-height:1.95;">
+        <strong style="color:#374151;">换新规则</strong>：旧机折价 = 原购价 × 折价系数（后台可配，示例 <strong>50%</strong>）；<strong>补差价 = 最新批次价 − 旧机折价</strong>；换新后按<strong>最新批次算力</strong>计收益；<strong>不产生销售返佣</strong>（不给上级级差）；新算力<strong>计入个人算力</strong>用于挖矿收益，<strong>不计入团队销售业绩</strong>（防刷业绩）。
+      </div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">换新订单</div><span class="text-mute">旧机算力移除、新机算力计入个人算力</span></div>
+        <div class="table-wrapper"><table>
+          <thead><tr>
+            <th>换新单号</th><th>用户</th><th>旧机（编号·算力）</th><th>新机（编号·算力）</th><th class="td-num">旧机折价</th><th class="td-num">补差价</th><th>状态</th><th>时间</th>
+          </tr></thead>
+          <tbody id="tradeTbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+    <!-- ════════ 销售代理管理 ════════ -->
+    <div class="page" id="page-agent">
+      <div class="page-header">
+        <div>
+          <div class="page-title">销售代理管理<span class="tag-module">F-08</span></div>
+          <div class="page-subtitle">团队累计销量 <strong>≥ 500 台</strong>达标 · 线下申请 → 后台开通 · 专属可配返佣 · 多层级极差 · 可获托管费分润</div>
+        </div>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-secondary" onclick="showToastMsg('已生成代理返佣导出任务，前往下载中心')">⭳ 导出</button>
+          <button class="btn btn-primary" onclick="openModal('agentRuleModal')">⚙ 代理返佣规则</button>
+        </div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card ok"><div class="stat-label">已开通代理</div><div class="stat-value"><span id="agActive">0</span> <small>人</small></div></div>
+        <div class="stat-card warn"><div class="stat-label">待审批</div><div class="stat-value"><span id="agPending">0</span> <small>人</small></div><div class="stat-trend up">线下已申请</div></div>
+        <div class="stat-card"><div class="stat-label">本月代理返佣</div><div class="stat-value">18,600 <small>USDT</small></div></div>
+        <div class="stat-card"><div class="stat-label">托管费分润</div><div class="stat-value">3,420 <small>USDT</small></div></div>
+      </div>
+      <div class="card" style="background:#f7f8ff;border-color:#dfe3fb;"><div class="card-body" style="font-size:12px;color:#4b5563;line-height:1.95;">
+        <strong style="color:#374151;">代理规则</strong>：① 达标门槛 <strong>团队累计算力服务器销量 ≥ 500 台</strong>；② <strong>线下申请 → 后台开通</strong>（审批）；③ 开通后享<strong>专属代理返佣</strong>（比例可配）+ <strong>多层级极差</strong>（代理层级间走极差）+ <strong>托管费分润</strong>；④ 需求「旗下团队全网挖矿产出额外加权奖励」<strong>已废弃（改权重方式），本模块不含</strong>。
+      </div></div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">代理列表</div><span class="text-mute">未达标不可开通；开通后可配返佣比例 / 层级 / 托管分润</span></div>
+        <div class="table-wrapper"><table>
+          <thead><tr>
+            <th>用户</th><th class="td-num">团队累计销量</th><th>达标</th><th>状态</th><th class="td-num">代理返佣</th><th>层级</th><th class="td-num">托管分润</th><th>操作</th>
+          </tr></thead>
+          <tbody id="agentTbody"></tbody>
+        </table></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════ MODALS ══════════ -->
+<!-- 通用操作二次确认 -->
+<div class="modal-overlay" id="opModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title" id="opTitle">操作确认</div><button class="modal-close" onclick="closeModal('opModal')">×</button></div>
+    <div class="modal-body"><div class="modal-alert" id="opAlert"><span class="icon">⚠</span><div id="opMsg"></div></div></div>
+    <div class="modal-footer">
+      <button class="btn btn-secondary" onclick="closeModal('opModal')">取消</button>
+      <button class="btn btn-primary" id="opConfirm" onclick="confirmOp()">确认</button>
+    </div>
+  </div>
+</div>
+
+<!-- 托管计费规则 -->
+<div class="modal-overlay" id="hostRuleModal">
+  <div class="modal large">
+    <div class="modal-header"><div class="modal-title">⚙ 托管计费规则</div><button class="modal-close" onclick="closeModal('hostRuleModal')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid2">
+        <div class="form-group"><label class="form-label">月托管费（U/月·台）</label><input class="form-input" value="70"></div>
+        <div class="form-group"><label class="form-label">首年免费</label><select class="form-select"><option>开启（12 个月）</option><option>关闭</option></select></div>
+        <div class="form-group"><label class="form-label">欠费犹豫期（月）</label><input class="form-input" value="1"></div>
+        <div class="form-group"><label class="form-label">托管费分润给代理（%）</label><input class="form-input" value="10"></div>
+      </div>
+      <div style="font-size:12px;color:#6b7280;margin:8px 0 6px;">预充值折扣阶梯（预缴月数越多折扣越大）</div>
+      <div class="table-wrapper" style="border:1px solid #e8eaed;border-radius:8px;">
+        <table><thead><tr><th>预充月数</th><th class="td-num">折扣</th><th class="td-num">等效月费 (U)</th></tr></thead>
+        <tbody>
+          <tr><td>3 个月</td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="1.00"></td><td class="td-num">70.00</td></tr>
+          <tr><td>6 个月</td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="0.95"></td><td class="td-num">66.50</td></tr>
+          <tr><td>12 个月</td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="0.90"></td><td class="td-num">63.00</td></tr>
+        </tbody></table>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('hostRuleModal')">取消</button><button class="btn btn-primary" onclick="closeModal('hostRuleModal');showToastMsg('托管计费规则已保存（落审计）')">保存</button></div>
+  </div>
+</div>
+
+<!-- 邮寄处理 -->
+<div class="modal-overlay" id="shipModal">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">📦 邮寄实体矿机</div><button class="modal-close" onclick="closeModal('shipModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-alert info"><span class="icon">ℹ</span><div>用户已支付物流费，平台将实体矿机邮寄给用户自行挖矿；该矿机<strong>脱离平台托管</strong>，状态置「已提货」。</div></div>
+      <div class="modal-info-row"><span class="lbl">矿机</span><span class="val" id="shMno">—</span><span class="lbl">用户</span><span class="val" id="shUser">—</span></div>
+      <div class="form-group" style="margin-top:10px;"><label class="form-label">物流单号 <span class="req">*</span></label><input class="form-input" placeholder="SF…"></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('shipModal')">取消</button><button class="btn btn-primary" onclick="doShip()">确认邮寄</button></div>
+  </div>
+</div>
+
+<!-- 换新规则 -->
+<div class="modal-overlay" id="tradeRuleModal">
+  <div class="modal large">
+    <div class="modal-header"><div class="modal-title">⚙ 以旧换新规则</div><button class="modal-close" onclick="closeModal('tradeRuleModal')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid2">
+        <div class="form-group"><label class="form-label">旧机折价系数（原购价 ×）</label><input class="form-input" value="0.50"></div>
+        <div class="form-group"><label class="form-label">最新批次价（U）</label><input class="form-input" value="3980"></div>
+        <div class="form-group"><label class="form-label">补差价规则</label><input class="form-input" value="最新批次价 − 旧机折价" readonly></div>
+        <div class="form-group"><label class="form-label">换新后重置托管首年免费</label><select class="form-select"><option>是（重新赠送 12 个月）</option><option>否</option></select></div>
+      </div>
+      <div class="modal-alert info" style="margin-top:8px;"><span class="icon">ℹ</span><div><strong>口径</strong>：换新<strong>不产生销售返佣</strong>；新算力<strong>计入个人算力</strong>（挖矿收益），<strong>不计入团队销售业绩</strong>；旧机算力移除、编号回收。</div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('tradeRuleModal')">取消</button><button class="btn btn-primary" onclick="closeModal('tradeRuleModal');showToastMsg('换新规则已保存（落审计）')">保存</button></div>
+  </div>
+</div>
+
+<!-- 代理开通审批 -->
+<div class="modal-overlay" id="agentApproveModal">
+  <div class="modal large">
+    <div class="modal-header"><div class="modal-title">🤝 开通销售代理</div><button class="modal-close" onclick="closeModal('agentApproveModal')">×</button></div>
+    <div class="modal-body">
+      <div class="modal-alert info"><span class="icon">ℹ</span><div>核对线下申请，达标（团队累计销量 ≥ 500 台）方可开通；开通后享专属代理返佣 + 极差 + 托管费分润。</div></div>
+      <div class="modal-info-row"><span class="lbl">申请用户</span><span class="val" id="apUser">—</span><span class="lbl">团队累计销量</span><span class="val" id="apSales">—</span></div>
+      <div class="modal-info-row"><span class="lbl">线下申请单</span><span class="val td-mono">AGR-2026-0731</span><span class="lbl">达标</span><span class="val" id="apOk">—</span></div>
+      <div class="form-grid2" style="margin-top:8px;">
+        <div class="form-group"><label class="form-label">代理返佣比例（%）<span class="req">*</span></label><input class="form-input" id="apRate" value="10"></div>
+        <div class="form-group"><label class="form-label">代理层级</label><select class="form-select" id="apTier"><option>L1</option><option>L2</option><option>L3</option></select></div>
+        <div class="form-group"><label class="form-label">托管费分润（%）</label><input class="form-input" id="apHosting" value="10"></div>
+        <div class="form-group"><label class="form-label">多层级极差</label><select class="form-select"><option>开启（极差方式）</option><option>关闭</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('agentApproveModal')">取消</button><button class="btn btn-danger btn-sm" style="height:32px;" onclick="closeModal('agentApproveModal');showToastMsg('已驳回该代理申请')">驳回</button><button class="btn btn-success" onclick="confirmAgentApprove()">确认开通</button></div>
+  </div>
+</div>
+
+<!-- 代理返佣规则 -->
+<div class="modal-overlay" id="agentRuleModal">
+  <div class="modal large">
+    <div class="modal-header"><div class="modal-title">⚙ 代理返佣规则</div><button class="modal-close" onclick="closeModal('agentRuleModal')">×</button></div>
+    <div class="modal-body">
+      <div class="form-grid2">
+        <div class="form-group"><label class="form-label">达标门槛（团队累计销量·台）</label><input class="form-input" value="500"></div>
+        <div class="form-group"><label class="form-label">默认代理返佣比例（%）</label><input class="form-input" value="10"></div>
+        <div class="form-group"><label class="form-label">多层级方式</label><select class="form-select"><option>极差方式</option><option>平级方式</option></select></div>
+        <div class="form-group"><label class="form-label">默认托管费分润（%）</label><input class="form-input" value="10"></div>
+      </div>
+      <div style="font-size:12px;color:#6b7280;margin:8px 0 6px;">代理层级返佣阶梯（极差：上级得与下级代理的比例差）</div>
+      <div class="table-wrapper" style="border:1px solid #e8eaed;border-radius:8px;">
+        <table><thead><tr><th>层级</th><th class="td-num">代理返佣比例 (%)</th><th class="td-num">托管分润 (%)</th></tr></thead>
+        <tbody>
+          <tr><td>L1</td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="12"></td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="10"></td></tr>
+          <tr><td>L2</td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="10"></td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="8"></td></tr>
+          <tr><td>L3</td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="8"></td><td class="td-num"><input class="form-input" style="height:26px;width:80px;text-align:right;margin-left:auto;" value="6"></td></tr>
+        </tbody></table>
+      </div>
+      <div class="modal-alert" style="margin-top:8px;"><span class="icon">⚠</span><div>需求「旗下团队全网挖矿产出额外加权奖励」已废弃、改权重方式，此处<strong>不含</strong>挖矿产出加权。</div></div>
+    </div>
+    <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('agentRuleModal')">取消</button><button class="btn btn-primary" onclick="closeModal('agentRuleModal');showToastMsg('代理返佣规则已保存（落审计）')">保存</button></div>
+  </div>
+</div>
+
+<div class="toast" id="toast">操作成功</div>
+<script>
+  function switchPage(page){
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('page-'+page).classList.add('active');
+    document.querySelectorAll('.nav-item').forEach(function(n){ n.classList.toggle('active', n.getAttribute('data-page')===page); });
+    var titles={ hosting:'托管费管理', tradein:'以旧换新管理', agent:'销售代理管理' };
+    document.getElementById('topbar-title').textContent=titles[page]||'';
+    document.querySelector('.content').scrollTop=0;
+  }
+  function openModal(id){ document.getElementById(id).classList.add('show'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('show'); }
+  var toastTimer;
+  function showToastMsg(msg){ var t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2200); }
+
+  // ===== 托管费 =====
+  var HOST=[
+    {id:'H1',user:'0x2236…dEF2',mno:'#101201',hash:1000,state:'free',open:'2026-05-01',freeEnd:'2027-05-01',payEnd:'—',fee:70,prepaid:0,due:0,grace:0},
+    {id:'H2',user:'0x6a1f…0c2',mno:'#101250',hash:1000,state:'paid',open:'2025-06-01',freeEnd:'2026-06-01',payEnd:'2026-12-01',fee:70,prepaid:399,due:0,grace:0},
+    {id:'H3',user:'0x74d4…f1f',mno:'#101300',hash:1000,state:'overdue',open:'2025-06-20',freeEnd:'2026-06-20',payEnd:'2026-06-20',fee:70,prepaid:0,due:70,grace:18},
+    {id:'H4',user:'0x33de…7c0',mno:'#101320',hash:1000,state:'shipped',open:'2025-05-01',freeEnd:'2026-05-01',payEnd:'2026-06-01',fee:70,prepaid:0,due:0,grace:0},
+    {id:'H5',user:'0xba11…e2',mno:'#101340',hash:1000,state:'abandoned',open:'2025-04-01',freeEnd:'2026-04-01',payEnd:'2026-05-01',fee:70,prepaid:0,due:140,grace:0}
+  ];
+  var HB={free:'<span class="badge badge-info">免费中</span>',paid:'<span class="badge badge-done"><span class="dot-status dot-on"></span>计费中</span>',overdue:'<span class="badge badge-fail"><span class="dot-status dot-off"></span>欠费停机·犹豫期</span>',shipped:'<span class="badge badge-warn">已提货</span>',abandoned:'<span class="badge badge-grey">已弃权·回收</span>'};
+  function findH(id){ for(var i=0;i<HOST.length;i++) if(HOST[i].id===id) return HOST[i]; }
+  function hostOps(b){
+    var d='<button class="btn btn-secondary btn-sm" onclick="showToastMsg(\'查看托管详情\')">详情</button>';
+    if(b.state==='overdue') return '<button class="btn btn-success btn-sm" onclick="hostAct(\''+b.id+'\',\'排期开机\')">排期开机</button><button class="btn btn-secondary btn-sm" onclick="openShip(\''+b.id+'\')">邮寄</button><button class="btn btn-danger btn-sm" onclick="hostAct(\''+b.id+'\',\'回收\')">回收</button>';
+    if(b.state==='free'||b.state==='paid') return d+'<button class="btn btn-secondary btn-sm" onclick="hostAct(\''+b.id+'\',\'停机\')">停机</button>';
+    return d;
+  }
+  function renderHost(){
+    document.getElementById('hostTbody').innerHTML=HOST.map(function(b){
+      var grace=b.state==='overdue'?(' <span class="td-red">剩'+b.grace+'天</span>'):'';
+      return '<tr><td class="td-address">'+b.user+'</td><td class="td-mono">'+b.mno+'</td><td class="td-mono">'+b.hash+' T/H</td>'
+        +'<td>'+HB[b.state]+grace+'</td><td class="text-mute">'+b.open+'</td><td class="text-mute">'+b.freeEnd+'</td><td class="text-mute">'+b.payEnd+'</td>'
+        +'<td class="td-num">'+b.fee+'</td><td class="td-num">'+(b.prepaid?('<span class="td-green">'+b.prepaid+'</span>'):'0')+'</td>'
+        +'<td class="td-num">'+(b.due?('<span class="td-red">'+b.due+'</span>'):'0')+'</td>'
+        +'<td class="ops-cell">'+hostOps(b)+'</td></tr>';
+    }).join('');
+    var hosting=HOST.filter(function(b){return b.state==='free'||b.state==='paid';}).length;
+    var paid=HOST.filter(function(b){return b.state==='paid';}).length;
+    var overdue=HOST.filter(function(b){return b.state==='overdue';}).length;
+    var prepaid=HOST.reduce(function(s,b){return s+b.prepaid;},0);
+    document.getElementById('hsHosting').textContent=hosting;
+    document.getElementById('hsDue').textContent=(paid*70).toLocaleString();
+    document.getElementById('hsOverdue').textContent=overdue;
+    document.getElementById('hsPrepaid').textContent=prepaid.toLocaleString();
+  }
+  var opPending=null;
+  function hostAct(id,act){
+    var b=findH(id);
+    var cfg={'排期开机':{danger:false,btn:'确认排期开机',m:'确认已续托管费、<strong>排期开机重新挖矿</strong>？（排期开机有间隔时间；状态转「计费中」）'},
+      '停机':{danger:true,btn:'确认停机',m:'确认<strong>手动停机</strong>？停机后该矿机停止产币。'},
+      '回收':{danger:true,btn:'确认回收',m:'确认<strong>逾期回收</strong>？矿机置「已弃权」终态、<strong>算力清零</strong>（个人+团队算力扣减）、停止产币；已产收益仍可提，不可恢复。'}};
+    opPending={id:id,act:act};
+    var c=cfg[act];
+    document.getElementById('opTitle').textContent=act+'确认';
+    document.getElementById('opMsg').innerHTML='矿机 <strong>'+b.mno+'</strong>（'+b.user+'）：'+c.m;
+    document.getElementById('opAlert').className='modal-alert '+(c.danger?'danger':'info');
+    var btn=document.getElementById('opConfirm'); btn.className='btn '+(c.danger?'btn-danger':'btn-success'); btn.textContent=c.btn;
+    openModal('opModal');
+  }
+  function confirmOp(){
+    closeModal('opModal'); if(!opPending) return;
+    var b=findH(opPending.id), a=opPending.act;
+    if(a==='排期开机'){ b.state='paid'; b.due=0; }
+    else if(a==='停机'){ b.state='overdue'; b.grace=30; b.due=b.fee; }
+    else if(a==='回收'){ b.state='abandoned'; b.hash=0; }
+    renderHost();
+    showToastMsg(b.mno+' 已'+a+(a==='回收'?' · 算力已清零':''));
+    opPending=null;
+  }
+  var shipId=null;
+  function openShip(id){ shipId=id; var b=findH(id); document.getElementById('shMno').textContent=b.mno; document.getElementById('shUser').textContent=b.user; openModal('shipModal'); }
+  function doShip(){ var b=findH(shipId); b.state='shipped'; b.due=0; renderHost(); closeModal('shipModal'); showToastMsg(b.mno+' 已邮寄（已提货 · 脱离平台托管）'); shipId=null; }
+
+  // ===== 以旧换新 =====
+  var TRADE=[
+    {no:'TI-6001',user:'0x2236…dEF2',oldNo:'#100301',oldHash:1000,newNo:'#101801',newHash:1200,dep:1990,diff:1990,time:'2026-07-15 10:22:03'},
+    {no:'TI-6000',user:'0x9f2c…a1b',oldNo:'#099501',oldHash:1000,newNo:'#101802',newHash:1200,dep:1990,diff:1990,time:'2026-07-12 16:40:11'},
+    {no:'TI-5998',user:'0x2f47…e88',oldNo:'#100210',oldHash:1000,newNo:'#101803',newHash:1200,dep:1800,diff:2180,time:'2026-07-08 09:15:44'}
+  ];
+  function renderTrade(){
+    document.getElementById('tradeTbody').innerHTML=TRADE.map(function(t){
+      return '<tr><td class="td-mono">'+t.no+'</td><td class="td-address">'+t.user+'</td>'
+        +'<td class="td-mono">'+t.oldNo+' · '+t.oldHash+' T/H</td>'
+        +'<td class="td-mono">'+t.newNo+' · <span class="td-orange">'+t.newHash+' T/H</span></td>'
+        +'<td class="td-num">'+t.dep.toLocaleString()+'</td><td class="td-num" style="font-weight:700;">'+t.diff.toLocaleString()+'</td>'
+        +'<td><span class="badge badge-done">成功</span></td><td class="text-mute">'+t.time+'</td></tr>';
+    }).join('');
+  }
+
+  // ===== 销售代理 =====
+  var AGENT=[
+    {id:'A1',user:'0x9f2c…a1b',lv:'V8',sales:1250,state:'active',rate:12,tier:'L1',hosting:10},
+    {id:'A2',user:'0x2f47…e88',lv:'V7',sales:760,state:'active',rate:10,tier:'L2',hosting:8},
+    {id:'A3',user:'0x6a1f…0c2',lv:'V6',sales:540,state:'pending',rate:0,tier:'—',hosting:0},
+    {id:'A4',user:'0x2236…dEF2',lv:'V3',sales:120,state:'none',rate:0,tier:'—',hosting:0}
+  ];
+  var AB={active:'<span class="badge badge-done">已开通</span>',pending:'<span class="badge badge-warn">待审批</span>',none:'<span class="badge badge-grey">未达标</span>',stopped:'<span class="badge badge-fail">已停用</span>'};
+  function findA(id){ for(var i=0;i<AGENT.length;i++) if(AGENT[i].id===id) return AGENT[i]; }
+  function agentOps(a){
+    if(a.state==='active') return '<button class="btn btn-secondary btn-sm" onclick="openApprove(\''+a.id+'\')">配置</button><button class="btn btn-danger btn-sm" onclick="agentToggle(\''+a.id+'\',\'stopped\')">停用</button>';
+    if(a.state==='pending') return '<button class="btn btn-success btn-sm" onclick="openApprove(\''+a.id+'\')">开通</button><button class="btn btn-secondary btn-sm" onclick="agentToggle(\''+a.id+'\',\'none\')">驳回</button>';
+    if(a.state==='stopped') return '<button class="btn btn-success btn-sm" onclick="agentToggle(\''+a.id+'\',\'active\')">启用</button>';
+    return '<span class="text-mute">未达标（'+a.sales+'/500）</span>';
+  }
+  function renderAgent(){
+    document.getElementById('agentTbody').innerHTML=AGENT.map(function(a){
+      var ok=a.sales>=500?'<span class="badge badge-done">达标</span>':'<span class="badge badge-grey">'+a.sales+'/500</span>';
+      return '<tr><td class="td-address">'+a.user+' <span class="pill pill-v">'+a.lv+'</span></td>'
+        +'<td class="td-num">'+a.sales.toLocaleString()+' 台</td><td>'+ok+'</td><td>'+AB[a.state]+'</td>'
+        +'<td class="td-num">'+(a.rate?a.rate+'%':'—')+'</td><td>'+a.tier+'</td><td class="td-num">'+(a.hosting?a.hosting+'%':'—')+'</td>'
+        +'<td class="ops-cell">'+agentOps(a)+'</td></tr>';
+    }).join('');
+    document.getElementById('agActive').textContent=AGENT.filter(function(a){return a.state==='active';}).length;
+    document.getElementById('agPending').textContent=AGENT.filter(function(a){return a.state==='pending';}).length;
+  }
+  var apId=null;
+  function openApprove(id){
+    apId=id; var a=findA(id);
+    document.getElementById('apUser').textContent=a.user+' ('+a.lv+')';
+    document.getElementById('apSales').textContent=a.sales.toLocaleString()+' 台';
+    document.getElementById('apOk').innerHTML=a.sales>=500?'<span class="td-green">✓ 已达标</span>':'<span class="td-red">✗ 未达标</span>';
+    document.getElementById('apRate').value=a.rate||10;
+    document.getElementById('apHosting').value=a.hosting||10;
+    openModal('agentApproveModal');
+  }
+  function confirmAgentApprove(){
+    var a=findA(apId);
+    if(a.sales<500){ showToastMsg('未达标（团队销量 <500 台），无法开通'); return; }
+    a.state='active'; a.rate=parseInt(document.getElementById('apRate').value||'10',10); a.hosting=parseInt(document.getElementById('apHosting').value||'10',10); a.tier=document.getElementById('apTier').value;
+    renderAgent(); closeModal('agentApproveModal'); showToastMsg(a.user+' 已开通为销售代理（返佣 '+a.rate+'% · '+a.tier+'）');
+    apId=null;
+  }
+  function agentToggle(id,st){ var a=findA(id); a.state=st; if(st==='none'){a.rate=0;a.tier='—';a.hosting=0;} renderAgent(); showToastMsg(a.user+' 已'+({active:'启用',stopped:'停用',none:'驳回/取消'})[st]); }
+
+  renderHost(); renderTrade(); renderAgent();
+  document.querySelectorAll('.modal-overlay').forEach(function(o){ o.addEventListener('click', function(e){ if(e.target===o) o.classList.remove('show'); }); });
+</script>
+</body>
+</html>
