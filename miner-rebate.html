@@ -51,9 +51,9 @@
   .hero { background:var(--pg); border-radius:20px; padding:18px 18px 20px; box-shadow:0 14px 30px rgba(124,92,255,.34); position:relative; overflow:hidden; }
   .hero .h-lbl { font-size:12.5px; opacity:.9; }
   .hero .h-big { font-size:30px; font-weight:800; margin-top:5px; letter-spacing:.5px; } .hero .h-big small { font-size:14px; font-weight:600; opacity:.85; margin-left:5px; }
-  .hero .h-row { display:flex; gap:9px; margin-top:16px; }
-  .hero .h-cell { flex:1; background:rgba(255,255,255,.15); border-radius:12px; padding:9px 8px; }
-  .hero .h-cell .c-l { font-size:10.5px; opacity:.9; } .hero .h-cell .c-v { font-size:15px; font-weight:800; margin-top:3px; }
+  .hero .h-row { display:flex; gap:7px; margin-top:16px; }
+  .hero .h-cell { flex:1; background:rgba(255,255,255,.15); border-radius:12px; padding:8px 6px; }
+  .hero .h-cell .c-l { font-size:10.5px; opacity:.9; } .hero .h-cell .c-v { font-size:13.5px; font-weight:800; margin-top:3px; }
 
   /* buttons */
   .wbtn-row { display:flex; gap:10px; margin:14px 0 4px; }
@@ -171,7 +171,7 @@
 
 <div class="gallery-head">
   <h1>CaryPact · 矿机模块（销售奖励 / 提币 / 算力服务器发售）</h1>
-  <p>个人中心沿用 CA 原生菜单，在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（可提取 / 总奖励 / 待发放 / 已提取）· 提币页 · 提币记录。账号未激活时「确认提币」跳转「暂无法提取」独立页。含算力服务器发售 5 种批次状态页（未开售 / 发售中 / 暂停发售 / 已结束 / 已售罄）· 矿机发售历史（独立页）。<br>矿机转赠已移至运营后台、奖励规则不再展示。上方多屏走查便于讲解，页面底部为可交互动态原型</p>
+  <p>个人中心沿用 CA 原生菜单，在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（可提取 / 总奖励 / 待发放 / 已提取 / 待结算）· 提币页 · 提币记录。账号未激活时「确认提币」跳转「暂无法提取」独立页。含算力服务器发售 5 种批次状态页（未开售 / 发售中 / 暂停发售 / 已结束 / 已售罄）· 矿机发售历史（独立页）。<br>矿机转赠已移至运营后台、奖励规则不再展示。上方多屏走查便于讲解，页面底部为可交互动态原型</p>
 </div>
 
 <div class="gallery">
@@ -234,7 +234,7 @@
           <div class="h-row">
             <div class="h-cell"><div class="c-l">总奖励</div><div class="c-v">8,420 U</div></div>
             <div class="h-cell"><div class="c-l">待发放</div><div class="c-v">2,020 U</div></div>
-            <div class="h-cell"><div class="c-l">已提取</div><div class="c-v">2,000 U</div></div>
+            <div class="h-cell"><div class="c-l">已提取</div><div class="c-v">2,000 U</div></div><div class="h-cell"><div class="c-l">待结算</div><div class="c-v">1,760 U</div></div>
           </div>
         </div>
         <div class="wbtn-row"><button class="wbtn">提币</button><button class="wbtn ghost">提币记录</button></div>
@@ -547,7 +547,7 @@
           <div class="h-row">
             <div class="h-cell"><div class="c-l">总奖励</div><div class="c-v">8,420 U</div></div>
             <div class="h-cell"><div class="c-l">待发放</div><div class="c-v">2,020 U</div></div>
-            <div class="h-cell"><div class="c-l">已提取</div><div class="c-v">2,000 U</div></div>
+            <div class="h-cell"><div class="c-l">已提取</div><div class="c-v">2,000 U</div></div><div class="h-cell"><div class="c-l">待结算</div><div class="c-v">1,760 U</div></div>
           </div>
         </div>
         <div class="wbtn-row"><button class="wbtn" onclick="goPage('withdraw','奖励提币')">提币</button><button class="wbtn ghost" onclick="openSheet('recSheet')">提币记录</button></div>
