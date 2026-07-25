@@ -233,14 +233,15 @@
       <div class="page-header">
         <div>
           <div class="page-title">佣金发放审核<span class="tag-module">F-01</span></div>
-          <div class="page-subtitle">销售佣金（USDT）· 被邀请人得等级佣金，其上级得级差佣金 · 单笔 ≤ 免审阈值自动通过发放，其余运营复核 · 试算 → 复核 → 发放（幂等）</div>
+          <div class="page-subtitle">销售佣金（USDT）· 被邀请人得等级佣金，其上级得级差佣金 · 被邀请人所购矿机开机后，佣金由「待结算」转「待发放」 · 单笔 ≤ 免审阈值自动通过发放，其余运营复核 · 试算 → 待结算 → 待发放 → 复核 → 发放（幂等）</div>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-secondary" onclick="showToastMsg('已生成佣金审核流水导出任务，前往下载中心')">⭳ 导出全部流水</button>
           <button class="btn btn-success" onclick="openPayoutModal()">✓ 批量发放</button>
         </div>
       </div>
-      <div class="stat-grid">
+      <div class="stat-grid" style="grid-template-columns:repeat(5,1fr);">
+        <div class="stat-card"><div class="stat-label">待结算</div><div class="stat-value">1 <small>笔</small></div><div class="stat-trend neutral">待矿机开机</div></div>
         <div class="stat-card"><div class="stat-label">待发放</div><div class="stat-value">4 <small>笔</small></div><div class="stat-trend neutral">待运营复核</div></div>
         <div class="stat-card ok"><div class="stat-label">待发放金额</div><div class="stat-value">20,580.00 <small>USDT</small></div><div class="stat-trend neutral">复核后发放</div></div>
         <div class="stat-card"><div class="stat-label">今日已发放</div><div class="stat-value">6,400.00 <small>USDT</small></div><div class="stat-trend down">12 笔</div></div>
@@ -250,7 +251,7 @@
         <div class="card-body">
           <div class="filter-row">
             <div class="form-group"><label class="form-label">受益人地址</label><input class="form-input" placeholder="0x…"></div>
-            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待发放</option><option>已发放</option><option>自动发放</option><option>驳回</option></select></div>
+            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待结算</option><option>待发放</option><option>已发放</option><option>自动发放</option><option>驳回</option></select></div>
             <div class="form-group"><label class="form-label">触发时间</label><input class="form-input" value="2026-06-20 — 2026-07-06"></div>
             <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
           </div>
@@ -264,6 +265,16 @@
               <th>状态</th><th>驳回备注</th><th>操作</th>
             </tr></thead>
             <tbody>
+              <tr>
+                <td><input type="checkbox" class="ck" disabled></td>
+                <td class="td-mono">RW-88208</td>
+                <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
+                <td><span class="td-address">0x5b71…9d2</span> <span class="pill pill-v">V1</span></td><td class="td-num">2</td><td class="td-mono">ORD-77320</td>
+                <td class="td-num" style="font-weight:700;">1,760.00</td>
+                <td><span class="badge badge-warn">待结算</span></td>
+                <td class="text-mute">矿机未开机</td>
+                <td class="ops-cell"><span class="text-mute">待矿机开机后结算</span></td>
+              </tr>
               <tr>
                 <td><input type="checkbox" class="ck row-ck"></td>
                 <td class="td-mono">RW-88205</td>
@@ -328,7 +339,7 @@
           </table>
         </div>
         <div class="table-footer">
-          <span class="total-count">共 <strong>6</strong> 条 · 待发放 4 · 已发放 2（含自动 1）</span>
+          <span class="total-count">共 <strong>7</strong> 条 · 待结算 1 · 待发放 4 · 已发放 2（含自动 1）</span>
           <div class="pagination">
             <button class="page-btn disabled">‹</button>
             <button class="page-btn active">1</button>
