@@ -171,7 +171,7 @@
 
 <div class="gallery-head">
   <h1>CaryPact · 矿机模块（销售奖励 / 提币 / 算力服务器发售）</h1>
-  <p>个人中心沿用 CA 原生菜单，在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（可提取 / 总奖励 / 待发放 / 已提取 / 待结算）· 提币页 · 提币记录。账号未激活时「确认提币」跳转「暂无法提取」独立页。含算力服务器发售 5 种批次状态页（未开售 / 发售中 / 暂停发售 / 已结束 / 已售罄）· 订单付款倒计时（180S 锁单 / 超时关单）· 矿机发售历史（独立页）。<br>矿机转赠已移至运营后台、奖励规则不再展示。上方多屏走查便于讲解，页面底部为可交互动态原型</p>
+  <p>个人中心沿用 CA 原生菜单，在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（可提取 / 总奖励 / 待发放 / 已提取 / 待结算）· 提币页 · 提币记录。账号未激活时「确认提币」跳转「暂无法提取」独立页。含算力服务器发售 5 种批次状态页（未开售 / 发售中 / 暂停发售 / 已结束 / 已售罄）· 矿机发售历史（独立页）。<br>矿机转赠已移至运营后台、奖励规则不再展示。上方多屏走查便于讲解，页面底部为可交互动态原型</p>
 </div>
 
 <div class="gallery">
@@ -398,82 +398,9 @@
     </div>
   </div>
 
-  <!-- 发售·待付款倒计时 -->
-  <div class="slide">
-    <div class="slide-label"><span class="no">9</span><span class="nm">算力服务器发售 · 待付款倒计时（180S·下单锁单）</span></div>
-    <div class="phone">
-      <div class="notch"></div>
-      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
-      <div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">订单付款</span></div>
-      <div class="content">
-
-        <div id="payWait">
-          <div class="note" style="margin-top:8px;background:#10251c;border-color:#1c4433;color:#7fe0b0;"><span>🔒</span><span>订单已创建并<b style="color:#fff;">锁定名额</b>（先下单先锁单）。请在倒计时内完成链上转账，<b style="color:#fff;">超时自动关单并释放名额</b>。</span></div>
-
-          <div style="text-align:center;margin:16px 0 8px;">
-            <div style="font-size:12px;color:var(--text2);">支付剩余时间</div>
-            <div id="payCd" style="font-size:46px;font-weight:800;color:#8fb0ff;letter-spacing:2px;margin-top:4px;font-variant-numeric:tabular-nums;">02:58</div>
-            <div style="font-size:11px;color:var(--muted);margin-top:2px;">倒计时归零将自动关单 · 付款失败</div>
-          </div>
-
-          <div class="card" style="padding:8px 16px;">
-            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;"><span style="color:var(--text2);">批次 / 数量</span><span style="color:#fff;font-weight:700;">第 4 期 · 1 台</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;"><span style="color:var(--text2);">锁定编号</span><span style="color:#fff;font-weight:700;">#101821</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;"><span style="color:var(--text2);">应付金额</span><span style="color:#fff;font-weight:800;">3,980.00 USDT</span></div>
-          </div>
-
-          <div style="font-size:13px;color:var(--text2);margin:10px 2px 8px;">链上转账收款信息</div>
-          <div class="card" style="padding:8px 16px;">
-            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;"><span style="color:var(--text2);">收款链</span><span style="color:#fff;font-weight:700;">BOT Chain</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;"><span style="color:var(--text2);">代币</span><span style="color:#fff;font-weight:700;">USDT</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;align-items:center;"><span style="color:var(--text2);">收款地址</span><span onclick="showT('已复制收款地址')" style="color:#8fb0ff;font-weight:700;cursor:pointer;">0x8a3F…C21b ⧉</span></div>
-            <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;align-items:center;"><span style="color:var(--text2);">转账金额</span><span onclick="showT('已复制金额 3,980.00 USDT')" style="color:#8fb0ff;font-weight:700;cursor:pointer;">3,980.00 USDT ⧉</span></div>
-          </div>
-
-          <button class="wbtn" style="width:100%;height:50px;font-size:16px;" onclick="payDone()">我已完成链上转账</button>
-        </div>
-
-        <div id="payOkBox" style="display:none;">
-          <div class="blockp" style="min-height:430px;">
-            <div class="bic" style="background:#10301f;color:#34d399;">✓</div>
-            <div class="bt">付款成功 · 购买完成</div>
-          </div>
-        </div>
-
-        <div id="payFailBox" style="display:none;">
-          <div class="blockp" style="min-height:430px;">
-            <div class="bic" style="background:#3a1620;color:#fb7185;">⏱</div>
-            <div class="bt">付款失败 · 超时关单</div>
-            <button class="wbtn" style="width:80%;height:46px;font-size:15px;margin-top:18px;" onclick="showT('返回发售页重新下单')">重新购买</button>
-          </div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-
-  <!-- 发售·付款失败（超时关单） -->
-  <div class="slide">
-    <div class="slide-label"><span class="no">10</span><span class="nm">算力服务器发售 · 付款失败（超时关单·释放名额）</span></div>
-    <div class="phone">
-      <div class="notch"></div>
-      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
-      <div class="topbar"><div class="logo"><span class="mark"></span>CaryPact</div><div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div></div>
-      <div class="subbar"><span class="bk">← 返回</span><span class="tt">订单付款</span></div>
-      <div class="content">
-        <div class="blockp" style="min-height:470px;">
-          <div class="bic" style="background:#3a1620;color:#fb7185;">⏱</div>
-          <div class="bt">付款失败 · 超时关单</div>
-          <button class="wbtn" style="width:80%;height:48px;font-size:15px;margin-top:20px;">重新购买</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- 发售·暂停发售 -->
   <div class="slide">
-    <div class="slide-label"><span class="no">11</span><span class="nm">算力服务器发售 · 暂停发售态</span></div>
+    <div class="slide-label"><span class="no">9</span><span class="nm">算力服务器发售 · 暂停发售态</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -508,7 +435,7 @@
 
   <!-- 发售·已结束 -->
   <div class="slide">
-    <div class="slide-label"><span class="no">12</span><span class="nm">算力服务器发售 · 已结束态</span></div>
+    <div class="slide-label"><span class="no">10</span><span class="nm">算力服务器发售 · 已结束态</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -543,7 +470,7 @@
 
   <!-- 发售·已售罄 -->
   <div class="slide">
-    <div class="slide-label"><span class="no">13</span><span class="nm">算力服务器发售 · 已售罄态</span></div>
+    <div class="slide-label"><span class="no">11</span><span class="nm">算力服务器发售 · 已售罄态</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -578,7 +505,7 @@
 
   <!-- 矿机发售历史 -->
   <div class="slide">
-    <div class="slide-label"><span class="no">14</span><span class="nm">矿机发售历史（独立页 · 历史批次发售信息）</span></div>
+    <div class="slide-label"><span class="no">12</span><span class="nm">矿机发售历史（独立页 · 历史批次发售信息）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
@@ -740,28 +667,6 @@
   function closeSheets(){ document.getElementById('mask').classList.remove('show'); document.querySelectorAll('.sheet, .cmodal').forEach(function(s){ s.classList.remove('show'); }); }
   var toastTimer;
   function showT(msg){ var t=document.getElementById('mtoast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2200); }
-
-  // ===== 订单付款倒计时（180S · 抢单锁单 / 超时关单） =====
-  (function(){
-    var payLeft = 178, payTimer = null;
-    function fmt(s){ var m=Math.floor(s/60), ss=s%60; return String(m).padStart(2,'0')+':'+String(ss).padStart(2,'0'); }
-    function render(){
-      var el=document.getElementById('payCd'); if(!el) return;
-      el.textContent=fmt(payLeft);
-      el.style.color = payLeft<=30 ? '#fb7185' : '#8fb0ff';
-    }
-    function tick(){ if(payLeft<=0){ payFail(); return; } payLeft--; render(); }
-    window.payDone=function(){ if(payTimer) clearInterval(payTimer);
-      var w=document.getElementById('payWait'), ok=document.getElementById('payOkBox'), f=document.getElementById('payFailBox');
-      if(w) w.style.display='none'; if(f) f.style.display='none'; if(ok) ok.style.display='block';
-    };
-    window.payFail=function(){ if(payTimer) clearInterval(payTimer);
-      var w=document.getElementById('payWait'), ok=document.getElementById('payOkBox'), f=document.getElementById('payFailBox');
-      if(w) w.style.display='none'; if(ok) ok.style.display='none'; if(f) f.style.display='block';
-    };
-    window.payTimeout=function(){ payLeft=3; render(); };
-    if(document.getElementById('payCd')){ render(); payTimer=setInterval(tick,1000); }
-  })();
 </script>
 <!-- LIVE END -->
 </body>
