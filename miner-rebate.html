@@ -171,7 +171,7 @@
 
 <div class="gallery-head">
   <h1>CaryPact · 矿机模块（销售奖励 / 提币 / 算力服务器发售）</h1>
-  <p>个人中心沿用 CA 原生菜单，在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（可提取 / 总奖励 / 待发放 / 已提取 / 待结算）· 提币页 · 提币记录。账号未激活时「确认提币」跳转「暂无法提取」独立页。含算力服务器发售 5 种批次状态页（未开售 / 发售中 / 暂停发售 / 已结束 / 已售罄）· 矿机发售历史（独立页）。<br>矿机转赠已移至运营后台、奖励规则不再展示。上方多屏走查便于讲解，页面底部为可交互动态原型</p>
+  <p>个人中心沿用 CA 原生菜单，在「邀请好友」上方新增「销售奖励」入口。销售奖励含 Hero（可提取 / 总奖励 / 待发放 / 已提取 / 待结算）· 提币页 · 提币记录。账号未激活时「确认提币」跳转「暂无法提取」独立页。含算力服务器发售 5 种批次状态页（未开售 / 发售中 / 暂停发售 / 已结束 / 已售罄）· <b>无在售批次（空数据态）</b>· 矿机发售历史（独立页）。<br>矿机转赠已移至运营后台、奖励规则不再展示。上方多屏走查便于讲解，页面底部为可交互动态原型</p>
 </div>
 
 <div class="gallery">
@@ -503,9 +503,37 @@
     </div>
   </div>
 
+  <!-- 发售·无在售批次（空数据态） -->
+  <div class="slide">
+    <div class="slide-label"><span class="no">12</span><span class="nm">算力服务器发售 · 无在售批次（空数据态）</span></div>
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>CaryPact</div>
+        <div class="top-actions"><button class="wallet">0x2236…dEF2 ↩</button><button class="iconbtn">☰</button></div>
+      </div>
+      <div class="subbar"><span class="bk">← 返回</span><span class="tt">算力服务器发售</span></div>
+      <div class="content">
+        <div class="blockp" style="min-height:400px;">
+          <div class="bic" style="background:#1c1f27;color:#5f6573;font-size:34px;">🖥</div>
+          <div class="bt">暂无在售批次</div>
+          <div class="bx">当前没有正在发售的算力服务器批次。<br>新批次开售会在此展示，也可查看<b style="color:#8fb0ff;">历史批次</b>了解往期发售情况。</div>
+        </div>
+        <div style="display:flex;justify-content:center;margin:-8px 2px 16px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;">🕘 矿机发售历史 ›</span></div>
+        <button class="wbtn" style="width:100%;height:50px;font-size:16px;background:#20222c;color:#5f6573;box-shadow:none;cursor:not-allowed;">暂无批次 · 暂不可购买</button>
+        <div class="sect" style="font-size:15px;margin:22px 2px 10px;">购买记录</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;">
+          <div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">数量：<b style="color:#fff;">1 台</b></span><span style="color:var(--text2);">总费用：<b style="color:#fff;">3,980 USDT</b></span></div>
+          <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">状态：成功</span><span style="color:var(--muted);">编号 #101821 · 2026-07-08 15:20:17</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- 矿机发售历史 -->
   <div class="slide">
-    <div class="slide-label"><span class="no">12</span><span class="nm">矿机发售历史（独立页 · 历史批次发售信息）</span></div>
+    <div class="slide-label"><span class="no">13</span><span class="nm">矿机发售历史（独立页 · 历史批次发售信息）</span></div>
     <div class="phone">
       <div class="notch"></div>
       <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
