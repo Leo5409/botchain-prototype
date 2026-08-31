@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A2 · 節點發售 / 我的節點 / 能量 / 社區收益 / 邀請</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent; }
+  :root{
+    --bg:#08090c; --panel:#111318; --panel2:#171a21; --border:#242833;
+    --text:#f2f3f7; --text2:#9aa0ad; --muted:#5f6573;
+    --purple:#7c5cff; --pg:linear-gradient(135deg,#8b5cf6,#6d5cf7);
+    --pink:#ff5277; --green:#22c55e; --bot:#a78bfa; --usdt:#2dd4bf;
+  }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#e7e9f0; color:var(--text); padding:34px 28px 60px; }
+  .gallery-head { text-align:center; margin-bottom:28px; color:#1a1a2e; }
+  .gallery-head h1 { font-size:22px; font-weight:800; }
+  .gallery-head p { font-size:13px; color:#6b7280; margin-top:6px; line-height:1.6; }
+
+  .gallery { display:flex; flex-wrap:wrap; gap:34px 30px; align-items:flex-start; justify-content:center; }
+  .slide { width:340px; }
+  .slide-label { display:flex; align-items:center; gap:8px; justify-content:center; margin-bottom:12px; }
+  .slide-label .no { width:24px; height:24px; border-radius:50%; background:var(--pg); color:#fff; font-size:12px; font-weight:800; display:flex; align-items:center; justify-content:center; }
+  .slide-label .nm { font-size:13.5px; font-weight:700; color:#374151; }
+
+  /* ── Phone ── */
+  .phone { width:340px; min-height:560px; background:var(--bg); border-radius:40px; box-shadow:0 20px 50px rgba(10,11,16,.32), 0 0 0 9px #0b0c10, 0 0 0 10px #2a2d45;
+           position:relative; overflow:hidden; display:flex; flex-direction:column; }
+  .notch { position:absolute; top:0; left:50%; transform:translateX(-50%); width:126px; height:26px; background:#0b0c10; border-radius:0 0 16px 16px; z-index:60; }
+  .statusbar { height:36px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 24px; font-size:12px; font-weight:600; color:#fff; }
+  .statusbar .right { display:flex; gap:6px; font-size:10.5px; opacity:.85; }
+
+  /* top bar */
+  .topbar { height:50px; flex-shrink:0; display:flex; align-items:center; justify-content:space-between; padding:0 12px; }
+  .logo { display:flex; align-items:center; gap:7px; font-size:15px; font-weight:800; }
+  .logo .mark { width:22px; height:22px; border-radius:50%; background:conic-gradient(from 210deg,#3b82f6,#7873f5,#21d4fd,#3b82f6); box-shadow:0 0 8px rgba(124,92,255,.5); }
+  .top-actions { display:flex; align-items:center; gap:7px; }
+  .wallet { display:flex; align-items:center; gap:5px; background:var(--pg); color:#fff; border:none; height:30px; padding:0 11px; border-radius:16px; font-size:11px; font-weight:700; box-shadow:0 4px 14px rgba(124,92,255,.4); }
+  .iconbtn { width:30px; height:30px; border-radius:50%; background:#1c1f27; border:1px solid #2a2e3a; color:#cdd0db; font-size:13px; display:flex; align-items:center; justify-content:center; }
+
+  /* sub bar (← 返回 Title) */
+  .subbar { height:48px; flex-shrink:0; display:flex; align-items:center; position:relative; padding:0 14px; }
+  .subbar .bk { position:absolute; left:14px; color:#e7e9f2; font-size:14px; display:flex; align-items:center; gap:6px; }
+  .subbar .tt { flex:1; text-align:center; font-size:16px; font-weight:700; color:#fff; }
+
+  /* content */
+  .content { flex:1; padding:6px 16px 22px; }
+  .sect { font-size:17px; font-weight:800; color:#fff; margin:18px 2px 12px; }
+
+  /* hero */
+  .hero { background:var(--pg); border-radius:20px; padding:18px 18px 20px; box-shadow:0 14px 30px rgba(124,92,255,.34); position:relative; overflow:hidden; }
+  .hero .h-lbl { font-size:12.5px; opacity:.9; }
+  .hero .h-big { font-size:30px; font-weight:800; margin-top:5px; letter-spacing:.5px; } .hero .h-big small { font-size:14px; font-weight:600; opacity:.85; margin-left:5px; }
+  .hero .h-row { display:flex; gap:7px; margin-top:16px; }
+  .hero .h-cell { flex:1; background:rgba(255,255,255,.15); border-radius:12px; padding:8px 6px; }
+  .hero .h-cell .c-l { font-size:10.5px; opacity:.9; } .hero .h-cell .c-v { font-size:13.5px; font-weight:800; margin-top:3px; }
+
+  /* buttons */
+  .wbtn-row { display:flex; gap:10px; margin:14px 0 4px; }
+  .wbtn { flex:1; height:46px; border:none; border-radius:13px; background:var(--pg); color:#fff; font-size:15px; font-weight:800; cursor:pointer; box-shadow:0 8px 22px rgba(124,92,255,.4); }
+  .wbtn.ghost { background:#171a21; color:#c4b5fd; border:1px solid var(--border); box-shadow:none; }
+  .input { width:100%; height:46px; background:var(--panel2); border:1px solid var(--border); border-radius:12px; padding:0 14px; color:#fff; font-size:15px; outline:none; margin:8px 0; }
+  .input::placeholder { color:var(--muted); }
+
+  /* cards / rows */
+  .card { background:var(--panel); border:1px solid var(--border); border-radius:16px; padding:14px 16px; margin-bottom:14px; }
+  .card-t { font-size:14px; font-weight:700; color:#fff; display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px; }
+  .card-t .more { font-size:12px; color:var(--purple); font-weight:600; }
+  .row { display:flex; align-items:center; gap:12px; padding:12px 0; border-bottom:1px solid var(--border); }
+  .row:last-child { border-bottom:none; }
+  .row .ic { width:38px; height:38px; border-radius:11px; background:#241f3a; color:var(--bot); display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+  .row .ic.green { background:#10301f; color:#34d399; } .row .ic.amber { background:#3a2c12; color:#fbbf24; } .row .ic.red { background:#3a1620; color:#fb7185; }
+  .row .rmain { flex:1; min-width:0; }
+  .row .rtitle { font-size:14px; font-weight:600; color:#fff; display:flex; align-items:center; }
+  .row .rsub { font-size:11px; color:var(--text2); margin-top:3px; line-height:1.4; }
+  .row .rright { text-align:right; flex-shrink:0; }
+  .row .rval { font-size:15px; font-weight:800; }
+  .row .rval.usdt { color:var(--usdt); }
+  .row .rdate { font-size:10.5px; color:var(--muted); margin-top:3px; }
+  .row .rtag { font-size:12px; color:var(--text2); display:flex; align-items:center; gap:5px; }
+  .chev { color:#4b4f5e; font-size:16px; flex-shrink:0; }
+
+  .b { display:inline-flex; align-items:center; padding:1px 7px; border-radius:8px; font-size:10.5px; font-weight:700; }
+  .b-done { background:#10301f; color:#34d399; } .b-wait { background:#3a2c12; color:#fbbf24; } .b-fail { background:#3a1620; color:#fb7185; }
+  .b-usdt { background:#0e2e2b; color:var(--usdt); } .b-info { background:#1c2440; color:#7da2ff; }
+  .pill { display:inline-block; padding:0 7px; border-radius:6px; font-size:11px; font-weight:700; background:#1c2440; color:#8fb0ff; }
+
+  /* note */
+  .note { background:#1a1726; border:1px solid #2e2942; border-radius:12px; padding:10px 12px; font-size:11px; color:#b9a8e8; line-height:1.6; margin-bottom:14px; display:flex; gap:7px; }
+  .note.warn { background:#241a10; border-color:#3d2c12; color:#e7b667; }
+
+  .kv { display:flex; justify-content:space-between; align-items:center; padding:9px 0; border-bottom:1px dashed var(--border); font-size:13px; }
+  .kv:last-child { border-bottom:none; } .kv .k { color:var(--text2); } .kv .v { font-weight:700; color:#fff; }
+
+  /* level table */
+  .ttab { width:100%; border-collapse:collapse; font-size:12px; margin-top:8px; }
+  .ttab th { background:#171a21; color:var(--text2); font-weight:700; padding:8px; text-align:left; font-size:11px; }
+  .ttab td { padding:8px; border-bottom:1px solid var(--border); color:#dfe1ea; }
+  .ttab tr.me td { background:#1a1726; color:#fff; font-weight:700; }
+  .tnum { text-align:right; } .tg { color:#34d399; font-weight:700; }
+  .ttab.t4 th, .ttab.t4 td { padding:7px 6px; font-size:11px; }
+  .ttab.t4 .lv { font-weight:700; color:#fff; }
+
+  /* block page (未入金拦截，另开一页) */
+  .blockp { display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; min-height:430px; padding:0 22px; }
+  .blockp .bic { width:66px; height:66px; border-radius:50%; background:#101a2a; color:#7da2ff; display:flex; align-items:center; justify-content:center; font-size:30px; }
+  .blockp .bt { font-size:18px; font-weight:800; color:#fff; margin-top:16px; }
+  .blockp .bx { font-size:13.5px; color:var(--text2); line-height:1.75; margin-top:10px; }
+
+  /* selectable miner list */
+  .mrow { display:flex; align-items:center; gap:12px; padding:12px 2px; border-bottom:1px solid var(--border); cursor:pointer; }
+  .mrow:last-child { border-bottom:none; }
+  .mck { width:22px; height:22px; border-radius:7px; border:2px solid #3a3f4d; flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:800; color:transparent; }
+  .mrow.sel .mck { background:var(--pg); border-color:transparent; color:#fff; }
+  .mrow .mmain { flex:1; min-width:0; } .mrow .mno { font-size:14px; font-weight:700; color:#fff; } .mrow .msub { font-size:11px; color:var(--text2); margin-top:2px; }
+  .sel-head { display:flex; justify-content:space-between; align-items:center; font-size:12px; color:var(--text2); margin:10px 2px 2px; } .sel-head b { color:var(--purple); }
+  .selall { font-size:12px; color:var(--purple); font-weight:700; cursor:pointer; display:inline-flex; align-items:center; gap:4px; }
+  .list-more { font-size:11px; color:var(--muted); text-align:center; padding:9px 0 2px; }
+
+  /* menu (drawer content) */
+  .menu-logo { display:flex; align-items:center; gap:8px; font-size:16px; font-weight:800; padding:16px 20px 12px; border-bottom:1px solid #1b1e26; }
+  .menu-logo .mark { width:22px; height:22px; border-radius:50%; background:conic-gradient(from 210deg,#3b82f6,#7873f5,#21d4fd,#3b82f6); }
+  .menu-item { padding:12px 20px; font-size:14px; color:#c7cad4; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+  .menu-item.dim { color:#6b7180; }
+  .menu-item.active { color:var(--pink); font-weight:700; }
+  .menu-cap { font-size:10.5px; letter-spacing:1px; color:#565b69; padding:12px 20px 4px; text-transform:uppercase; }
+  .menu-sep { height:1px; background:#1b1e26; margin:6px 16px; }
+
+  /* ── live overrides ── */
+  .live-head { text-align:center; margin:72px auto 22px; color:#1a1a2e; }
+  .live-head h2 { font-size:20px; font-weight:800; } .live-head p { font-size:12.5px; color:#6b7280; margin-top:6px; }
+  .live-wrap { display:flex; justify-content:center; }
+  .live .phone { width:390px; height:844px; min-height:0; overflow:hidden; }
+  .live .content { flex:1; overflow-y:auto; } .live .content::-webkit-scrollbar { width:0; }
+  .live .page { display:none; } .live .page.active { display:block; }
+  .live .menu-item, .live .row, .live .mrow, .live .wallet, .live .iconbtn, .live .more, .live .chev, .live .sheet-x, .live .subbar .bk, .live .wbtn { cursor:pointer; }
+  .drawer-mask { position:absolute; inset:0; background:rgba(0,0,0,.55); z-index:90; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .drawer-mask.show { opacity:1; pointer-events:all; }
+  .drawer { position:absolute; top:0; left:0; bottom:0; width:250px; background:#0d0e13; border-right:1px solid #20222c; z-index:91; transform:translateX(-100%); transition:transform .26s cubic-bezier(.4,1,.5,1); display:flex; flex-direction:column; }
+  .drawer.show { transform:none; } .drawer .menu { flex:1; overflow-y:auto; padding:6px 0; } .drawer .menu::-webkit-scrollbar { width:0; }
+  .sheet-mask { position:absolute; inset:0; background:rgba(0,0,0,.6); z-index:100; opacity:0; pointer-events:none; transition:opacity .25s; }
+  .sheet-mask.show { opacity:1; pointer-events:all; }
+  .sheet { position:absolute; left:0; right:0; bottom:0; background:#12141a; border-top:1px solid #262a34; border-radius:22px 22px 0 0; z-index:101; transform:translateY(100%); transition:transform .28s cubic-bezier(.4,1.2,.5,1); max-height:86%; display:flex; flex-direction:column; }
+  .sheet.show { transform:none; }
+  .sheet-h { padding:16px 18px 10px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+  .sheet-h .st { font-size:16px; font-weight:800; color:#fff; } .sheet-x { font-size:22px; color:var(--muted); }
+  .sheet-b { padding:14px 18px 20px; overflow-y:auto; }
+  .grab { width:38px; height:4px; background:#33353f; border-radius:3px; margin:8px auto 0; }
+  /* centered modal (居中弹框) */
+  .cmodal { position:absolute; inset:0; z-index:101; display:flex; align-items:center; justify-content:center; padding:0 18px; opacity:0; pointer-events:none; transition:opacity .22s; }
+  .cmodal.show { opacity:1; pointer-events:all; }
+  .cmodal .cbox { width:100%; max-width:330px; max-height:74%; background:#12141a; border:1px solid #262a34; border-radius:20px; display:flex; flex-direction:column; overflow:hidden; box-shadow:0 24px 60px rgba(0,0,0,.6); transform:scale(.92); transition:transform .22s; }
+  .cmodal.show .cbox { transform:none; }
+  .cmodal .sheet-b { flex:1; min-height:0; }
+  /* pagination */
+  .pager { display:flex; align-items:center; justify-content:center; gap:6px; padding:11px; border-top:1px solid var(--border); flex-shrink:0; }
+  .pager .pg-btn { min-width:30px; height:30px; padding:0 9px; border-radius:8px; background:#171a21; border:1px solid var(--border); color:#c7cad4; font-size:13px; font-weight:700; display:inline-flex; align-items:center; justify-content:center; cursor:pointer; }
+  .pager .pg-btn.active { background:var(--pg); color:#fff; border-color:transparent; }
+  .pager .pg-btn.disabled { opacity:.35; pointer-events:none; }
+  .addr-msg { font-size:11.5px; margin:3px 2px 0; min-height:15px; }
+  /* miner id chips (编号详情) */
+  .idwrap { display:flex; flex-wrap:wrap; gap:8px; }
+  .idchip { background:#171a21; border:1px solid var(--border); border-radius:8px; padding:5px 10px; font-size:12.5px; color:#dfe1ea; font-weight:600; }
+  .idsub { font-size:11.5px; color:var(--muted); padding:2px 0 12px; }
+  .idlink { font-size:11px; color:#8fb0ff; margin-top:3px; }
+  .mtoast { position:absolute; left:50%; bottom:30px; transform:translateX(-50%) translateY(20px); background:#2a2c38; color:#fff; padding:11px 18px; border-radius:12px; font-size:13px; z-index:200; opacity:0; transition:all .25s; white-space:nowrap; box-shadow:0 10px 30px rgba(0,0,0,.5); border:1px solid #393b48; }
+  .mtoast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+  /* ── A2 新增（僅 3 組，不改動既有規則） ── */
+  .pkg-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px; }
+  .pkg { background:var(--panel2); border:1px solid var(--border); border-radius:14px; padding:12px 10px 11px; text-align:center; cursor:pointer; }
+  .pkg.on { background:var(--pg); border-color:transparent; box-shadow:0 8px 22px rgba(124,92,255,.38); }
+  .pkg .pk-t { font-size:15px; font-weight:800; color:#fff; }
+  .pkg .pk-old { font-size:11px; color:var(--muted); text-decoration:line-through; margin-top:5px; }
+  .pkg.on .pk-old { color:rgba(255,255,255,.72); }
+  .pkg .pk-new { font-size:15px; font-weight:800; color:var(--green); margin-top:2px; }
+  .pkg.on .pk-new { color:#fff; }
+  .pkg .pk-e { font-size:10.5px; color:var(--text2); margin-top:6px; }
+  .pkg.on .pk-e { color:rgba(255,255,255,.92); }
+  .pkg.dim { opacity:.45; }
+  .stage-bar { display:flex; gap:6px; margin:8px 0 14px; }
+  .stg { flex:1; text-align:center; background:var(--panel2); border:1px solid var(--border); border-radius:10px; padding:7px 2px; cursor:pointer; }
+  .stg.on { background:#241f3a; border-color:#4c3f80; }
+  .stg .sg-n { font-size:10.5px; color:var(--text2); font-weight:700; }
+  .stg.on .sg-n { color:#c4b5fd; }
+  .stg .sg-d { font-size:13px; font-weight:800; color:#fff; margin-top:2px; }
+  .stg.done .sg-d { color:var(--muted); } .stg.done .sg-n { color:#4b4f5e; }
+  .langgrid { display:grid; grid-template-columns:1fr 1fr; gap:9px; }
+  .lang { background:#171a21; border:1px solid var(--border); border-radius:11px; padding:11px 12px; font-size:13px; color:#dfe1ea; display:flex; align-items:center; justify-content:space-between; cursor:pointer; }
+  .lang.on { border-color:var(--purple); background:#1a1726; color:#fff; font-weight:700; }
+  .lang .ck { color:var(--purple); font-weight:800; }
+</style>
+</head>
+<body>
+<div class="gallery-head">
+  <h1>A2 · C 端原型（節點發售 / 我的節點 / 能量 / 社區收益 / 邀請）</h1>
+  <p>依據《0823 A2 需求初稿》繪製 · 預設<b>繁體中文</b>（支援 8 語言切換）· 深色紫主題沿用 CaryPact 視覺體系<br>
+  走查共 <b>20 屏</b> + <b>6 組聯屏彈框走查</b>（供 UI 對接）；底部另有<b>可交互動態原型</b>，階段折扣與節點檔位可即時切換重算。<br>
+  核心口徑：<b>身分按所購套餐檔位</b>（折扣不掉檔）· <b>能量與返佣按實付金額</b> · <b>1 能量 = 可提取 1 U 價值代幣</b> · 直推返佣 <b>5%</b>（USDT 70% + A2 30%，後台可配）</p>
+</div>
+<div class="gallery">
+<div class="slide"><div class="slide-label"><span class="no">1</span><span class="nm">首次登入 · 綁定邀請碼（強制）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="tt">註冊 / 綁定</span></div><div class="content"><div class="blockp" style="min-height:400px;">
+          <div class="bic" style="background:#1a1726;color:#c4b5fd;font-size:30px;">🔗</div>
+          <div class="bt">錢包已連接</div>
+          <div class="bx">地址 <b style="color:#dfe1ea;">0xE240…28d2</b><br>系統以<b style="color:#8fb0ff;">錢包地址作為帳號</b>。<br>首次登入需<b style="color:#c4b5fd;">綁定邀請碼</b>才能完成註冊。</div>
+        </div></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">綁定邀請碼</span><span class="sheet-x">×</span></div><div class="sheet-b">
+        <div style="font-size:12.5px;color:var(--text2);line-height:1.75;margin-bottom:10px;">請輸入邀請人提供的邀請碼。<b style="color:#e7b667;">上下級關係綁定後不可更改</b>，且必須綁定才能完成註冊。</div>
+        <input class="input" value="1AObEd" style="font-size:16px;font-weight:800;letter-spacing:2px;">
+        <div class="addr-msg" style="color:#34d399;">✓ 邀請人 0x9C41…7Fb2（C 節點）</div>
+        </div><div style="padding:6px 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;">取消</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;">確認綁定</button></div></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">2</span><span class="nm">首次登入 · 邀請碼無效（錯誤態）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="tt">註冊 / 綁定</span></div><div class="content"><div class="blockp" style="min-height:400px;">
+          <div class="bic" style="background:#1a1726;color:#c4b5fd;font-size:30px;">🔗</div>
+          <div class="bt">錢包已連接</div>
+          <div class="bx">地址 <b style="color:#dfe1ea;">0xE240…28d2</b><br>系統以<b style="color:#8fb0ff;">錢包地址作為帳號</b>。<br>首次登入需<b style="color:#c4b5fd;">綁定邀請碼</b>才能完成註冊。</div>
+        </div></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">綁定邀請碼</span><span class="sheet-x">×</span></div><div class="sheet-b">
+        <div style="font-size:12.5px;color:var(--text2);line-height:1.75;margin-bottom:10px;">請輸入邀請人提供的邀請碼。<b style="color:#e7b667;">上下級關係綁定後不可更改</b>，且必須綁定才能完成註冊。</div>
+        <input class="input" value="ZZ9X01" style="font-size:16px;font-weight:800;letter-spacing:2px;border-color:#7f3348;">
+        <div class="addr-msg" style="color:#fb7185;">✕ 邀請碼不存在，請向邀請人重新索取</div>
+        <div class="note warn" style="margin-top:12px;"><span>⚠</span><span>未綁定成功前<b>無法進入系統</b>，也無法購買節點。<br>邀請碼可於邀請人的「邀請好友」頁複製。</span></div>
+        </div><div style="padding:0 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;">取消</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;background:#2c2f3a;box-shadow:none;">確認綁定</button></div></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">3</span><span class="nm">個人中心（我的節點 / 社區 / 收益 / 邀請）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="tt">個人中心</span></div><div class="content"><div style="font-size:12.5px;color:var(--text2);margin:10px 2px 12px;">用戶地址：<b style="color:#dfe1ea;">0xE240…28d2</b></div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="rmain"><div class="rtitle">我的節點</div></div><div class="rright"><span class="b b-info">B 節點</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">我的社區</div></div><div class="rright"><span class="rtag">直推 4 人</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">社區收益</div></div><div class="rright"><span class="rtag" style="color:#34d399;">可提取 875 U</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">能量帳戶</div></div><div class="rright"><span class="rtag" style="color:#c4b5fd;">剩餘 8,450</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">邀請好友</div></div><div class="rright"><span class="rtag">1AObEd</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">我的邀請人</div></div><div class="rright"><span class="rtag">0x9C41…7Fb2</span></div><span class="chev">›</span></div>
+        </div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="rmain"><div class="rtitle">語言 / Language</div></div><div class="rright"><span class="rtag">繁體中文</span></div><span class="chev">›</span></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>「我的邀請人」為註冊時綁定的上級，<b style="color:#fff;">綁定後不可更改</b>。社區領導人線下獎勵由社區自行維護，不在本系統結算。</span></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">4</span><span class="nm">語言設定（8 語言 · 預設繁體中文）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">語言 / Language</span></div><div class="content"><div class="sect" style="margin-top:12px;">選擇語言</div><div class="langgrid"><div class="lang on">繁體中文<span class="ck">✓</span></div><div class="lang">English</div><div class="lang">日本語</div><div class="lang">한국어</div><div class="lang">Español</div><div class="lang">Português</div><div class="lang">Tiếng Việt</div><div class="lang">Русский</div></div><div class="note" style="margin-top:14px;"><span>🌐</span><span>系統支援 <b style="color:#fff;">8 種語言</b>，預設 <b style="color:#fff;">繁體中文</b>。切換後全站文案即時生效。<br>收款地址按語言分流由後端處理，前端不展示。</span></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">5</span><span class="nm">節點發售 · 階段 1 進行中（8 折）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">節點發售</span></div><div class="content"><div class="stage-bar"><div class="stg on"><div class="sg-n">階段 1</div><div class="sg-d">8 折</div></div><div class="stg"><div class="sg-n">階段 2</div><div class="sg-d">8.5 折</div></div><div class="stg"><div class="sg-n">階段 3</div><div class="sg-d">9 折</div></div><div class="stg"><div class="sg-n">階段 4</div><div class="sg-d">9.5 折</div></div></div><div style="display:flex;justify-content:flex-end;margin:4px 2px 6px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;">🕘 發售歷史 ›</span></div><div class="note" style="margin-top:2px;"><span>🟣</span><span><b style="color:#fff;">階段 1</b> <span class="b b-done" style="margin-left:2px;">進行中</span> <span class="b b-usdt" style="margin-left:4px;">8 折</span><br>期間 2026-11-01 00:00 ~ 2026-11-30 23:59<br>本階段名額 <b style="color:#dfe1ea;">1,000</b> 個 · 剩餘 <b style="color:#e7b667;">787</b> 個</span></div><div style="font-size:13px;color:var(--text2);margin:4px 2px 9px;">選擇節點（決定身分與能量倍數）</div><div class="pkg-grid"><div class="pkg on"><div class="pk-t">A 節點</div><div class="pk-old">標價 1,000 U</div><div class="pk-new">800 U</div><div class="pk-e">能量 ×1.5 → 1,200</div></div><div class="pkg"><div class="pk-t">B 節點</div><div class="pk-old">標價 5,000 U</div><div class="pk-new">4,000 U</div><div class="pk-e">能量 ×2 → 8,000</div></div><div class="pkg"><div class="pk-t">C 節點</div><div class="pk-old">標價 10,000 U</div><div class="pk-new">8,000 U</div><div class="pk-e">能量 ×2.5 → 20,000</div></div><div class="pkg"><div class="pk-t">D 節點</div><div class="pk-old">標價 30,000 U</div><div class="pk-new">24,000 U</div><div class="pk-e">能量 ×3 → 72,000</div></div></div><div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">選擇支付網絡</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;"><span style="font-size:14px;color:#fff;font-weight:600;">BOT Chain</span><span style="color:var(--muted);font-size:12px;">⌄</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;"><span style="font-size:14px;color:#fff;font-weight:600;">USDT</span><span style="color:var(--muted);font-size:12px;">⌄</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 16px;"><span>餘額：12,480.00 USDT</span><span>BOT Chain / ETH / BNB</span></div><div class="card" style="margin-bottom:14px;"><div class="card-t">費用明細</div><div class="kv"><span class="k">節點檔位</span><span class="v">A 節點</span></div><div class="kv"><span class="k">標價</span><span class="v">1,000 U</span></div><div class="kv"><span class="k">階段折扣</span><span class="v" style="color:#34d399;">8 折（階段 1）</span></div><div class="kv"><span class="k">實付金額</span><span class="v" style="color:var(--usdt);">800.00 USDT</span></div><div class="kv"><span class="k">獲得身分</span><span class="v"><span class="b b-info">A 節點</span></span></div><div class="kv"><span class="k">獲得能量</span><span class="v" style="color:#c4b5fd;">1,200（實付 × 1.5）</span></div></div><div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">應付金額</div><div style="display:flex;align-items:baseline;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:15px 16px;margin-bottom:16px;"><span style="font-size:24px;font-weight:800;color:#fff;">800.00</span><span style="font-size:13px;color:var(--text2);">USDT</span></div><button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認購買</button><div class="sect" style="font-size:15px;margin:22px 2px 10px;">購買記錄</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">B 節點 · 階段 2（8.5 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">4,250 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +8,500</span><span style="color:var(--muted);">2026-12-03 10:12:44</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +1,200</span><span style="color:var(--muted);">2026-11-02 21:38:09</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:#e7b667;font-weight:700;">狀態：鏈上確認中</span><span style="color:var(--muted);">2026-11-02 21:36:51</span></div></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">6</span><span class="nm">節點發售 · 未開售態</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">節點發售</span></div><div class="content"><div class="stage-bar"><div class="stg on"><div class="sg-n">階段 1</div><div class="sg-d">8 折</div></div><div class="stg"><div class="sg-n">階段 2</div><div class="sg-d">8.5 折</div></div><div class="stg"><div class="sg-n">階段 3</div><div class="sg-d">9 折</div></div><div class="stg"><div class="sg-n">階段 4</div><div class="sg-d">9.5 折</div></div></div><div style="display:flex;justify-content:flex-end;margin:4px 2px 6px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;">🕘 發售歷史 ›</span></div><div class="note" style="margin-top:2px;"><span>🕒</span><span><b style="color:#fff;">階段 1</b> <span class="b b-info" style="margin-left:2px;">未開售</span> <span class="b b-usdt" style="margin-left:4px;">8 折</span><br>開售 2026-11-01 00:00 · 截止 2026-11-30 23:59<br>本階段名額 <b style="color:#dfe1ea;">1,000</b> 個</span></div><div class="hero" style="text-align:center;padding:20px 18px;margin-bottom:16px;"><div class="h-lbl">距開售還有</div><div class="h-big" style="font-size:34px;letter-spacing:2px;">66<small>天</small> 02<small>時</small> 19<small>分</small></div></div><div style="font-size:13px;color:var(--text2);margin:4px 2px 9px;">節點檔位預覽（階段 1 · 8 折）</div><div class="pkg-grid"><div class="pkg dim"><div class="pk-t">A 節點</div><div class="pk-old">標價 1,000 U</div><div class="pk-new">800 U</div><div class="pk-e">能量 ×1.5 → 1,200</div></div><div class="pkg dim"><div class="pk-t">B 節點</div><div class="pk-old">標價 5,000 U</div><div class="pk-new">4,000 U</div><div class="pk-e">能量 ×2 → 8,000</div></div><div class="pkg dim"><div class="pk-t">C 節點</div><div class="pk-old">標價 10,000 U</div><div class="pk-new">8,000 U</div><div class="pk-e">能量 ×2.5 → 20,000</div></div><div class="pkg dim"><div class="pk-t">D 節點</div><div class="pk-old">標價 30,000 U</div><div class="pk-new">24,000 U</div><div class="pk-e">能量 ×3 → 72,000</div></div></div><button class="wbtn" style="width:100%;height:50px;font-size:16px;background:#20222c;color:#5f6573;box-shadow:none;cursor:not-allowed;">尚未開售 · 敬請期待</button><div class="sect" style="font-size:15px;margin:22px 2px 10px;">購買記錄</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">B 節點 · 階段 2（8.5 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">4,250 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +8,500</span><span style="color:var(--muted);">2026-12-03 10:12:44</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +1,200</span><span style="color:var(--muted);">2026-11-02 21:38:09</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:#e7b667;font-weight:700;">狀態：鏈上確認中</span><span style="color:var(--muted);">2026-11-02 21:36:51</span></div></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">7</span><span class="nm">節點發售 · 已售罄態（後台手動）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">節點發售</span></div><div class="content"><div class="stage-bar"><div class="stg on"><div class="sg-n">階段 1</div><div class="sg-d">8 折</div></div><div class="stg"><div class="sg-n">階段 2</div><div class="sg-d">8.5 折</div></div><div class="stg"><div class="sg-n">階段 3</div><div class="sg-d">9 折</div></div><div class="stg"><div class="sg-n">階段 4</div><div class="sg-d">9.5 折</div></div></div><div style="display:flex;justify-content:flex-end;margin:4px 2px 6px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;">🕘 發售歷史 ›</span></div><div class="note warn" style="margin-top:2px;"><span>🔴</span><span><b style="color:#fff;">階段 1</b> <span class="b b-fail" style="margin-left:2px;">已售罄</span> <span class="b b-usdt" style="margin-left:4px;">8 折</span><br>本階段名額 <b>1,000</b> 個 · 剩餘 <b>0</b> 個<br>售罄狀態由運營後台手動設置</span></div><div class="note"><span>➡</span><span>下一階段 <b style="color:#fff;">階段 2（8.5 折）</b> 將於 <b style="color:#fff;">2026-12-01 00:00</b> 開售。</span></div><div style="font-size:13px;color:var(--text2);margin:4px 2px 9px;">節點檔位（本階段已售罄）</div><div class="pkg-grid"><div class="pkg dim"><div class="pk-t">A 節點</div><div class="pk-old">標價 1,000 U</div><div class="pk-new">800 U</div><div class="pk-e">能量 ×1.5 → 1,200</div></div><div class="pkg dim"><div class="pk-t">B 節點</div><div class="pk-old">標價 5,000 U</div><div class="pk-new">4,000 U</div><div class="pk-e">能量 ×2 → 8,000</div></div><div class="pkg dim"><div class="pk-t">C 節點</div><div class="pk-old">標價 10,000 U</div><div class="pk-new">8,000 U</div><div class="pk-e">能量 ×2.5 → 20,000</div></div><div class="pkg dim"><div class="pk-t">D 節點</div><div class="pk-old">標價 30,000 U</div><div class="pk-new">24,000 U</div><div class="pk-e">能量 ×3 → 72,000</div></div></div><button class="wbtn" style="width:100%;height:50px;font-size:16px;background:#20222c;color:#5f6573;box-shadow:none;cursor:not-allowed;">本階段已售罄</button><div class="sect" style="font-size:15px;margin:22px 2px 10px;">購買記錄</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">B 節點 · 階段 2（8.5 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">4,250 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +8,500</span><span style="color:var(--muted);">2026-12-03 10:12:44</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +1,200</span><span style="color:var(--muted);">2026-11-02 21:38:09</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:#e7b667;font-weight:700;">狀態：鏈上確認中</span><span style="color:var(--muted);">2026-11-02 21:36:51</span></div></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">8</span><span class="nm">節點發售 · 階段已結束（切換下一階段）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">節點發售</span></div><div class="content"><div class="stage-bar"><div class="stg done"><div class="sg-n">階段 1</div><div class="sg-d">8 折</div></div><div class="stg on"><div class="sg-n">階段 2</div><div class="sg-d">8.5 折</div></div><div class="stg"><div class="sg-n">階段 3</div><div class="sg-d">9 折</div></div><div class="stg"><div class="sg-n">階段 4</div><div class="sg-d">9.5 折</div></div></div><div style="display:flex;justify-content:flex-end;margin:4px 2px 6px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;">🕘 發售歷史 ›</span></div><div class="note" style="margin-top:2px;"><span>⏹</span><span><b style="color:#fff;">階段 1</b> <span class="b b-fail" style="margin-left:2px;">已結束</span><br>期間 2026-11-01 ~ 2026-11-30 · 已售 <b style="color:#dfe1ea;">213</b> / 1,000 個<br>未售出名額<b style="color:#e7b667;">不順延</b>，由後台決定是否併入下一階段</span></div><div class="note"><span>🟣</span><span>當前為 <b style="color:#fff;">階段 2</b> <span class="b b-done" style="margin-left:2px;">進行中</span> <span class="b b-usdt" style="margin-left:4px;">8.5 折</span>，價格已按新階段折扣重算。</span></div><div style="font-size:13px;color:var(--text2);margin:4px 2px 9px;">選擇節點（階段 2 · 8.5 折）</div><div class="pkg-grid"><div class="pkg on"><div class="pk-t">A 節點</div><div class="pk-old">標價 1,000 U</div><div class="pk-new">850 U</div><div class="pk-e">能量 ×1.5 → 1,275</div></div><div class="pkg"><div class="pk-t">B 節點</div><div class="pk-old">標價 5,000 U</div><div class="pk-new">4,250 U</div><div class="pk-e">能量 ×2 → 8,500</div></div><div class="pkg"><div class="pk-t">C 節點</div><div class="pk-old">標價 10,000 U</div><div class="pk-new">8,500 U</div><div class="pk-e">能量 ×2.5 → 21,250</div></div><div class="pkg"><div class="pk-t">D 節點</div><div class="pk-old">標價 30,000 U</div><div class="pk-new">25,500 U</div><div class="pk-e">能量 ×3 → 76,500</div></div></div><div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">選擇支付網絡</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;"><span style="font-size:14px;color:#fff;font-weight:600;">BOT Chain</span><span style="color:var(--muted);font-size:12px;">⌄</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;"><span style="font-size:14px;color:#fff;font-weight:600;">USDT</span><span style="color:var(--muted);font-size:12px;">⌄</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 16px;"><span>餘額：12,480.00 USDT</span><span>BOT Chain / ETH / BNB</span></div><div class="card" style="margin-bottom:14px;"><div class="card-t">費用明細</div><div class="kv"><span class="k">節點檔位</span><span class="v">A 節點</span></div><div class="kv"><span class="k">標價</span><span class="v">1,000 U</span></div><div class="kv"><span class="k">階段折扣</span><span class="v" style="color:#34d399;">8.5 折（階段 2）</span></div><div class="kv"><span class="k">實付金額</span><span class="v" style="color:var(--usdt);">850.00 USDT</span></div><div class="kv"><span class="k">獲得身分</span><span class="v"><span class="b b-info">A 節點</span></span></div><div class="kv"><span class="k">獲得能量</span><span class="v" style="color:#c4b5fd;">1,275（實付 × 1.5）</span></div></div><button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認購買</button><div class="sect" style="font-size:15px;margin:22px 2px 10px;">購買記錄</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">B 節點 · 階段 2（8.5 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">4,250 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +8,500</span><span style="color:var(--muted);">2026-12-03 10:12:44</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +1,200</span><span style="color:var(--muted);">2026-11-02 21:38:09</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:#e7b667;font-weight:700;">狀態：鏈上確認中</span><span style="color:var(--muted);">2026-11-02 21:36:51</span></div></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">9</span><span class="nm">節點發售 · 無在售階段（空數據態）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">節點發售</span></div><div class="content"><div class="blockp" style="min-height:400px;"><div class="bic" style="background:#1c1f27;color:#5f6573;font-size:32px;">🧩</div><div class="bt">暫無在售階段</div><div class="bx">目前沒有正在發售的節點階段。<br>新階段開售會在此展示，也可查看<b style="color:#8fb0ff;">發售歷史</b>了解往期折扣與售出情況。</div></div><div style="display:flex;justify-content:flex-end;margin:4px 2px 6px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;">🕘 發售歷史 ›</span></div><button class="wbtn" style="width:100%;height:50px;font-size:16px;background:#20222c;color:#5f6573;box-shadow:none;cursor:not-allowed;">暫無階段 · 暫不可購買</button><div class="sect" style="font-size:15px;margin:22px 2px 10px;">購買記錄</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">B 節點 · 階段 2（8.5 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">4,250 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +8,500</span><span style="color:var(--muted);">2026-12-03 10:12:44</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +1,200</span><span style="color:var(--muted);">2026-11-02 21:38:09</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:#e7b667;font-weight:700;">狀態：鏈上確認中</span><span style="color:var(--muted);">2026-11-02 21:36:51</span></div></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">10</span><span class="nm">發售歷史（4 階段折扣 / 各檔位價）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">發售歷史</span></div><div class="content"><div class="note" style="margin-top:8px;"><span>🕘</span><span>四個階段按<b style="color:#fff;">日期</b>依次開售，折扣逐階段收窄；<b style="color:#e7b667;">越早購買折扣越大</b>。</span></div>
+        <table class="ttab t4"><tr><th>階段</th><th>期間</th><th>折扣</th><th class="tnum">已售 / 名額</th><th>狀態</th></tr>
+        <tr><td class="lv">階段 1</td><td>11-01 ~ 11-30</td><td class="tg">8 折</td><td class="tnum">213 / 1,000</td><td><span class="b b-fail">已結束</span></td></tr>
+        <tr class="me"><td class="lv">階段 2</td><td>12-01 ~ 12-30</td><td class="tg">8.5 折</td><td class="tnum">146 / 1,000</td><td><span class="b b-done">進行中</span></td></tr>
+        <tr><td class="lv">階段 3</td><td>01-01 ~ 01-30</td><td class="tg">9 折</td><td class="tnum">— / 1,000</td><td><span class="b b-info">未開售</span></td></tr>
+        <tr><td class="lv">階段 4</td><td>02-01 ~ 02-28</td><td class="tg">9.5 折</td><td class="tnum">— / 1,000</td><td><span class="b b-info">未開售</span></td></tr>
+        </table>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">各階段檔位價（標價 → 折後）</div>
+        <table class="ttab t4"><tr><th>檔位</th><th class="tnum">標價</th><th class="tnum">階段1</th><th class="tnum">階段2</th><th class="tnum">階段3</th><th class="tnum">階段4</th></tr>
+        <tr><td class="lv">A</td><td class="tnum">1,000</td><td class="tnum tg">800</td><td class="tnum">850</td><td class="tnum">900</td><td class="tnum">950</td></tr>
+        <tr><td class="lv">B</td><td class="tnum">5,000</td><td class="tnum tg">4,000</td><td class="tnum">4,250</td><td class="tnum">4,500</td><td class="tnum">4,750</td></tr>
+        <tr><td class="lv">C</td><td class="tnum">10,000</td><td class="tnum tg">8,000</td><td class="tnum">8,500</td><td class="tnum">9,000</td><td class="tnum">9,500</td></tr>
+        <tr><td class="lv">D</td><td class="tnum">30,000</td><td class="tnum tg">24,000</td><td class="tnum">25,500</td><td class="tnum">27,000</td><td class="tnum">28,500</td></tr>
+        </table>
+        <div class="note" style="margin-top:14px;"><span>ℹ</span><span>能量與直推返佣均按<b style="color:#fff;">實付金額</b>計算；<b style="color:#fff;">身分檔位按所購套餐</b>，不因折扣掉檔。</span></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">11</span><span class="nm">購買成功 · 訂單詳情</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">訂單詳情</span></div><div class="content"><div class="blockp" style="min-height:210px;padding-top:14px;">
+          <div class="bic" style="background:#10301f;color:#34d399;font-size:30px;">✓</div>
+          <div class="bt">購買成功</div>
+          <div class="bx" style="margin-top:6px;">A 節點 · 實付 <b style="color:var(--usdt);">800.00 USDT</b></div>
+        </div>
+        <div class="card"><div class="card-t">訂單詳情</div>
+          <div class="kv"><span class="k">訂單號</span><span class="v">A2-20261102-0091</span></div>
+          <div class="kv"><span class="k">節點檔位</span><span class="v"><span class="b b-info">A 節點</span></span></div>
+          <div class="kv"><span class="k">標價 / 折扣</span><span class="v">1,000 U · <span style="color:#34d399;">8 折（階段 1）</span></span></div>
+          <div class="kv"><span class="k">實付金額</span><span class="v" style="color:var(--usdt);">800.00 USDT</span></div>
+          <div class="kv"><span class="k">支付網絡</span><span class="v">BOT Chain</span></div>
+          <div class="kv"><span class="k">獲得能量</span><span class="v" style="color:#c4b5fd;">+1,200（800 × 1.5）</span></div>
+          <div class="kv"><span class="k">交易哈希</span><span class="v" style="font-size:12px;">0x7f3a…9c2e <span style="color:#8fb0ff;">複製</span></span></div>
+          <div class="kv"><span class="k">到帳時間</span><span class="v" style="font-size:12px;">2026-11-02 21:38:09</span></div>
+        </div>
+        <div class="note"><span>🎖</span><span>身分已更新為 <b style="color:#fff;">A 節點</b>；累計實付達到更高門檻時<b style="color:#fff;">自動升級</b>，能量逐筆累加。</span></div>
+        <div class="wbtn-row"><button class="wbtn ghost">返回發售</button><button class="wbtn">查看我的節點</button></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">12</span><span class="nm">我的節點（身分 / 累計 / 記錄四態）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">我的節點</span></div><div class="content"><div class="hero"><div class="h-lbl">當前身分</div>
+          <div class="h-big">B 節點<small>累計實付 5,050 U</small></div>
+          <div style="margin-top:14px;"><div style="display:flex;justify-content:space-between;font-size:11px;opacity:.92;"><span>距 C 節點（10,000 U）</span><span>還差 4,950 U</span></div>
+          <div style="height:6px;background:rgba(255,255,255,.22);border-radius:4px;margin-top:6px;overflow:hidden;"><div style="width:50.5%;height:100%;background:#fff;border-radius:4px;"></div></div></div>
+          <div class="h-row"><div class="h-cell"><div class="c-l">能量總額</div><div class="c-v">9,700</div></div><div class="h-cell"><div class="c-l">已消耗</div><div class="c-v">1,250</div></div><div class="h-cell"><div class="c-l">剩餘能量</div><div class="c-v">8,450</div></div></div>
+        </div>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">身分檔位（後台可配）</div>
+        <table class="ttab t4"><tr><th>身分</th><th class="tnum">門檻</th><th class="tnum">能量倍數</th><th>狀態</th></tr>
+        <tr><td class="lv">A 節點</td><td class="tnum">1,000 U</td><td class="tnum tg">1.5 ×</td><td><span class="b b-done">已達成</span></td></tr>
+        <tr class="me"><td class="lv">B 節點</td><td class="tnum">5,000 U</td><td class="tnum tg">2.0 ×</td><td><span class="b b-done">當前身分</span></td></tr>
+        <tr><td class="lv">C 節點</td><td class="tnum">10,000 U</td><td class="tnum tg">2.5 ×</td><td><span class="b b-wait">差 4,950 U</span></td></tr>
+        <tr><td class="lv">D 節點</td><td class="tnum">30,000 U</td><td class="tnum tg">3.0 ×</td><td><span class="b b-wait">差 24,950 U</span></td></tr>
+        </table>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>身分 = <b style="color:#fff;">所購套餐檔位</b> 與 <b style="color:#fff;">累計實付所達門檻</b> 取其高；折扣不影響身分，但能量與返佣按<b style="color:#fff;">實付</b>計。</span></div>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">我的節點記錄</div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="ic">🟪</div><div class="rmain"><div class="rtitle">B 節點 <span class="b b-done" style="margin-left:6px;">生效中</span></div><div class="rsub">階段 2 · 8.5 折 · 實付 4,250 U · 2026-12-03</div></div><div class="rright"><div class="rval" style="color:#c4b5fd;font-size:13px;">+8,500</div><div class="rdate">能量</div></div></div>
+          <div class="row"><div class="ic">🟦</div><div class="rmain"><div class="rtitle">A 節點 <span class="b b-done" style="margin-left:6px;">生效中</span></div><div class="rsub">階段 1 · 8 折 · 實付 800 U · 2026-11-02</div></div><div class="rright"><div class="rval" style="color:#c4b5fd;font-size:13px;">+1,200</div><div class="rdate">能量</div></div></div>
+          <div class="row"><div class="ic amber">⏳</div><div class="rmain"><div class="rtitle">A 節點 <span class="b b-wait" style="margin-left:6px;">鏈上確認中</span></div><div class="rsub">階段 1 · 8 折 · 實付 800 U · 2026-11-02</div></div><div class="rright"><div class="rval" style="color:var(--muted);font-size:13px;">待入帳</div></div></div>
+          <div class="row"><div class="ic red">✕</div><div class="rmain"><div class="rtitle">C 節點 <span class="b b-fail" style="margin-left:6px;">已失敗</span></div><div class="rsub">鏈上未到帳 · 訂單自動關閉 · 2026-11-01</div></div><div class="rright"><div class="rval" style="color:var(--muted);font-size:13px;">—</div></div></div>
+        </div>
+        <div class="list-more">— 已顯示全部 4 筆 —</div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">13</span><span class="nm">能量帳戶（總額 / 消耗 / 流水）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">能量帳戶</span></div><div class="content"><div class="hero"><div class="h-lbl">剩餘能量</div><div class="h-big">8,450</div>
+          <div class="h-row"><div class="h-cell"><div class="c-l">能量總額</div><div class="c-v">9,700</div></div><div class="h-cell"><div class="c-l">已消耗</div><div class="c-v">1,250</div></div><div class="h-cell"><div class="c-l">可提取上限</div><div class="c-v">8,450 U</div></div></div>
+        </div>
+        <div class="note" style="margin-top:14px;"><span>⚡</span><span><b style="color:#fff;">1 能量 = 可提取 1 U 價值的代幣</b>。<br>能量在購買節點時按 <b style="color:#fff;">實付金額 × 檔位倍數</b> 發放；領取收益時等額扣減。<br>能量不足時，本次<b style="color:#e7b667;">最多只能提取剩餘能量對應的金額</b>。</span></div>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">能量流水</div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="ic red">↓</div><div class="rmain"><div class="rtitle">領取收益消耗</div><div class="rsub">領取 1,250 U 等值 · 2027-01-12 11:20</div></div><div class="rright"><div class="rval" style="color:#fb7185;">−1,250</div></div></div>
+          <div class="row"><div class="ic green">↑</div><div class="rmain"><div class="rtitle">購買 B 節點獲得</div><div class="rsub">實付 4,250 × 2.0 · 2026-12-03 10:12</div></div><div class="rright"><div class="rval" style="color:#34d399;">+8,500</div></div></div>
+          <div class="row"><div class="ic green">↑</div><div class="rmain"><div class="rtitle">購買 A 節點獲得</div><div class="rsub">實付 800 × 1.5 · 2026-11-02 21:38</div></div><div class="rright"><div class="rval" style="color:#34d399;">+1,200</div></div></div>
+        </div>
+        <div class="list-more">— 已顯示全部 3 筆 —</div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">14</span><span class="nm">社區收益 · 銷售獎勵（四項 + 明細三態）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">社區收益</span></div><div class="content"><div style="display:flex;gap:22px;align-items:baseline;margin:10px 2px 12px;">
+          <span style="font-size:17px;font-weight:800;color:#fff;">銷售獎勵</span>
+          <span style="font-size:15px;font-weight:700;color:var(--muted);">節點分紅 <span class="b b-info" style="margin-left:3px;">待開放</span></span>
+        </div><div class="hero">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;"><div class="h-lbl">可提取</div><div style="font-size:12px;opacity:.92;">我的身分 <b>B 節點</b></div></div>
+          <div class="h-big" style="font-size:26px;line-height:1.25;">875 <small>USDT</small><br>375 <small>A2</small></div>
+          <div class="h-row" style="flex-wrap:wrap;gap:7px;">
+            <div class="h-cell" style="flex:1 1 46%;"><div class="c-l">總獎勵</div><div class="c-v">1,225 U<br>525 A2</div></div>
+            <div class="h-cell" style="flex:1 1 46%;"><div class="c-l">待結算</div><div class="c-v">175 U<br>75 A2</div></div>
+            <div class="h-cell" style="flex:1 1 46%;"><div class="c-l">待發放</div><div class="c-v">175 U<br>75 A2</div></div>
+            <div class="h-cell" style="flex:1 1 46%;"><div class="c-l">已提取</div><div class="c-v">0 U<br>0 A2</div></div>
+          </div>
+        </div>
+        <div class="wbtn-row"><button class="wbtn">領取收益</button><button class="wbtn ghost">領取記錄</button></div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>直推返佣 <b style="color:#fff;">5%</b>（按下級<b style="color:#fff;">實付金額</b>計），按後台配置拆分為 <b style="color:#fff;">USDT 70% + A2 30%</b>。<br>A2 折算價以後台核算價為準（上線後核算）。</span></div><div class="sect" style="font-size:15px;margin:20px 2px 10px;">銷售獎勵明細</div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="ic green">D</div><div class="rmain"><div class="rtitle">直推 0x7A31…4f2C 購買 D 節點</div><div class="rsub">實付 24,000 U × 5% · 2026-12-05 14:02</div></div><div class="rright"><div class="rval usdt">840 U</div><div class="rdate">360 A2 · <span style="color:#34d399;">可提取</span></div></div></div>
+          <div class="row"><div class="ic green">A</div><div class="rmain"><div class="rtitle">直推 0x3B90…a1D7 購買 A 節點</div><div class="rsub">實付 1,000 U × 5% · 2026-12-04 09:41</div></div><div class="rright"><div class="rval usdt">35 U</div><div class="rdate">15 A2 · <span style="color:#34d399;">可提取</span></div></div></div>
+          <div class="row"><div class="ic amber">B</div><div class="rmain"><div class="rtitle">直推 0xD1F8…7b63 購買 B 節點</div><div class="rsub">實付 5,000 U × 5% · 2026-12-06 18:23</div></div><div class="rright"><div class="rval" style="color:#fbbf24;">175 U</div><div class="rdate">75 A2 · <span style="color:#fbbf24;">待發放</span></div></div></div>
+          <div class="row"><div class="ic">B</div><div class="rmain"><div class="rtitle">直推 0x55C2…9e04 購買 B 節點</div><div class="rsub">實付 5,000 U × 5% · 2026-12-07 08:10</div></div><div class="rright"><div class="rval" style="color:var(--text2);">175 U</div><div class="rdate">75 A2 · <span style="color:var(--text2);">待結算</span></div></div></div>
+        </div>
+        <div class="note" style="margin-top:12px;"><span>🕒</span><span><b style="color:#fff;">待結算</b>：下級訂單鏈上到帳確認中；<b style="color:#fff;">待發放</b>：已確認，等待撥付至兌付合約；<b style="color:#fff;">可提取</b>：可發起合約領取。</span></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">15</span><span class="nm">社區收益 · 未激活攔截（未購節點）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">社區收益</span></div><div class="content"><div class="blockp" style="min-height:400px;">
+          <div class="bic" style="background:#101a2a;color:#7da2ff;font-size:30px;">🔒</div>
+          <div class="bt">暫無法領取收益</div>
+          <div class="bx">領取直推收益需先<b style="color:#8fb0ff;">購買節點身分</b>激活。<br>您當前尚未持有任何節點。<br><br>已產生的返佣會<b style="color:#e7b667;">保留在「待結算」</b>，激活後可正常領取。</div>
+        </div>
+        <div class="wbtn-row" style="padding:0 6px;"><button class="wbtn">去購買節點</button></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">16</span><span class="nm">領取收益（合約 claim + 能量扣減）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">領取收益</span></div><div class="content"><div class="hero"><div class="h-lbl">可提取收益</div><div class="h-big" style="font-size:26px;line-height:1.25;">875 <small>USDT</small><br>375 <small>A2</small></div></div>
+        <div class="card" style="margin-top:14px;"><div class="card-t">領取數量</div>
+          <input class="input" value="1,250.00" style="font-size:18px;font-weight:800;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 0;"><span>等值 U（自動按 70/30 拆分為 USDT / A2）</span><span style="color:var(--purple);font-weight:700;">全部</span></div>
+        </div>
+        <div class="card"><div class="card-t">能量扣減預覽</div>
+          <div class="kv"><span class="k">我的能量</span><span class="v">8,450</span></div>
+          <div class="kv"><span class="k">本次消耗</span><span class="v" style="color:#fb7185;">−1,250</span></div>
+          <div class="kv"><span class="k">剩餘能量</span><span class="v" style="color:#c4b5fd;">7,200</span></div>
+          <div class="kv"><span class="k">實際到帳</span><span class="v" style="color:var(--usdt);">875 USDT + 375 A2</span></div>
+        </div>
+        <div class="note warn"><span>⚠</span><span>收益由<b>兌付合約</b>發放，需在錢包中<b>簽名</b>完成 claim，<b>gas 費由用戶自行承擔</b>。<br>簽名前請確認網絡為 <b>BOT Chain</b>。</span></div>
+        <button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認領取</button></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">17</span><span class="nm">領取記錄（成功 / 處理中 / 失敗）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">領取記錄</span></div><div class="content"><div class="card" style="padding:4px 16px;margin-top:10px;">
+          <div class="row"><div class="ic green">✓</div><div class="rmain"><div class="rtitle">領取成功</div><div class="rsub">0x4d21…8ac9 · 2027-01-12 11:20:36</div></div><div class="rright"><div class="rval usdt">875 U</div><div class="rdate">375 A2 · 能量 −1,250</div></div></div>
+          <div class="row"><div class="ic amber">⏳</div><div class="rmain"><div class="rtitle">合約處理中</div><div class="rsub">等待鏈上確認 · 2027-01-12 11:19:02</div></div><div class="rright"><div class="rval" style="color:#fbbf24;">— U</div><div class="rdate">已簽名</div></div></div>
+          <div class="row"><div class="ic red">✕</div><div class="rmain"><div class="rtitle">領取失敗</div><div class="rsub">gas 不足 · 交易被拒絕 · 2027-01-11 22:03:15</div></div><div class="rright"><div class="rval" style="color:#fb7185;">0 U</div><div class="rdate">能量未扣減</div></div></div>
+        </div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>領取<b style="color:#fff;">失敗時能量不扣減</b>，收益仍留在「可提取」，可重新發起。</span></div>
+        <div class="list-more">— 已顯示全部 3 筆 —</div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">18</span><span class="nm">我的社區（直推業績 + 明細）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">我的社區</span></div><div class="content"><div class="hero"><div class="h-lbl">直推業績（僅線上直推，線下社區不計入）</div><div class="h-big">35,000 <small>U</small></div>
+          <div class="h-row"><div class="h-cell"><div class="c-l">直推人數</div><div class="c-v">4 人</div></div><div class="h-cell"><div class="c-l">已激活</div><div class="c-v">4 人</div></div><div class="h-cell"><div class="c-l">累計返佣</div><div class="c-v">1,750 U</div></div></div>
+        </div>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">直推明細</div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="ic">🟨</div><div class="rmain"><div class="rtitle">0x7A31…4f2C <span class="b b-info" style="margin-left:6px;">D 節點</span></div><div class="rsub">實付 24,000 U · 2026-12-05</div></div><div class="rright"><div class="rval usdt">+1,200 U</div><div class="rdate">我的返佣</div></div></div>
+          <div class="row"><div class="ic">🟪</div><div class="rmain"><div class="rtitle">0xD1F8…7b63 <span class="b b-info" style="margin-left:6px;">B 節點</span></div><div class="rsub">實付 5,000 U · 2026-12-06</div></div><div class="rright"><div class="rval usdt">+250 U</div><div class="rdate">我的返佣</div></div></div>
+          <div class="row"><div class="ic">🟪</div><div class="rmain"><div class="rtitle">0x55C2…9e04 <span class="b b-info" style="margin-left:6px;">B 節點</span></div><div class="rsub">實付 5,000 U · 2026-12-07</div></div><div class="rright"><div class="rval usdt">+250 U</div><div class="rdate">我的返佣</div></div></div>
+          <div class="row"><div class="ic">🟦</div><div class="rmain"><div class="rtitle">0x3B90…a1D7 <span class="b b-info" style="margin-left:6px;">A 節點</span></div><div class="rsub">實付 1,000 U · 2026-12-04</div></div><div class="rright"><div class="rval usdt">+50 U</div><div class="rdate">我的返佣</div></div></div>
+          <div class="row"><div class="ic red">—</div><div class="rmain"><div class="rtitle">0xB472…c05E <span class="b b-fail" style="margin-left:6px;">未激活</span></div><div class="rsub">已綁定未購買節點 · 2026-12-08</div></div><div class="rright"><div class="rval" style="color:var(--muted);">0 U</div><div class="rdate">不計業績</div></div></div>
+        </div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>系統<b style="color:#fff;">只結算線上直推返佣</b>；社區領導人線下獎勵（15% / 10% / 5% / 5%）由<b style="color:#fff;">線下社區自行維護</b>，不在本系統體現。</span></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">19</span><span class="nm">邀請好友（邀請碼 / 連結 / 二維碼）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">邀請好友</span></div><div class="content"><div class="card" style="margin-top:10px;">
+          <div class="card-t">邀請碼</div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:10px 10px 10px 14px;">
+            <span style="flex:1;font-size:16px;font-weight:800;color:#fff;letter-spacing:2px;">1AObEd</span>
+            <button class="wbtn" style="flex:0 0 66px;height:34px;font-size:13px;box-shadow:none;">複製</button></div>
+          <div class="card-t" style="margin-top:16px;">邀請連結</div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:10px 10px 10px 14px;">
+            <span style="flex:1;min-width:0;font-size:12px;color:#dfe1ea;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">https://app.a2.io/?inviteCode=1AObEd</span>
+            <button class="wbtn" style="flex:0 0 66px;height:34px;font-size:13px;box-shadow:none;">複製</button></div>
+          <div style="width:170px;height:170px;background:#fff;border-radius:10px;margin:18px auto 0;background-image:repeating-linear-gradient(0deg,#000 0 8px,#fff 8px 16px),repeating-linear-gradient(90deg,#000 0 8px,transparent 8px 16px);background-blend-mode:multiply;"></div>
+          <div class="wbtn-row" style="margin-top:16px;"><button class="wbtn">↗ 分享二維碼</button></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>好友透過您的邀請碼／連結<b style="color:#fff;">首次登入時綁定</b>，即成為您的直推。<br>綁定關係<b style="color:#fff;">一經確認不可更改</b>。</span></div></div></div></div>
+<div class="slide"><div class="slide-label"><span class="no">20</span><span class="nm">我的邀請人（上級 · 不可更改）</span></div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">我的邀請人</span></div><div class="content"><div class="card" style="margin-top:10px;">
+          <div class="card-t">我的邀請人（上級）</div>
+          <div class="kv"><span class="k">錢包地址</span><span class="v">0x9C41…7Fb2</span></div>
+          <div class="kv"><span class="k">身分</span><span class="v"><span class="b b-info">C 節點</span></span></div>
+          <div class="kv"><span class="k">使用的邀請碼</span><span class="v">1AObEd</span></div>
+          <div class="kv"><span class="k">綁定時間</span><span class="v" style="font-size:12px;">2026-11-02 21:10:47</span></div>
+        </div>
+        <div class="note warn"><span>⚠</span><span>上下級關係在<b>首次登入註冊時一次性綁定</b>，<b>之後不可更改</b>，也不支持轉移或解綁。</span></div>
+        <div class="note"><span>ℹ</span><span>後續導入的日報 / 韓國網體關係由後台統一掛接，<b style="color:#fff;">不在 C 端體現</b>。</span></div></div></div></div></div>
+
+<div class="gallery-head" style="margin:60px auto 24px;"><h1 style="font-size:19px;">彈框提示 · 聯屏走查（供 UI 對接）</h1><p>左屏為<b>觸發頁面</b>，右屏為<b>點擊後彈出的提示</b>，一一對應。彈框統一採用<b>居中模態</b>（<code>.cmodal</code> 遮罩 + <code>.cbox</code> 容器 + 圖標 / 標題 / 說明 / 按鈕組）。</p></div>
+<div class="gallery">
+<div class="slide" style="width:auto;"><div class="slide-label"><span class="no">21</span><span class="nm">節點發售 · 點「確認購買」→ 購買確認</span></div><div style="display:flex;gap:18px;align-items:flex-start;"><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">① 節點發售頁</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">節點發售</span></div><div class="content"><div class="stage-bar"><div class="stg on"><div class="sg-n">階段 1</div><div class="sg-d">8 折</div></div><div class="stg"><div class="sg-n">階段 2</div><div class="sg-d">8.5 折</div></div><div class="stg"><div class="sg-n">階段 3</div><div class="sg-d">9 折</div></div><div class="stg"><div class="sg-n">階段 4</div><div class="sg-d">9.5 折</div></div></div><div style="display:flex;justify-content:flex-end;margin:4px 2px 6px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;">🕘 發售歷史 ›</span></div><div class="note" style="margin-top:2px;"><span>🟣</span><span><b style="color:#fff;">階段 1</b> <span class="b b-done" style="margin-left:2px;">進行中</span> <span class="b b-usdt" style="margin-left:4px;">8 折</span><br>期間 2026-11-01 00:00 ~ 2026-11-30 23:59<br>本階段名額 <b style="color:#dfe1ea;">1,000</b> 個 · 剩餘 <b style="color:#e7b667;">787</b> 個</span></div><div style="font-size:13px;color:var(--text2);margin:4px 2px 9px;">選擇節點（決定身分與能量倍數）</div><div class="pkg-grid"><div class="pkg on"><div class="pk-t">A 節點</div><div class="pk-old">標價 1,000 U</div><div class="pk-new">800 U</div><div class="pk-e">能量 ×1.5 → 1,200</div></div><div class="pkg"><div class="pk-t">B 節點</div><div class="pk-old">標價 5,000 U</div><div class="pk-new">4,000 U</div><div class="pk-e">能量 ×2 → 8,000</div></div><div class="pkg"><div class="pk-t">C 節點</div><div class="pk-old">標價 10,000 U</div><div class="pk-new">8,000 U</div><div class="pk-e">能量 ×2.5 → 20,000</div></div><div class="pkg"><div class="pk-t">D 節點</div><div class="pk-old">標價 30,000 U</div><div class="pk-new">24,000 U</div><div class="pk-e">能量 ×3 → 72,000</div></div></div><div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">選擇支付網絡</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;"><span style="font-size:14px;color:#fff;font-weight:600;">BOT Chain</span><span style="color:var(--muted);font-size:12px;">⌄</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;"><span style="font-size:14px;color:#fff;font-weight:600;">USDT</span><span style="color:var(--muted);font-size:12px;">⌄</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 16px;"><span>餘額：12,480.00 USDT</span><span>BOT Chain / ETH / BNB</span></div><div class="card" style="margin-bottom:14px;"><div class="card-t">費用明細</div><div class="kv"><span class="k">節點檔位</span><span class="v">A 節點</span></div><div class="kv"><span class="k">標價</span><span class="v">1,000 U</span></div><div class="kv"><span class="k">階段折扣</span><span class="v" style="color:#34d399;">8 折（階段 1）</span></div><div class="kv"><span class="k">實付金額</span><span class="v" style="color:var(--usdt);">800.00 USDT</span></div><div class="kv"><span class="k">獲得身分</span><span class="v"><span class="b b-info">A 節點</span></span></div><div class="kv"><span class="k">獲得能量</span><span class="v" style="color:#c4b5fd;">1,200（實付 × 1.5）</span></div></div><div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">應付金額</div><div style="display:flex;align-items:baseline;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:15px 16px;margin-bottom:16px;"><span style="font-size:24px;font-weight:800;color:#fff;">800.00</span><span style="font-size:13px;color:var(--text2);">USDT</span></div><button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認購買</button><div class="sect" style="font-size:15px;margin:22px 2px 10px;">購買記錄</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">B 節點 · 階段 2（8.5 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">4,250 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +8,500</span><span style="color:var(--muted);">2026-12-03 10:12:44</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +1,200</span><span style="color:var(--muted);">2026-11-02 21:38:09</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:#e7b667;font-weight:700;">狀態：鏈上確認中</span><span style="color:var(--muted);">2026-11-02 21:36:51</span></div></div></div></div></div><div style="display:flex;align-items:center;font-size:22px;color:#9aa0ad;padding-top:220px;">→</div><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">② 彈出「確認購買」</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">節點發售</span></div><div class="content"><div class="stage-bar"><div class="stg on"><div class="sg-n">階段 1</div><div class="sg-d">8 折</div></div><div class="stg"><div class="sg-n">階段 2</div><div class="sg-d">8.5 折</div></div><div class="stg"><div class="sg-n">階段 3</div><div class="sg-d">9 折</div></div><div class="stg"><div class="sg-n">階段 4</div><div class="sg-d">9.5 折</div></div></div><div style="display:flex;justify-content:flex-end;margin:4px 2px 6px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;">🕘 發售歷史 ›</span></div><div class="note" style="margin-top:2px;"><span>🟣</span><span><b style="color:#fff;">階段 1</b> <span class="b b-done" style="margin-left:2px;">進行中</span> <span class="b b-usdt" style="margin-left:4px;">8 折</span><br>期間 2026-11-01 00:00 ~ 2026-11-30 23:59<br>本階段名額 <b style="color:#dfe1ea;">1,000</b> 個 · 剩餘 <b style="color:#e7b667;">787</b> 個</span></div><div style="font-size:13px;color:var(--text2);margin:4px 2px 9px;">選擇節點（決定身分與能量倍數）</div><div class="pkg-grid"><div class="pkg on"><div class="pk-t">A 節點</div><div class="pk-old">標價 1,000 U</div><div class="pk-new">800 U</div><div class="pk-e">能量 ×1.5 → 1,200</div></div><div class="pkg"><div class="pk-t">B 節點</div><div class="pk-old">標價 5,000 U</div><div class="pk-new">4,000 U</div><div class="pk-e">能量 ×2 → 8,000</div></div><div class="pkg"><div class="pk-t">C 節點</div><div class="pk-old">標價 10,000 U</div><div class="pk-new">8,000 U</div><div class="pk-e">能量 ×2.5 → 20,000</div></div><div class="pkg"><div class="pk-t">D 節點</div><div class="pk-old">標價 30,000 U</div><div class="pk-new">24,000 U</div><div class="pk-e">能量 ×3 → 72,000</div></div></div><div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">選擇支付網絡</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:10px;"><span style="font-size:14px;color:#fff;font-weight:600;">BOT Chain</span><span style="color:var(--muted);font-size:12px;">⌄</span></div>
+        <div style="display:flex;align-items:center;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;margin-bottom:8px;"><span style="font-size:14px;color:#fff;font-weight:600;">USDT</span><span style="color:var(--muted);font-size:12px;">⌄</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 16px;"><span>餘額：12,480.00 USDT</span><span>BOT Chain / ETH / BNB</span></div><div class="card" style="margin-bottom:14px;"><div class="card-t">費用明細</div><div class="kv"><span class="k">節點檔位</span><span class="v">A 節點</span></div><div class="kv"><span class="k">標價</span><span class="v">1,000 U</span></div><div class="kv"><span class="k">階段折扣</span><span class="v" style="color:#34d399;">8 折（階段 1）</span></div><div class="kv"><span class="k">實付金額</span><span class="v" style="color:var(--usdt);">800.00 USDT</span></div><div class="kv"><span class="k">獲得身分</span><span class="v"><span class="b b-info">A 節點</span></span></div><div class="kv"><span class="k">獲得能量</span><span class="v" style="color:#c4b5fd;">1,200（實付 × 1.5）</span></div></div><div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">應付金額</div><div style="display:flex;align-items:baseline;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:15px 16px;margin-bottom:16px;"><span style="font-size:24px;font-weight:800;color:#fff;">800.00</span><span style="font-size:13px;color:var(--text2);">USDT</span></div><button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認購買</button><div class="sect" style="font-size:15px;margin:22px 2px 10px;">購買記錄</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">B 節點 · 階段 2（8.5 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">4,250 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +8,500</span><span style="color:var(--muted);">2026-12-03 10:12:44</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +1,200</span><span style="color:var(--muted);">2026-11-02 21:38:09</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:#e7b667;font-weight:700;">狀態：鏈上確認中</span><span style="color:var(--muted);">2026-11-02 21:36:51</span></div></div></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">確認購買</span><span class="sheet-x">×</span></div><div class="sheet-b"><div style="text-align:center;padding:6px 0 4px;"><div style="width:58px;height:58px;border-radius:50%;background:#241f3a;color:#c4b5fd;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;">🧩</div><div style="font-size:14px;color:#fff;font-weight:700;margin-bottom:8px;">確認購買 A 節點？</div><div style="font-size:12.5px;color:var(--text2);line-height:1.75;">標價 <b style="color:#fff;">1,000 U</b> · 階段 1 <b style="color:#34d399;">8 折</b><br>實付 <b style="color:#2dd4bf;">800.00 USDT</b>（BOT Chain）<br>獲得身分 <b style="color:#fff;">A 節點</b> · 能量 <b style="color:#c4b5fd;">+1,200</b><br><span style="color:#e7b667;">鏈上轉帳不支持撤回，請確認網絡與金額。</span></div></div></div><div style="padding:0 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;">取消</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;">確認支付</button></div></div></div></div></div></div></div>
+<div class="slide" style="width:auto;"><div class="slide-label"><span class="no">22</span><span class="nm">個人中心 · 點「語言」→ 語言切換</span></div><div style="display:flex;gap:18px;align-items:flex-start;"><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">① 個人中心</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="tt">個人中心</span></div><div class="content"><div style="font-size:12.5px;color:var(--text2);margin:10px 2px 12px;">用戶地址：<b style="color:#dfe1ea;">0xE240…28d2</b></div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="rmain"><div class="rtitle">我的節點</div></div><div class="rright"><span class="b b-info">B 節點</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">我的社區</div></div><div class="rright"><span class="rtag">直推 4 人</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">社區收益</div></div><div class="rright"><span class="rtag" style="color:#34d399;">可提取 875 U</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">能量帳戶</div></div><div class="rright"><span class="rtag" style="color:#c4b5fd;">剩餘 8,450</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">邀請好友</div></div><div class="rright"><span class="rtag">1AObEd</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">我的邀請人</div></div><div class="rright"><span class="rtag">0x9C41…7Fb2</span></div><span class="chev">›</span></div>
+        </div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="rmain"><div class="rtitle">語言 / Language</div></div><div class="rright"><span class="rtag">繁體中文</span></div><span class="chev">›</span></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>「我的邀請人」為註冊時綁定的上級，<b style="color:#fff;">綁定後不可更改</b>。社區領導人線下獎勵由社區自行維護，不在本系統結算。</span></div></div></div></div><div style="display:flex;align-items:center;font-size:22px;color:#9aa0ad;padding-top:220px;">→</div><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">② 彈出「語言切換」</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="tt">個人中心</span></div><div class="content"><div style="font-size:12.5px;color:var(--text2);margin:10px 2px 12px;">用戶地址：<b style="color:#dfe1ea;">0xE240…28d2</b></div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="rmain"><div class="rtitle">我的節點</div></div><div class="rright"><span class="b b-info">B 節點</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">我的社區</div></div><div class="rright"><span class="rtag">直推 4 人</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">社區收益</div></div><div class="rright"><span class="rtag" style="color:#34d399;">可提取 875 U</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">能量帳戶</div></div><div class="rright"><span class="rtag" style="color:#c4b5fd;">剩餘 8,450</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">邀請好友</div></div><div class="rright"><span class="rtag">1AObEd</span></div><span class="chev">›</span></div>
+          <div class="row"><div class="rmain"><div class="rtitle">我的邀請人</div></div><div class="rright"><span class="rtag">0x9C41…7Fb2</span></div><span class="chev">›</span></div>
+        </div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="rmain"><div class="rtitle">語言 / Language</div></div><div class="rright"><span class="rtag">繁體中文</span></div><span class="chev">›</span></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>「我的邀請人」為註冊時綁定的上級，<b style="color:#fff;">綁定後不可更改</b>。社區領導人線下獎勵由社區自行維護，不在本系統結算。</span></div></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">語言 / Language</span><span class="sheet-x">×</span></div><div class="sheet-b"><div class="langgrid"><div class="lang on">繁體中文<span class="ck">✓</span></div><div class="lang">English</div><div class="lang">日本語</div><div class="lang">한국어</div><div class="lang">Español</div><div class="lang">Português</div><div class="lang">Tiếng Việt</div><div class="lang">Русский</div></div><div style="font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.6;">共 8 種語言，預設繁體中文。</div></div><div style="padding:0 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;">取消</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;">確認</button></div></div></div></div></div></div></div>
+<div class="slide" style="width:auto;"><div class="slide-label"><span class="no">23</span><span class="nm">領取收益 · 點「確認領取」→ 錢包簽名 / gas</span></div><div style="display:flex;gap:18px;align-items:flex-start;"><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">① 領取收益頁</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">領取收益</span></div><div class="content"><div class="hero"><div class="h-lbl">可提取收益</div><div class="h-big" style="font-size:26px;line-height:1.25;">875 <small>USDT</small><br>375 <small>A2</small></div></div>
+        <div class="card" style="margin-top:14px;"><div class="card-t">領取數量</div>
+          <input class="input" value="1,250.00" style="font-size:18px;font-weight:800;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 0;"><span>等值 U（自動按 70/30 拆分為 USDT / A2）</span><span style="color:var(--purple);font-weight:700;">全部</span></div>
+        </div>
+        <div class="card"><div class="card-t">能量扣減預覽</div>
+          <div class="kv"><span class="k">我的能量</span><span class="v">8,450</span></div>
+          <div class="kv"><span class="k">本次消耗</span><span class="v" style="color:#fb7185;">−1,250</span></div>
+          <div class="kv"><span class="k">剩餘能量</span><span class="v" style="color:#c4b5fd;">7,200</span></div>
+          <div class="kv"><span class="k">實際到帳</span><span class="v" style="color:var(--usdt);">875 USDT + 375 A2</span></div>
+        </div>
+        <div class="note warn"><span>⚠</span><span>收益由<b>兌付合約</b>發放，需在錢包中<b>簽名</b>完成 claim，<b>gas 費由用戶自行承擔</b>。<br>簽名前請確認網絡為 <b>BOT Chain</b>。</span></div>
+        <button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認領取</button></div></div></div><div style="display:flex;align-items:center;font-size:22px;color:#9aa0ad;padding-top:220px;">→</div><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">② 彈出「錢包簽名確認」</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">領取收益</span></div><div class="content"><div class="hero"><div class="h-lbl">可提取收益</div><div class="h-big" style="font-size:26px;line-height:1.25;">875 <small>USDT</small><br>375 <small>A2</small></div></div>
+        <div class="card" style="margin-top:14px;"><div class="card-t">領取數量</div>
+          <input class="input" value="1,250.00" style="font-size:18px;font-weight:800;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 0;"><span>等值 U（自動按 70/30 拆分為 USDT / A2）</span><span style="color:var(--purple);font-weight:700;">全部</span></div>
+        </div>
+        <div class="card"><div class="card-t">能量扣減預覽</div>
+          <div class="kv"><span class="k">我的能量</span><span class="v">8,450</span></div>
+          <div class="kv"><span class="k">本次消耗</span><span class="v" style="color:#fb7185;">−1,250</span></div>
+          <div class="kv"><span class="k">剩餘能量</span><span class="v" style="color:#c4b5fd;">7,200</span></div>
+          <div class="kv"><span class="k">實際到帳</span><span class="v" style="color:var(--usdt);">875 USDT + 375 A2</span></div>
+        </div>
+        <div class="note warn"><span>⚠</span><span>收益由<b>兌付合約</b>發放，需在錢包中<b>簽名</b>完成 claim，<b>gas 費由用戶自行承擔</b>。<br>簽名前請確認網絡為 <b>BOT Chain</b>。</span></div>
+        <button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認領取</button></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">錢包簽名確認</span><span class="sheet-x">×</span></div><div class="sheet-b"><div style="text-align:center;padding:6px 0 4px;"><div style="width:58px;height:58px;border-radius:50%;background:#101a2a;color:#7da2ff;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;">✍</div><div style="font-size:14px;color:#fff;font-weight:700;margin-bottom:8px;">需在錢包中簽名完成領取</div><div style="font-size:12.5px;color:var(--text2);line-height:1.75;">收益由<b style="color:#fff;">兌付合約</b>發放，本次領取<br><b style="color:#2dd4bf;">875 USDT + 375 A2</b>（消耗能量 1,250）<br><b style="color:#e7b667;">gas 費由您的錢包自行承擔</b><br>網絡：BOT Chain</div></div></div><div style="padding:0 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;">取消</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;">前往簽名</button></div></div></div></div></div></div></div>
+<div class="slide" style="width:auto;"><div class="slide-label"><span class="no">24</span><span class="nm">領取收益 · 能量不足 → 限額提示</span></div><div style="display:flex;gap:18px;align-items:flex-start;"><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">① 領取收益頁（能量 800）</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">領取收益</span></div><div class="content"><div class="hero"><div class="h-lbl">可提取收益</div><div class="h-big" style="font-size:26px;line-height:1.25;">875 <small>USDT</small><br>375 <small>A2</small></div></div>
+        <div class="card" style="margin-top:14px;"><div class="card-t">領取數量</div>
+          <input class="input" value="1,250.00" style="font-size:18px;font-weight:800;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 0;"><span>等值 U（自動按 70/30 拆分為 USDT / A2）</span><span style="color:var(--purple);font-weight:700;">全部</span></div>
+        </div>
+        <div class="card"><div class="card-t">能量扣減預覽</div>
+          <div class="kv"><span class="k">我的能量</span><span class="v" style="color:#fb7185;">800</span></div>
+          <div class="kv"><span class="k">本次消耗</span><span class="v" style="color:#fb7185;">−1,250</span></div>
+          <div class="kv"><span class="k">剩餘能量</span><span class="v" style="color:#fb7185;">不足</span></div>
+          <div class="kv"><span class="k">實際到帳</span><span class="v" style="color:var(--usdt);">875 USDT + 375 A2</span></div>
+        </div>
+        <div class="note warn"><span>⚠</span><span>收益由<b>兌付合約</b>發放，需在錢包中<b>簽名</b>完成 claim，<b>gas 費由用戶自行承擔</b>。<br>簽名前請確認網絡為 <b>BOT Chain</b>。</span></div>
+        <button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認領取</button></div></div></div><div style="display:flex;align-items:center;font-size:22px;color:#9aa0ad;padding-top:220px;">→</div><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">② 彈出「能量不足」</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">領取收益</span></div><div class="content"><div class="hero"><div class="h-lbl">可提取收益</div><div class="h-big" style="font-size:26px;line-height:1.25;">875 <small>USDT</small><br>375 <small>A2</small></div></div>
+        <div class="card" style="margin-top:14px;"><div class="card-t">領取數量</div>
+          <input class="input" value="1,250.00" style="font-size:18px;font-weight:800;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 0;"><span>等值 U（自動按 70/30 拆分為 USDT / A2）</span><span style="color:var(--purple);font-weight:700;">全部</span></div>
+        </div>
+        <div class="card"><div class="card-t">能量扣減預覽</div>
+          <div class="kv"><span class="k">我的能量</span><span class="v" style="color:#fb7185;">800</span></div>
+          <div class="kv"><span class="k">本次消耗</span><span class="v" style="color:#fb7185;">−1,250</span></div>
+          <div class="kv"><span class="k">剩餘能量</span><span class="v" style="color:#fb7185;">不足</span></div>
+          <div class="kv"><span class="k">實際到帳</span><span class="v" style="color:var(--usdt);">875 USDT + 375 A2</span></div>
+        </div>
+        <div class="note warn"><span>⚠</span><span>收益由<b>兌付合約</b>發放，需在錢包中<b>簽名</b>完成 claim，<b>gas 費由用戶自行承擔</b>。<br>簽名前請確認網絡為 <b>BOT Chain</b>。</span></div>
+        <button class="wbtn" style="width:100%;height:50px;font-size:16px;">確認領取</button></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">能量不足</span><span class="sheet-x">×</span></div><div class="sheet-b"><div style="text-align:center;padding:6px 0 4px;"><div style="width:58px;height:58px;border-radius:50%;background:#3a2c12;color:#fbbf24;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;">⚡</div><div style="font-size:14px;color:#fff;font-weight:700;margin-bottom:8px;">能量不足，無法全額提取</div><div style="font-size:12.5px;color:var(--text2);line-height:1.75;">1 能量 = 可提取 1 U 價值代幣。<br>您當前剩餘能量 <b style="color:#fff;">800</b>，本次<b style="color:#e7b667;">最多可提取 800 U</b> 等值。<br>可購買更高檔位節點獲得更多能量。</div></div></div><div style="padding:0 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;">按 800 U 領取</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;">去購買節點</button></div></div></div></div></div></div></div>
+<div class="slide" style="width:auto;"><div class="slide-label"><span class="no">25</span><span class="nm">社區收益 · 未購節點 → 無法領取</span></div><div style="display:flex;gap:18px;align-items:flex-start;"><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">① 社區收益（未激活）</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">社區收益</span></div><div class="content"><div class="blockp" style="min-height:400px;">
+          <div class="bic" style="background:#101a2a;color:#7da2ff;font-size:30px;">🔒</div>
+          <div class="bt">暫無法領取收益</div>
+          <div class="bx">領取直推收益需先<b style="color:#8fb0ff;">購買節點身分</b>激活。<br>您當前尚未持有任何節點。<br><br>已產生的返佣會<b style="color:#e7b667;">保留在「待結算」</b>，激活後可正常領取。</div>
+        </div>
+        <div class="wbtn-row" style="padding:0 6px;"><button class="wbtn">去購買節點</button></div></div></div></div><div style="display:flex;align-items:center;font-size:22px;color:#9aa0ad;padding-top:220px;">→</div><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">② 彈出「無法領取」</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="bk">← 返回</span><span class="tt">社區收益</span></div><div class="content"><div class="blockp" style="min-height:400px;">
+          <div class="bic" style="background:#101a2a;color:#7da2ff;font-size:30px;">🔒</div>
+          <div class="bt">暫無法領取收益</div>
+          <div class="bx">領取直推收益需先<b style="color:#8fb0ff;">購買節點身分</b>激活。<br>您當前尚未持有任何節點。<br><br>已產生的返佣會<b style="color:#e7b667;">保留在「待結算」</b>，激活後可正常領取。</div>
+        </div>
+        <div class="wbtn-row" style="padding:0 6px;"><button class="wbtn">去購買節點</button></div></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">無法領取</span><span class="sheet-x">×</span></div><div class="sheet-b"><div style="text-align:center;padding:6px 0 4px;"><div style="width:58px;height:58px;border-radius:50%;background:#3a1620;color:#fb7185;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;">!</div><div style="font-size:14px;color:#fff;font-weight:700;margin-bottom:8px;">需先購買節點身分</div><div style="font-size:12.5px;color:var(--text2);line-height:1.75;">領取直推收益的前置條件為<b style="color:#fff;">已購買節點身分</b>。<br>您當前尚未持有節點，收益<b style="color:#e7b667;">保留在待結算</b>，<br>激活後可正常領取。</div></div></div><div style="padding:0 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;">知道了</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;">去購買節點</button></div></div></div></div></div></div></div>
+<div class="slide" style="width:auto;"><div class="slide-label"><span class="no">26</span><span class="nm">首次登入 · 綁定成功 → 進入系統</span></div><div style="display:flex;gap:18px;align-items:flex-start;"><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">① 輸入邀請碼</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="tt">註冊 / 綁定</span></div><div class="content"><div class="blockp" style="min-height:400px;">
+          <div class="bic" style="background:#1a1726;color:#c4b5fd;font-size:30px;">🔗</div>
+          <div class="bt">錢包已連接</div>
+          <div class="bx">地址 <b style="color:#dfe1ea;">0xE240…28d2</b><br>系統以<b style="color:#8fb0ff;">錢包地址作為帳號</b>。<br>首次登入需<b style="color:#c4b5fd;">綁定邀請碼</b>才能完成註冊。</div>
+        </div></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">綁定邀請碼</span><span class="sheet-x">×</span></div><div class="sheet-b">
+        <div style="font-size:12.5px;color:var(--text2);line-height:1.75;margin-bottom:10px;">請輸入邀請人提供的邀請碼。<b style="color:#e7b667;">上下級關係綁定後不可更改</b>，且必須綁定才能完成註冊。</div>
+        <input class="input" value="1AObEd" style="font-size:16px;font-weight:800;letter-spacing:2px;">
+        <div class="addr-msg" style="color:#34d399;">✓ 邀請人 0x9C41…7Fb2（C 節點）</div>
+        </div><div style="padding:6px 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;">取消</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;">確認綁定</button></div></div></div></div></div><div style="display:flex;align-items:center;font-size:22px;color:#9aa0ad;padding-top:220px;">→</div><div><div style="text-align:center;font-size:11.5px;color:#6b7280;margin-bottom:7px;">② 彈出「綁定成功」</div><div class="phone"><div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn">🌐</button><button class="iconbtn">☰</button></div>
+      </div><div class="subbar"><span class="tt">註冊 / 綁定</span></div><div class="content"><div class="blockp" style="min-height:400px;">
+          <div class="bic" style="background:#1a1726;color:#c4b5fd;font-size:30px;">🔗</div>
+          <div class="bt">錢包已連接</div>
+          <div class="bx">地址 <b style="color:#dfe1ea;">0xE240…28d2</b><br>系統以<b style="color:#8fb0ff;">錢包地址作為帳號</b>。<br>首次登入需<b style="color:#c4b5fd;">綁定邀請碼</b>才能完成註冊。</div>
+        </div></div><div class="cmodal show"><div class="cbox"><div class="sheet-h"><span class="st">綁定成功</span><span class="sheet-x">×</span></div><div class="sheet-b"><div style="text-align:center;padding:6px 0 4px;"><div style="width:58px;height:58px;border-radius:50%;background:#10301f;color:#34d399;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;">✓</div><div style="font-size:14px;color:#fff;font-weight:700;margin-bottom:8px;">已成功綁定上級</div><div style="font-size:12.5px;color:var(--text2);line-height:1.75;">邀請人 <b style="color:#fff;">0x9C41…7Fb2</b>（C 節點）<br>邀請碼 <b style="color:#fff;">1AObEd</b><br><span style="color:#e7b667;">上下級關係已鎖定，不可更改。</span></div></div></div><div style="padding:0 18px 18px;display:flex;gap:10px;"><button class="wbtn" style="flex:1;height:44px;font-size:14px;">進入 A2</button></div></div></div></div></div></div></div>
+</div>
+
+<div class="live-head"><h2>可交互動態原型（點擊體驗）</h2><p>點左上 <b>A2</b> 或右上 <b>☰</b> 打開側邊選單；節點發售頁可切換<b>階段（折扣）</b>與<b>節點檔位</b>，實付 / 能量 / 返佣即時重算；領取頁含<b>未購節點攔截</b>與<b>能量不足</b>兩種攔截演示。</p></div>
+<div class="live-wrap">
+  <div class="live">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="statusbar"><span>9:41</span><span class="right">📶 🔋</span></div>
+      <div class="topbar">
+        <div class="logo" onclick="openDrawer()"><span class="mark"></span>A2</div>
+        <div class="top-actions"><button class="wallet">0xE240…28d2 ↩</button><button class="iconbtn" onclick="goPage('lang','語言 / Language')">🌐</button><button class="iconbtn" onclick="openDrawer()">☰</button></div>
+      </div>
+      <div class="subbar"><span class="bk" onclick="goBack()">← 返回</span><span class="tt" id="lvTitle">節點發售</span></div>
+      <div class="content" id="lvContent"><div class="page active" id="p-sale">
+        <div class="stage-bar" id="stageBar">
+          <div class="stg on" onclick="setStage(1)"><div class="sg-n">階段 1</div><div class="sg-d">8 折</div></div>
+          <div class="stg" onclick="setStage(2)"><div class="sg-n">階段 2</div><div class="sg-d">8.5 折</div></div>
+          <div class="stg" onclick="setStage(3)"><div class="sg-n">階段 3</div><div class="sg-d">9 折</div></div>
+          <div class="stg" onclick="setStage(4)"><div class="sg-n">階段 4</div><div class="sg-d">9.5 折</div></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin:2px 2px 6px;"><span style="font-size:12.5px;color:var(--purple);font-weight:700;" onclick="goPage('hist','發售歷史')">🕘 發售歷史 ›</span></div>
+        <div class="note"><span>🟣</span><span><b style="color:#fff;" id="sgLabel">階段 1</b> <span class="b b-done" style="margin-left:2px;">進行中</span> <span class="b b-usdt" style="margin-left:4px;" id="sgDisc">8 折</span><br>期間 <span id="sgDate">2026-11-01 ~ 2026-11-30</span><br>本階段名額 <b style="color:#dfe1ea;">1,000</b> 個 · 剩餘 <b style="color:#e7b667;">787</b> 個</span></div>
+        <div style="font-size:13px;color:var(--text2);margin:4px 2px 9px;">選擇節點（決定身分與能量倍數）</div>
+        <div class="pkg-grid"><div class="pkg on" id="pkA" onclick="pickPkg('A')"><div class="pk-t">A 節點</div><div class="pk-old">標價 1,000 U</div><div class="pk-new" id="pnA">800 U</div><div class="pk-e" id="peA">能量 ×1.5 → 1,200</div></div><div class="pkg" id="pkB" onclick="pickPkg('B')"><div class="pk-t">B 節點</div><div class="pk-old">標價 5,000 U</div><div class="pk-new" id="pnB">4,000 U</div><div class="pk-e" id="peB">能量 ×2 → 8,000</div></div><div class="pkg" id="pkC" onclick="pickPkg('C')"><div class="pk-t">C 節點</div><div class="pk-old">標價 10,000 U</div><div class="pk-new" id="pnC">8,000 U</div><div class="pk-e" id="peC">能量 ×2.5 → 20,000</div></div><div class="pkg" id="pkD" onclick="pickPkg('D')"><div class="pk-t">D 節點</div><div class="pk-old">標價 30,000 U</div><div class="pk-new" id="pnD">24,000 U</div><div class="pk-e" id="peD">能量 ×3 → 72,000</div></div></div>
+        <div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">選擇支付網絡（代幣：USDT）</div>
+        <div class="stage-bar" id="chainBar">
+          <div class="stg on" onclick="setChain(this)"><div class="sg-d" style="font-size:12.5px;">BOT Chain</div></div>
+          <div class="stg" onclick="setChain(this)"><div class="sg-d" style="font-size:12.5px;">ETH</div></div>
+          <div class="stg" onclick="setChain(this)"><div class="sg-d" style="font-size:12.5px;">BNB</div></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 14px;"><span>餘額：12,480.00 USDT</span><span>僅支持 USDT 支付</span></div>
+        <div class="card"><div class="card-t">費用明細</div>
+          <div class="kv"><span class="k">節點檔位</span><span class="v" id="kTier">A 節點</span></div>
+          <div class="kv"><span class="k">標價</span><span class="v" id="kList">1,000 U</span></div>
+          <div class="kv"><span class="k">階段折扣</span><span class="v" style="color:#34d399;" id="kDisc">8 折（階段 1）</span></div>
+          <div class="kv"><span class="k">實付金額</span><span class="v" style="color:var(--usdt);" id="kPay">800.00 USDT</span></div>
+          <div class="kv"><span class="k">獲得能量</span><span class="v" style="color:#c4b5fd;" id="kEnergy">1,200（實付 × 1.5）</span></div>
+        </div>
+        <div style="font-size:13px;color:var(--text2);margin:2px 2px 8px;">應付金額</div>
+        <div style="display:flex;align-items:baseline;justify-content:space-between;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:15px 16px;margin-bottom:16px;"><span style="font-size:24px;font-weight:800;color:#fff;" id="payAmt">800.00</span><span style="font-size:13px;color:var(--text2);">USDT</span></div>
+        <button class="wbtn" style="width:100%;height:50px;font-size:16px;" onclick="doBuy()">確認購買</button>
+        <div class="sect" style="font-size:15px;margin:22px 2px 10px;">購買記錄</div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">B 節點 · 階段 2（8.5 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">4,250 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +8,500</span><span style="color:var(--muted);">2026-12-03 10:12:44</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:8px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:var(--green);font-weight:700;">狀態：成功 · 能量 +1,200</span><span style="color:var(--muted);">2026-11-02 21:38:09</span></div></div>
+        <div class="card" style="padding:12px 16px;margin-bottom:6px;"><div style="display:flex;justify-content:space-between;font-size:13px;"><span style="color:var(--text2);">A 節點 · 階段 1（8 折）</span><span style="color:var(--text2);">實付 <b style="color:#fff;">800 U</b></span></div><div style="display:flex;justify-content:space-between;font-size:11px;margin-top:9px;"><span style="color:#e7b667;font-weight:700;">狀態：鏈上確認中</span><span style="color:var(--muted);">2026-11-02 21:36:51</span></div></div>
+      </div><div class="page" id="p-home">
+        <div style="font-size:12.5px;color:var(--text2);margin:10px 2px 12px;">用戶地址：<b style="color:#dfe1ea;">0xE240…28d2</b></div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row" onclick="goPage('mynode','我的節點')"><div class="rmain"><div class="rtitle">我的節點</div></div><div class="rright"><span class="b b-info">B 節點</span></div><span class="chev">›</span></div>
+          <div class="row" onclick="goPage('team','我的社區')"><div class="rmain"><div class="rtitle">我的社區</div></div><div class="rright"><span class="rtag">直推 4 人</span></div><span class="chev">›</span></div>
+          <div class="row" onclick="goPage('reward','社區收益')"><div class="rmain"><div class="rtitle">社區收益</div></div><div class="rright"><span class="rtag" style="color:#34d399;">可提取 875 U</span></div><span class="chev">›</span></div>
+          <div class="row" onclick="goPage('energy','能量帳戶')"><div class="rmain"><div class="rtitle">能量帳戶</div></div><div class="rright"><span class="rtag" style="color:#c4b5fd;" id="homeEnergy">剩餘 8,450</span></div><span class="chev">›</span></div>
+          <div class="row" onclick="goPage('invite','邀請好友')"><div class="rmain"><div class="rtitle">邀請好友</div></div><div class="rright"><span class="rtag">1AObEd</span></div><span class="chev">›</span></div>
+          <div class="row" onclick="goPage('inviter','我的邀請人')"><div class="rmain"><div class="rtitle">我的邀請人</div></div><div class="rright"><span class="rtag">0x9C41…7Fb2</span></div><span class="chev">›</span></div>
+        </div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row" onclick="goPage('lang','語言 / Language')"><div class="rmain"><div class="rtitle">語言 / Language</div></div><div class="rright"><span class="rtag" id="curLang">繁體中文</span></div><span class="chev">›</span></div>
+          <div class="row" onclick="goPage('sale','節點發售')"><div class="rmain"><div class="rtitle">節點發售</div></div><div class="rright"><span class="rtag" style="color:#34d399;">階段 1 進行中</span></div><span class="chev">›</span></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>「我的邀請人」為註冊時綁定的上級，<b style="color:#fff;">綁定後不可更改</b>。社區領導人線下獎勵由社區自行維護，不在本系統結算。</span></div>
+      </div><div class="page" id="p-mynode"><div class="hero"><div class="h-lbl">當前身分</div>
+          <div class="h-big">B 節點<small>累計實付 5,050 U</small></div>
+          <div style="margin-top:14px;"><div style="display:flex;justify-content:space-between;font-size:11px;opacity:.92;"><span>距 C 節點（10,000 U）</span><span>還差 4,950 U</span></div>
+          <div style="height:6px;background:rgba(255,255,255,.22);border-radius:4px;margin-top:6px;overflow:hidden;"><div style="width:50.5%;height:100%;background:#fff;border-radius:4px;"></div></div></div>
+          <div class="h-row"><div class="h-cell"><div class="c-l">能量總額</div><div class="c-v">9,700</div></div><div class="h-cell"><div class="c-l">已消耗</div><div class="c-v">1,250</div></div><div class="h-cell"><div class="c-l">剩餘能量</div><div class="c-v">8,450</div></div></div>
+        </div>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">身分檔位（後台可配）</div>
+        <table class="ttab t4"><tr><th>身分</th><th class="tnum">門檻</th><th class="tnum">能量倍數</th><th>狀態</th></tr>
+        <tr><td class="lv">A 節點</td><td class="tnum">1,000 U</td><td class="tnum tg">1.5 ×</td><td><span class="b b-done">已達成</span></td></tr>
+        <tr class="me"><td class="lv">B 節點</td><td class="tnum">5,000 U</td><td class="tnum tg">2.0 ×</td><td><span class="b b-done">當前身分</span></td></tr>
+        <tr><td class="lv">C 節點</td><td class="tnum">10,000 U</td><td class="tnum tg">2.5 ×</td><td><span class="b b-wait">差 4,950 U</span></td></tr>
+        <tr><td class="lv">D 節點</td><td class="tnum">30,000 U</td><td class="tnum tg">3.0 ×</td><td><span class="b b-wait">差 24,950 U</span></td></tr>
+        </table>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>身分 = <b style="color:#fff;">所購套餐檔位</b> 與 <b style="color:#fff;">累計實付所達門檻</b> 取其高；折扣不影響身分，但能量與返佣按<b style="color:#fff;">實付</b>計。</span></div>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">我的節點記錄</div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="ic">🟪</div><div class="rmain"><div class="rtitle">B 節點 <span class="b b-done" style="margin-left:6px;">生效中</span></div><div class="rsub">階段 2 · 8.5 折 · 實付 4,250 U · 2026-12-03</div></div><div class="rright"><div class="rval" style="color:#c4b5fd;font-size:13px;">+8,500</div><div class="rdate">能量</div></div></div>
+          <div class="row"><div class="ic">🟦</div><div class="rmain"><div class="rtitle">A 節點 <span class="b b-done" style="margin-left:6px;">生效中</span></div><div class="rsub">階段 1 · 8 折 · 實付 800 U · 2026-11-02</div></div><div class="rright"><div class="rval" style="color:#c4b5fd;font-size:13px;">+1,200</div><div class="rdate">能量</div></div></div>
+          <div class="row"><div class="ic amber">⏳</div><div class="rmain"><div class="rtitle">A 節點 <span class="b b-wait" style="margin-left:6px;">鏈上確認中</span></div><div class="rsub">階段 1 · 8 折 · 實付 800 U · 2026-11-02</div></div><div class="rright"><div class="rval" style="color:var(--muted);font-size:13px;">待入帳</div></div></div>
+          <div class="row"><div class="ic red">✕</div><div class="rmain"><div class="rtitle">C 節點 <span class="b b-fail" style="margin-left:6px;">已失敗</span></div><div class="rsub">鏈上未到帳 · 訂單自動關閉 · 2026-11-01</div></div><div class="rright"><div class="rval" style="color:var(--muted);font-size:13px;">—</div></div></div>
+        </div>
+        <div class="list-more">— 已顯示全部 4 筆 —</div></div><div class="page" id="p-energy"><div class="hero"><div class="h-lbl">剩餘能量</div><div class="h-big">8,450</div>
+          <div class="h-row"><div class="h-cell"><div class="c-l">能量總額</div><div class="c-v">9,700</div></div><div class="h-cell"><div class="c-l">已消耗</div><div class="c-v">1,250</div></div><div class="h-cell"><div class="c-l">可提取上限</div><div class="c-v">8,450 U</div></div></div>
+        </div>
+        <div class="note" style="margin-top:14px;"><span>⚡</span><span><b style="color:#fff;">1 能量 = 可提取 1 U 價值的代幣</b>。<br>能量在購買節點時按 <b style="color:#fff;">實付金額 × 檔位倍數</b> 發放；領取收益時等額扣減。<br>能量不足時，本次<b style="color:#e7b667;">最多只能提取剩餘能量對應的金額</b>。</span></div>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">能量流水</div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="ic red">↓</div><div class="rmain"><div class="rtitle">領取收益消耗</div><div class="rsub">領取 1,250 U 等值 · 2027-01-12 11:20</div></div><div class="rright"><div class="rval" style="color:#fb7185;">−1,250</div></div></div>
+          <div class="row"><div class="ic green">↑</div><div class="rmain"><div class="rtitle">購買 B 節點獲得</div><div class="rsub">實付 4,250 × 2.0 · 2026-12-03 10:12</div></div><div class="rright"><div class="rval" style="color:#34d399;">+8,500</div></div></div>
+          <div class="row"><div class="ic green">↑</div><div class="rmain"><div class="rtitle">購買 A 節點獲得</div><div class="rsub">實付 800 × 1.5 · 2026-11-02 21:38</div></div><div class="rright"><div class="rval" style="color:#34d399;">+1,200</div></div></div>
+        </div>
+        <div class="list-more">— 已顯示全部 3 筆 —</div></div><div class="page" id="p-reward"><div style="display:flex;gap:22px;align-items:baseline;margin:10px 2px 12px;">
+          <span style="font-size:17px;font-weight:800;color:#fff;">銷售獎勵</span>
+          <span style="font-size:15px;font-weight:700;color:var(--muted);">節點分紅 <span class="b b-info" style="margin-left:3px;">待開放</span></span>
+        </div><div class="hero">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;"><div class="h-lbl">可提取</div><div style="font-size:12px;opacity:.92;">我的身分 <b>B 節點</b></div></div>
+          <div class="h-big" style="font-size:26px;line-height:1.25;">875 <small>USDT</small><br>375 <small>A2</small></div>
+          <div class="h-row" style="flex-wrap:wrap;gap:7px;">
+            <div class="h-cell" style="flex:1 1 46%;"><div class="c-l">總獎勵</div><div class="c-v">1,225 U<br>525 A2</div></div>
+            <div class="h-cell" style="flex:1 1 46%;"><div class="c-l">待結算</div><div class="c-v">175 U<br>75 A2</div></div>
+            <div class="h-cell" style="flex:1 1 46%;"><div class="c-l">待發放</div><div class="c-v">175 U<br>75 A2</div></div>
+            <div class="h-cell" style="flex:1 1 46%;"><div class="c-l">已提取</div><div class="c-v">0 U<br>0 A2</div></div>
+          </div>
+        </div>
+        <div class="wbtn-row"><button class="wbtn" onclick="goPage('claim','領取收益')">領取收益</button><button class="wbtn ghost" onclick="goPage('claimlog','領取記錄')">領取記錄</button></div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>直推返佣 <b style="color:#fff;">5%</b>（按下級<b style="color:#fff;">實付金額</b>計），按後台配置拆分為 <b style="color:#fff;">USDT 70% + A2 30%</b>。<br>A2 折算價以後台核算價為準（上線後核算）。</span></div><div class="sect" style="font-size:15px;margin:20px 2px 10px;">銷售獎勵明細</div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="ic green">D</div><div class="rmain"><div class="rtitle">直推 0x7A31…4f2C 購買 D 節點</div><div class="rsub">實付 24,000 U × 5% · 2026-12-05 14:02</div></div><div class="rright"><div class="rval usdt">840 U</div><div class="rdate">360 A2 · <span style="color:#34d399;">可提取</span></div></div></div>
+          <div class="row"><div class="ic green">A</div><div class="rmain"><div class="rtitle">直推 0x3B90…a1D7 購買 A 節點</div><div class="rsub">實付 1,000 U × 5% · 2026-12-04 09:41</div></div><div class="rright"><div class="rval usdt">35 U</div><div class="rdate">15 A2 · <span style="color:#34d399;">可提取</span></div></div></div>
+          <div class="row"><div class="ic amber">B</div><div class="rmain"><div class="rtitle">直推 0xD1F8…7b63 購買 B 節點</div><div class="rsub">實付 5,000 U × 5% · 2026-12-06 18:23</div></div><div class="rright"><div class="rval" style="color:#fbbf24;">175 U</div><div class="rdate">75 A2 · <span style="color:#fbbf24;">待發放</span></div></div></div>
+          <div class="row"><div class="ic">B</div><div class="rmain"><div class="rtitle">直推 0x55C2…9e04 購買 B 節點</div><div class="rsub">實付 5,000 U × 5% · 2026-12-07 08:10</div></div><div class="rright"><div class="rval" style="color:var(--text2);">175 U</div><div class="rdate">75 A2 · <span style="color:var(--text2);">待結算</span></div></div></div>
+        </div>
+        <div class="note" style="margin-top:12px;"><span>🕒</span><span><b style="color:#fff;">待結算</b>：下級訂單鏈上到帳確認中；<b style="color:#fff;">待發放</b>：已確認，等待撥付至兌付合約；<b style="color:#fff;">可提取</b>：可發起合約領取。</span></div></div><div class="page" id="p-claim">
+        <div class="hero"><div class="h-lbl">可提取收益</div><div class="h-big" style="font-size:26px;line-height:1.25;"><span id="cUsdt">875</span> <small>USDT</small><br><span id="cA2">375</span> <small>A2</small></div></div>
+        <div class="card" style="margin-top:14px;"><div class="card-t">領取數量</div>
+          <input class="input" id="cAmt" value="1,250.00" style="font-size:18px;font-weight:800;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin:2px 2px 0;"><span>等值 U（自動按 70/30 拆分為 USDT / A2）</span><span style="color:var(--purple);font-weight:700;">全部</span></div>
+        </div>
+        <div class="card"><div class="card-t">能量扣減預覽</div>
+          <div class="kv"><span class="k">我的能量</span><span class="v" id="eNow">8,450</span></div>
+          <div class="kv"><span class="k">本次消耗</span><span class="v" style="color:#fb7185;" id="eUse">−1,250</span></div>
+          <div class="kv"><span class="k">剩餘能量</span><span class="v" style="color:#c4b5fd;" id="eLeft">7,200</span></div>
+          <div class="kv"><span class="k">實際到帳</span><span class="v" style="color:var(--usdt);" id="eGet">875 USDT + 375 A2</span></div>
+        </div>
+        <div class="note warn"><span>⚠</span><span>收益由<b>兌付合約</b>發放，需在錢包中<b>簽名</b>完成 claim，<b>gas 費由用戶自行承擔</b>。</span></div>
+        <button class="wbtn" style="width:100%;height:50px;font-size:16px;" onclick="doClaim()">確認領取</button>
+        <div class="note" style="margin-top:16px;"><span>🧪</span><span><b style="color:#fff;">演示開關</b>（僅原型用，正式版無此區塊）</span></div>
+        <div class="wbtn-row"><button class="wbtn ghost" onclick="demoNode()" id="dNode">切換：未購節點</button><button class="wbtn ghost" onclick="demoEnergy()" id="dEnergy">切換：能量 800</button></div>
+      </div><div class="page" id="p-claimlog"><div class="card" style="padding:4px 16px;margin-top:10px;">
+          <div class="row"><div class="ic green">✓</div><div class="rmain"><div class="rtitle">領取成功</div><div class="rsub">0x4d21…8ac9 · 2027-01-12 11:20:36</div></div><div class="rright"><div class="rval usdt">875 U</div><div class="rdate">375 A2 · 能量 −1,250</div></div></div>
+          <div class="row"><div class="ic amber">⏳</div><div class="rmain"><div class="rtitle">合約處理中</div><div class="rsub">等待鏈上確認 · 2027-01-12 11:19:02</div></div><div class="rright"><div class="rval" style="color:#fbbf24;">— U</div><div class="rdate">已簽名</div></div></div>
+          <div class="row"><div class="ic red">✕</div><div class="rmain"><div class="rtitle">領取失敗</div><div class="rsub">gas 不足 · 交易被拒絕 · 2027-01-11 22:03:15</div></div><div class="rright"><div class="rval" style="color:#fb7185;">0 U</div><div class="rdate">能量未扣減</div></div></div>
+        </div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>領取<b style="color:#fff;">失敗時能量不扣減</b>，收益仍留在「可提取」，可重新發起。</span></div>
+        <div class="list-more">— 已顯示全部 3 筆 —</div></div><div class="page" id="p-team"><div class="hero"><div class="h-lbl">直推業績（僅線上直推，線下社區不計入）</div><div class="h-big">35,000 <small>U</small></div>
+          <div class="h-row"><div class="h-cell"><div class="c-l">直推人數</div><div class="c-v">4 人</div></div><div class="h-cell"><div class="c-l">已激活</div><div class="c-v">4 人</div></div><div class="h-cell"><div class="c-l">累計返佣</div><div class="c-v">1,750 U</div></div></div>
+        </div>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">直推明細</div>
+        <div class="card" style="padding:4px 16px;">
+          <div class="row"><div class="ic">🟨</div><div class="rmain"><div class="rtitle">0x7A31…4f2C <span class="b b-info" style="margin-left:6px;">D 節點</span></div><div class="rsub">實付 24,000 U · 2026-12-05</div></div><div class="rright"><div class="rval usdt">+1,200 U</div><div class="rdate">我的返佣</div></div></div>
+          <div class="row"><div class="ic">🟪</div><div class="rmain"><div class="rtitle">0xD1F8…7b63 <span class="b b-info" style="margin-left:6px;">B 節點</span></div><div class="rsub">實付 5,000 U · 2026-12-06</div></div><div class="rright"><div class="rval usdt">+250 U</div><div class="rdate">我的返佣</div></div></div>
+          <div class="row"><div class="ic">🟪</div><div class="rmain"><div class="rtitle">0x55C2…9e04 <span class="b b-info" style="margin-left:6px;">B 節點</span></div><div class="rsub">實付 5,000 U · 2026-12-07</div></div><div class="rright"><div class="rval usdt">+250 U</div><div class="rdate">我的返佣</div></div></div>
+          <div class="row"><div class="ic">🟦</div><div class="rmain"><div class="rtitle">0x3B90…a1D7 <span class="b b-info" style="margin-left:6px;">A 節點</span></div><div class="rsub">實付 1,000 U · 2026-12-04</div></div><div class="rright"><div class="rval usdt">+50 U</div><div class="rdate">我的返佣</div></div></div>
+          <div class="row"><div class="ic red">—</div><div class="rmain"><div class="rtitle">0xB472…c05E <span class="b b-fail" style="margin-left:6px;">未激活</span></div><div class="rsub">已綁定未購買節點 · 2026-12-08</div></div><div class="rright"><div class="rval" style="color:var(--muted);">0 U</div><div class="rdate">不計業績</div></div></div>
+        </div>
+        <div class="note" style="margin-top:12px;"><span>ℹ</span><span>系統<b style="color:#fff;">只結算線上直推返佣</b>；社區領導人線下獎勵（15% / 10% / 5% / 5%）由<b style="color:#fff;">線下社區自行維護</b>，不在本系統體現。</span></div></div><div class="page" id="p-invite"><div class="card" style="margin-top:10px;">
+          <div class="card-t">邀請碼</div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:10px 10px 10px 14px;">
+            <span style="flex:1;font-size:16px;font-weight:800;color:#fff;letter-spacing:2px;">1AObEd</span>
+            <button class="wbtn" style="flex:0 0 66px;height:34px;font-size:13px;box-shadow:none;">複製</button></div>
+          <div class="card-t" style="margin-top:16px;">邀請連結</div>
+          <div style="display:flex;align-items:center;gap:10px;background:var(--panel2);border:1px solid var(--border);border-radius:12px;padding:10px 10px 10px 14px;">
+            <span style="flex:1;min-width:0;font-size:12px;color:#dfe1ea;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">https://app.a2.io/?inviteCode=1AObEd</span>
+            <button class="wbtn" style="flex:0 0 66px;height:34px;font-size:13px;box-shadow:none;">複製</button></div>
+          <div style="width:170px;height:170px;background:#fff;border-radius:10px;margin:18px auto 0;background-image:repeating-linear-gradient(0deg,#000 0 8px,#fff 8px 16px),repeating-linear-gradient(90deg,#000 0 8px,transparent 8px 16px);background-blend-mode:multiply;"></div>
+          <div class="wbtn-row" style="margin-top:16px;"><button class="wbtn">↗ 分享二維碼</button></div>
+        </div>
+        <div class="note"><span>ℹ</span><span>好友透過您的邀請碼／連結<b style="color:#fff;">首次登入時綁定</b>，即成為您的直推。<br>綁定關係<b style="color:#fff;">一經確認不可更改</b>。</span></div></div><div class="page" id="p-inviter"><div class="card" style="margin-top:10px;">
+          <div class="card-t">我的邀請人（上級）</div>
+          <div class="kv"><span class="k">錢包地址</span><span class="v">0x9C41…7Fb2</span></div>
+          <div class="kv"><span class="k">身分</span><span class="v"><span class="b b-info">C 節點</span></span></div>
+          <div class="kv"><span class="k">使用的邀請碼</span><span class="v">1AObEd</span></div>
+          <div class="kv"><span class="k">綁定時間</span><span class="v" style="font-size:12px;">2026-11-02 21:10:47</span></div>
+        </div>
+        <div class="note warn"><span>⚠</span><span>上下級關係在<b>首次登入註冊時一次性綁定</b>，<b>之後不可更改</b>，也不支持轉移或解綁。</span></div>
+        <div class="note"><span>ℹ</span><span>後續導入的日報 / 韓國網體關係由後台統一掛接，<b style="color:#fff;">不在 C 端體現</b>。</span></div></div><div class="page" id="p-hist"><div class="note" style="margin-top:8px;"><span>🕘</span><span>四個階段按<b style="color:#fff;">日期</b>依次開售，折扣逐階段收窄；<b style="color:#e7b667;">越早購買折扣越大</b>。</span></div>
+        <table class="ttab t4"><tr><th>階段</th><th>期間</th><th>折扣</th><th class="tnum">已售 / 名額</th><th>狀態</th></tr>
+        <tr><td class="lv">階段 1</td><td>11-01 ~ 11-30</td><td class="tg">8 折</td><td class="tnum">213 / 1,000</td><td><span class="b b-fail">已結束</span></td></tr>
+        <tr class="me"><td class="lv">階段 2</td><td>12-01 ~ 12-30</td><td class="tg">8.5 折</td><td class="tnum">146 / 1,000</td><td><span class="b b-done">進行中</span></td></tr>
+        <tr><td class="lv">階段 3</td><td>01-01 ~ 01-30</td><td class="tg">9 折</td><td class="tnum">— / 1,000</td><td><span class="b b-info">未開售</span></td></tr>
+        <tr><td class="lv">階段 4</td><td>02-01 ~ 02-28</td><td class="tg">9.5 折</td><td class="tnum">— / 1,000</td><td><span class="b b-info">未開售</span></td></tr>
+        </table>
+        <div class="sect" style="font-size:15px;margin:20px 2px 10px;">各階段檔位價（標價 → 折後）</div>
+        <table class="ttab t4"><tr><th>檔位</th><th class="tnum">標價</th><th class="tnum">階段1</th><th class="tnum">階段2</th><th class="tnum">階段3</th><th class="tnum">階段4</th></tr>
+        <tr><td class="lv">A</td><td class="tnum">1,000</td><td class="tnum tg">800</td><td class="tnum">850</td><td class="tnum">900</td><td class="tnum">950</td></tr>
+        <tr><td class="lv">B</td><td class="tnum">5,000</td><td class="tnum tg">4,000</td><td class="tnum">4,250</td><td class="tnum">4,500</td><td class="tnum">4,750</td></tr>
+        <tr><td class="lv">C</td><td class="tnum">10,000</td><td class="tnum tg">8,000</td><td class="tnum">8,500</td><td class="tnum">9,000</td><td class="tnum">9,500</td></tr>
+        <tr><td class="lv">D</td><td class="tnum">30,000</td><td class="tnum tg">24,000</td><td class="tnum">25,500</td><td class="tnum">27,000</td><td class="tnum">28,500</td></tr>
+        </table>
+        <div class="note" style="margin-top:14px;"><span>ℹ</span><span>能量與直推返佣均按<b style="color:#fff;">實付金額</b>計算；<b style="color:#fff;">身分檔位按所購套餐</b>，不因折扣掉檔。</span></div></div><div class="page" id="p-lang"><div class="sect" style="margin-top:12px;">選擇語言</div><div class="langgrid"><div class="lang on" data-l="繁體中文" onclick="setLang(this)">繁體中文<span class="ck">✓</span></div><div class="lang" data-l="English" onclick="setLang(this)">English<span class="ck" style="visibility:hidden;">✓</span></div><div class="lang" data-l="日本語" onclick="setLang(this)">日本語<span class="ck" style="visibility:hidden;">✓</span></div><div class="lang" data-l="한국어" onclick="setLang(this)">한국어<span class="ck" style="visibility:hidden;">✓</span></div><div class="lang" data-l="Español" onclick="setLang(this)">Español<span class="ck" style="visibility:hidden;">✓</span></div><div class="lang" data-l="Português" onclick="setLang(this)">Português<span class="ck" style="visibility:hidden;">✓</span></div><div class="lang" data-l="Tiếng Việt" onclick="setLang(this)">Tiếng Việt<span class="ck" style="visibility:hidden;">✓</span></div><div class="lang" data-l="Русский" onclick="setLang(this)">Русский<span class="ck" style="visibility:hidden;">✓</span></div></div><div class="note" style="margin-top:14px;"><span>🌐</span><span>系統支援 <b style="color:#fff;">8 種語言</b>，預設 <b style="color:#fff;">繁體中文</b>。切換後全站文案即時生效。<br>收款地址按語言分流由後端處理，前端不展示。</span></div></div></div>
+      <div class="drawer-mask" id="drawerMask" onclick="closeDrawer()"></div>
+      <div class="drawer" id="drawer"><div class="menu-logo"><span class="mark"></span>A2</div><div class="menu"><div class="menu-cap">A2 · 節點</div><div class="menu-item active" data-page="sale" onclick="goPage('sale','節點發售')"><span>🧩  節點發售</span><span>›</span></div><div class="menu-item" data-page="mynode" onclick="goPage('mynode','我的節點')"><span>🎖  我的節點</span><span>›</span></div><div class="menu-item" data-page="energy" onclick="goPage('energy','能量帳戶')"><span>⚡  能量帳戶</span><span>›</span></div><div class="menu-sep"></div><div class="menu-item" data-page="reward" onclick="goPage('reward','社區收益')"><span>💰  社區收益</span><span>›</span></div><div class="menu-item" data-page="team" onclick="goPage('team','我的社區')"><span>👥  我的社區</span><span>›</span></div><div class="menu-item" data-page="invite" onclick="goPage('invite','邀請好友')"><span>🔗  邀請好友</span><span>›</span></div><div class="menu-item" data-page="inviter" onclick="goPage('inviter','我的邀請人')"><span>👤  我的邀請人</span><span>›</span></div><div class="menu-sep"></div><div class="menu-item" data-page="hist" onclick="goPage('hist','發售歷史')"><span>🕘  發售歷史</span><span>›</span></div><div class="menu-item" data-page="lang" onclick="goPage('lang','語言 / Language')"><span>🌐  語言 / Language</span><span>›</span></div><div class="menu-cap">帳戶</div><div class="menu-item" onclick="goPage('home','個人中心')"><span>🏠  個人中心</span><span>›</span></div><div class="menu-item dim"><span>📄  服務條款</span><span>›</span></div></div></div>
+      <div class="sheet-mask" id="mask" onclick="closeSheets()"></div>
+      <div class="cmodal" id="cModal"><div class="cbox"><div class="sheet-h"><span class="st" id="cmTitle">提示</span><span class="sheet-x" onclick="closeSheets()">×</span></div>
+        <div class="sheet-b"><div style="text-align:center;padding:6px 0 4px;">
+          <div style="width:58px;height:58px;border-radius:50%;background:#241f3a;color:#c4b5fd;display:flex;align-items:center;justify-content:center;font-size:26px;margin:0 auto 14px;" id="cmIcon">🧩</div>
+          <div style="font-size:14px;color:#fff;font-weight:700;margin-bottom:8px;" id="cmHead">標題</div>
+          <div style="font-size:12.5px;color:var(--text2);line-height:1.75;" id="cmDesc">說明</div>
+        </div></div>
+        <div style="padding:0 18px 18px;display:flex;gap:10px;"><button class="wbtn ghost" style="flex:1;height:44px;font-size:14px;" onclick="closeSheets()">取消</button><button class="wbtn" style="flex:1;height:44px;font-size:14px;" id="cmOkBtn" onclick="cmConfirm()">確認</button></div>
+      </div></div>
+      <div class="mtoast" id="mtoast"></div>
+    </div>
+  </div>
+</div>
+<script>
+  var STG=[{d:0.8,l:'8 折'},{d:0.85,l:'8.5 折'},{d:0.9,l:'9 折'},{d:0.95,l:'9.5 折'}];
+  var STGDATE=['2026-11-01 ~ 2026-11-30','2026-12-01 ~ 2026-12-30','2027-01-01 ~ 2027-01-30','2027-02-01 ~ 2027-02-28'];
+  var PKGS={A:{p:1000,m:1.5},B:{p:5000,m:2},C:{p:10000,m:2.5},D:{p:30000,m:3}};
+  var RATE=0.05, SPLIT_U=0.7, SPLIT_A=0.3;
+  var curStage=1, curPkg='A', curPage='sale';
+  var hasNode=true, energyTotal=8450, claimable=1250;
+  function nf(n){ return Number(n).toLocaleString('en-US'); }
+  function nf2(n){ return Number(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2}); }
+
+  function openDrawer(){ document.getElementById('drawerMask').classList.add('show'); document.getElementById('drawer').classList.add('show'); }
+  function closeDrawer(){ document.getElementById('drawerMask').classList.remove('show'); document.getElementById('drawer').classList.remove('show'); }
+  function goPage(page, title){
+    document.querySelectorAll('.live .page').forEach(function(p){ p.classList.remove('active'); });
+    document.getElementById('p-'+page).classList.add('active');
+    document.querySelectorAll('.live .menu-item').forEach(function(m){ if(!m.classList.contains('dim')){ m.classList.toggle('active', m.getAttribute('data-page')===page); } });
+    document.getElementById('lvTitle').textContent = title;
+    curPage = page; closeDrawer(); closeSheets();
+    document.getElementById('lvContent').scrollTop = 0;
+  }
+  function goBack(){
+    if(curPage==='claim'||curPage==='claimlog') goPage('reward','社區收益');
+    else if(curPage==='hist') goPage('sale','節點發售');
+    else if(curPage==='home') showT('已在首頁');
+    else goPage('home','個人中心');
+  }
+  function closeSheets(){ document.getElementById('mask').classList.remove('show'); document.querySelectorAll('.sheet, .cmodal').forEach(function(s){ s.classList.remove('show'); }); }
+  var toastTimer;
+  function showT(msg){ var t=document.getElementById('mtoast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(function(){ t.classList.remove('show'); },2200); }
+
+  /* ── 節點發售：階段折扣 × 套餐檔位 ── */
+  function setStage(n){ curStage=n; renderSale(); }
+  function pickPkg(t){ curPkg=t; renderSale(); }
+  function renderSale(){
+    var st=STG[curStage-1];
+    var bar=document.getElementById('stageBar').children;
+    for(var i=0;i<bar.length;i++){ if(i===curStage-1){ bar[i].classList.add('on'); } else { bar[i].classList.remove('on'); } }
+    ['A','B','C','D'].forEach(function(t){
+      var v=PKGS[t].p*st.d;
+      var el=document.getElementById('pk'+t);
+      if(t===curPkg){ el.classList.add('on'); } else { el.classList.remove('on'); }
+      document.getElementById('pn'+t).textContent=nf(v)+' U';
+      document.getElementById('pe'+t).textContent='能量 ×'+PKGS[t].m+' → '+nf(v*PKGS[t].m);
+    });
+    var pay=PKGS[curPkg].p*st.d;
+    document.getElementById('sgLabel').textContent='階段 '+curStage;
+    document.getElementById('sgDisc').textContent=st.l;
+    document.getElementById('sgDate').textContent=STGDATE[curStage-1];
+    document.getElementById('kTier').textContent=curPkg+' 節點';
+    document.getElementById('kList').textContent=nf(PKGS[curPkg].p)+' U';
+    document.getElementById('kDisc').textContent=st.l+'（階段 '+curStage+'）';
+    document.getElementById('kPay').textContent=nf2(pay)+' USDT';
+    document.getElementById('kEnergy').textContent=nf(pay*PKGS[curPkg].m)+'（實付 × '+PKGS[curPkg].m+'）';
+    document.getElementById('payAmt').textContent=nf2(pay);
+  }
+  function setChain(el){ var p=el.parentNode.children; for(var i=0;i<p.length;i++){ p[i].classList.remove('on'); } el.classList.add('on'); showT('已切換支付網絡'); }
+  function setLang(el){
+    var p=el.parentNode.children;
+    for(var i=0;i<p.length;i++){ p[i].classList.remove('on'); p[i].querySelector('.ck').style.visibility='hidden'; }
+    el.classList.add('on'); el.querySelector('.ck').style.visibility='visible';
+    document.getElementById('curLang').textContent=el.getAttribute('data-l');
+    showT('已切換為 '+el.getAttribute('data-l'));
+  }
+
+  /* ── 居中彈框 ── */
+  var cmOk=null;
+  function openCM(title, icon, headline, desc, okText, onOk){
+    document.getElementById('cmTitle').textContent=title;
+    document.getElementById('cmIcon').textContent=icon;
+    document.getElementById('cmHead').innerHTML=headline;
+    document.getElementById('cmDesc').innerHTML=desc;
+    document.getElementById('cmOkBtn').textContent=okText||'知道了';
+    cmOk=onOk||null;
+    document.getElementById('mask').classList.add('show');
+    document.getElementById('cModal').classList.add('show');
+  }
+  function cmConfirm(){ var f=cmOk; closeSheets(); if(f){ f(); } }
+
+  /* ── 購買 ── */
+  function doBuy(){
+    var st=STG[curStage-1], pay=PKGS[curPkg].p*st.d;
+    openCM('確認購買','🧩','確認購買 '+curPkg+' 節點？',
+      '標價 <b style="color:#fff;">'+nf(PKGS[curPkg].p)+' U</b> · 階段 '+curStage+' <b style="color:#34d399;">'+st.l+'</b><br>'+
+      '實付 <b style="color:#2dd4bf;">'+nf2(pay)+' USDT</b>（BOT Chain）<br>'+
+      '獲得身分 <b style="color:#fff;">'+curPkg+' 節點</b> · 能量 <b style="color:#c4b5fd;">+'+nf(pay*PKGS[curPkg].m)+'</b><br>'+
+      '上級直推返佣 <b style="color:#fff;">'+nf2(pay*RATE)+' U</b>（'+nf2(pay*RATE*SPLIT_U)+' USDT + '+nf2(pay*RATE*SPLIT_A)+' A2）<br>'+
+      '<span style="color:#e7b667;">鏈上轉帳不支持撤回，請確認網絡與金額。</span>',
+      '確認支付', function(){ showT('已提交鏈上支付，等待到帳確認'); });
+  }
+
+  /* ── 領取收益 ── */
+  function renderClaim(){
+    var use=Math.min(energyTotal, claimable);
+    document.getElementById('cUsdt').textContent=nf(Math.round(claimable*SPLIT_U));
+    document.getElementById('cA2').textContent=nf(Math.round(claimable*SPLIT_A));
+    document.getElementById('cAmt').value=nf2(claimable);
+    document.getElementById('eNow').textContent=nf(energyTotal);
+    document.getElementById('eUse').textContent='−'+nf(use);
+    document.getElementById('eLeft').textContent=nf(energyTotal-use);
+    document.getElementById('eGet').textContent=nf(Math.round(use*SPLIT_U))+' USDT + '+nf(Math.round(use*SPLIT_A))+' A2';
+    document.getElementById('homeEnergy').textContent='剩餘 '+nf(energyTotal);
+    document.getElementById('dNode').textContent = hasNode ? '切換：未購節點' : '切換：已購節點';
+    document.getElementById('dEnergy').textContent = (energyTotal<claimable) ? '切換：能量 8,450' : '切換：能量 800';
+  }
+  function doClaim(){
+    if(!hasNode){
+      openCM('無法領取','!','需先購買節點身分',
+        '領取直推收益的前置條件為<b style="color:#fff;">已購買節點身分</b>。<br>您當前尚未持有節點，收益<b style="color:#e7b667;">保留在待結算</b>，激活後可正常領取。',
+        '去購買節點', function(){ goPage('sale','節點發售'); });
+      return;
+    }
+    if(energyTotal < claimable){
+      openCM('能量不足','⚡','能量不足，無法全額提取',
+        '1 能量 = 可提取 1 U 價值代幣。<br>您當前剩餘能量 <b style="color:#fff;">'+nf(energyTotal)+'</b>，本次<b style="color:#e7b667;">最多可提取 '+nf(energyTotal)+' U</b> 等值。',
+        '按 '+nf(energyTotal)+' U 領取', function(){ claimable-=energyTotal; energyTotal=0; renderClaim(); showT('已按能量上限領取'); });
+      return;
+    }
+    openCM('錢包簽名確認','✍','需在錢包中簽名完成領取',
+      '收益由<b style="color:#fff;">兌付合約</b>發放，本次領取<br><b style="color:#2dd4bf;">'+nf(Math.round(claimable*SPLIT_U))+' USDT + '+nf(Math.round(claimable*SPLIT_A))+' A2</b>（消耗能量 '+nf(claimable)+'）<br><b style="color:#e7b667;">gas 費由您的錢包自行承擔</b><br>網絡：BOT Chain',
+      '前往簽名', function(){ energyTotal-=claimable; claimable=0; renderClaim(); showT('領取成功，能量已扣減'); });
+  }
+  function demoNode(){ hasNode=!hasNode; renderClaim(); showT(hasNode?'演示：已購節點':'演示：未購節點'); }
+  function demoEnergy(){ energyTotal = (energyTotal<claimable) ? 8450 : 800; renderClaim(); showT('演示：能量 '+nf(energyTotal)); }
+
+  renderSale(); renderClaim();
+</script>
+<!-- LIVE END -->
+</body>
+</html>
