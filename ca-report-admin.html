@@ -263,15 +263,6 @@
   .chip .x { cursor: pointer; opacity: .55; font-weight: 400; }
   .chip .x:hover { opacity: 1; }
   .chips .ph { color: #c0c4cc; font-size: 12px; }
-  .chkbox { background: #f8f9fd; border: 1px solid #e8eaed; border-radius: 8px; padding: 10px 14px 4px; margin-top: 16px; }
-  .chkbox-t { font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 2px; }
-  .chklist { display: grid; grid-template-columns: 1fr 1fr; gap: 0 24px; }
-  .chk { display: flex; align-items: flex-start; gap: 8px; font-size: 11.5px; line-height: 1.6; padding: 5px 0; }
-  .chk .m { flex-shrink: 0; width: 14px; font-weight: 700; }
-  .chk.ok .m { color: #10b981; }
-  .chk.ng .m { color: #ef4444; }
-  .chk.ok { color: #6b7280; }
-  .chk.ng { color: #991b1b; font-weight: 500; }
   .form-actions { display: flex; gap: 10px; align-items: center; padding-top: 14px; margin-top: 14px; border-top: 1px solid #f3f4f6; }
   .pick-list { max-height: 330px; overflow-y: auto; border: 1px solid #e8eaed; border-radius: 8px; }
   .pick-item { display: flex; align-items: center; gap: 10px; padding: 9px 12px; border-bottom: 1px solid #f3f4f6; font-size: 12px; cursor: pointer; }
@@ -281,7 +272,7 @@
   .pick-item .pa { flex: 1; font-family: ui-monospace, Menlo, monospace; font-size: 11px; color: #6b7280; word-break: break-all; }
 </style></head>
 <body>
-<aside class="sidebar"><div class="logo"><div class="logo-icon">📊</div><div class="logo-text">CA 运营后台<small>报表管理模块</small></div></div><nav class="nav"><div class="nav-group-title">报表管理 · 本次新增</div><div class="nav-item active" data-page="send" onclick="switchPage('send')"><span class="ic">📨</span>报表发送<span class="nav-badge new">NEW</span></div><div class="nav-item" data-page="monthly" onclick="switchPage('monthly')"><span class="ic">🗓</span>月度日报<span class="nav-badge new">NEW</span></div><div class="nav-item" data-page="staking" onclick="switchPage('staking')"><span class="ic">📥</span>质押流水导出<span class="nav-badge new">NEW</span></div><div class="nav-item" data-page="email" onclick="switchPage('email')"><span class="ic">✉️</span>发送邮箱管理<span class="nav-badge new">NEW</span></div><div class="nav-group-title">CA 后台 · 既有模块</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">👤</span>会员管理</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">⛓</span>入金记录</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">🔒</span>质押管理</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">🖥</span>矿机销售</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">💸</span>提币审核</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">📋</span>操作日志</div></nav><div class="sidebar-bottom"><div class="avatar">超</div><div><div class="admin-name">admin</div><div class="admin-role">超级管理员 · 报表全部权限</div></div></div></aside><div class="main"><header class="topbar"><div class="breadcrumb"><span>CA 运营后台</span><span class="breadcrumb-sep">/</span><span>报表管理</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">报表发送</span></div><div class="topbar-right"><span class="session-badge"><span class="s-dot"></span>admin · 报表全部权限</span></div></header><div class="content"><div class="page active" id="page-send"><div class="page-header"><div><div class="page-title">报表发送 · 领导人 / 工作室</div><div class="page-subtitle">选择区域、邀请人与统计范围后提交，系统生成 Excel 并发送到指定邮箱</div></div><div class="filter-actions"><button class="btn btn-secondary" onclick="askSync('leader')">🔄 同步领导人名单</button><button class="btn btn-secondary" onclick="askSync('studio')">🔄 同步工作室名单</button></div></div><div class="card"><div class="card-header"><div class="card-title">报表参数</div><div class="seg" id="segSend"><div class="seg-item on" data-v="leader" onclick="setSeg(this,'buildSend')">领导人报表</div><div class="seg-item" data-v="studio" onclick="setSeg(this,'buildSend')">工作室报表</div></div></div><div class="card-body"><div class="frow"><div class="fl">区域类型</div><div class="fc"><label class="opt"><input type="radio" name="sendRegion" class="ck" value="cn" onchange="buildSend()"> 国内</label><label class="opt"><input type="radio" name="sendRegion" class="ck" value="ov" onchange="buildSend()"> 海外</label><label class="opt"><input type="radio" name="sendRegion" class="ck" value="all" checked onchange="buildSend()"> 全部</label><div class="fhint">按国内 / 海外划分报表的数据范围。所选接收邮箱的<b>区域权限</b>必须覆盖此处选择，例如「仅国内」的邮箱不能接收海外或全部区域的报表。</div></div></div><div class="frow"><div class="fl">查询范围</div><div class="fc"><label class="opt"><input type="radio" name="sendScope" class="ck" checked onchange="setScope('send',0)"> 指定邀请人</label><label class="opt"><input type="radio" name="sendScope" class="ck" id="sendScopeAll" onchange="setScope('send',1)"> 全部邀请人</label><div class="fhint">选择「全部邀请人」时无需逐个填写，但<b>仅数据权限为「可查看全部数据」的邮箱可用</b>。</div></div></div><div class="frow" id="sendInvWrap"><div class="fl req">邀请人</div><div class="fc"><div id="sendInvList"><div class="inv-row"><input class="form-input iv-n" value="user01" placeholder="自定义名称" oninput="buildSend()"><input class="form-input iv-a" value="0x37cd6c938706ff0491ee0207a7c0e4890abcd68f" placeholder="钱包地址（0x 开头）" oninput="buildSend()"><button class="btn btn-secondary btn-sm" onclick="delInv(this,'buildSend')">删除</button></div><div class="inv-row"><input class="form-input iv-n" value="user02" placeholder="自定义名称" oninput="buildSend()"><input class="form-input iv-a" value="0x307a5ce6A4F45E5c6bF76cD45f48b5f73EF0e066" placeholder="钱包地址（0x 开头）" oninput="buildSend()"><button class="btn btn-secondary btn-sm" onclick="delInv(this,'buildSend')">删除</button></div></div><div style="display:flex;gap:8px;margin-top:3px;"><button class="btn btn-ghost btn-sm" onclick="addInv('sendInvList','buildSend')">+ 添加一行</button><button class="btn btn-secondary btn-sm" onclick="openInvPick('sendInvList','buildSend','segSend')">从已同步名单选择</button></div><div class="fhint">「自定义名称」为报表内显示的名称，「钱包地址」为该领导人 / 工作室的钱包地址。</div></div></div><div class="frow"><div class="fl">业务切割</div><div class="fc"><label style="display:flex;align-items:center;gap:9px;font-size:12px;color:#374151;cursor:pointer;"><span class="sw"><input type="checkbox" id="splitSw" checked onchange="buildSend()"><i></i></span>按零号线地址切割业务</label><div class="fhint"><b>开启</b>：按后台配置的零号线地址切割业务（默认）。<b>关闭</b>：查出所填地址伞下的全部数据。</div></div></div><div class="frow"><div class="fl">统计时间范围</div><div class="fc"><div class="rng off" id="rng-sendStaking"><label class="opt" style="margin:0;"><input type="checkbox" class="ck" onchange="toggleRng('sendStaking',this)"><span class="rn">质押统计</span></label><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-08-01T00:00:00" oninput="buildSend()"><span class="tilde">~</span><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-09-01T00:00:00" oninput="buildSend()"></div><div class="rng off" id="rng-sendPerf"><label class="opt" style="margin:0;"><input type="checkbox" class="ck" onchange="toggleRng('sendPerf',this)"><span class="rn">业绩统计</span></label><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-08-01T00:00:00" oninput="buildSend()"><span class="tilde">~</span><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-09-01T00:00:00" oninput="buildSend()"></div><div class="rng off" id="rng-sendMiner"><label class="opt" style="margin:0;"><input type="checkbox" class="ck" onchange="toggleRng('sendMiner',this)"><span class="rn">矿机销售明细</span></label><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-08-01T00:00:00" oninput="buildSend()"><span class="tilde">~</span><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-09-01T00:00:00" oninput="buildSend()"></div><div class="fhint">三组区间彼此独立、均为可选；勾选后开始与结束<b>必须同时选择</b>；未勾选则该维度不做筛选（全量）。<br>矿机销售明细<b>包含开始时间、不包含结束时间</b>。</div></div></div><div class="frow"><div class="fl req">接收邮箱</div><div class="fc"><div class="chips" id="sendEmails"><span class="chip" data-v="finance@carypact.com">finance@carypact.com<span class="x" onclick="rmChip(this,'buildSend')">×</span></span></div><div style="display:flex;gap:8px;margin-top:7px;"><button class="btn btn-secondary btn-sm" onclick="openEmailPick('sendEmails','buildSend')">选择邮箱</button></div><div class="fhint">只能选择「发送邮箱管理」白名单内的邮箱，且其区域权限需覆盖上方所选区域类型。</div></div></div><div class="chkbox"><div class="chkbox-t">提交前检查</div><div class="chklist" id="sendChecks"></div></div><div class="form-actions"><button class="btn btn-primary" onclick="submitSend()">生成并发送报表</button><button class="btn btn-secondary" onclick="showToastMsg('表单已重置为默认值')">重置</button><span class="total-count" style="margin-left:auto;">提交后系统生成报表并自动发送到所选邮箱</span></div></div></div></div><div class="page" id="page-monthly"><div class="page-header"><div><div class="page-title">月度日报</div><div class="page-subtitle">按月生成「每日入金 / 每日质押增量 / 每日矿机销售业绩」三份 Excel，生成后邮件发送</div></div></div><div class="card"><div class="card-header"><div class="card-title">报表参数</div><div class="seg" id="segMonthly"><div class="seg-item on" data-v="leader" onclick="setSeg(this,'buildMonthly')">领导人</div><div class="seg-item" data-v="studio" onclick="setSeg(this,'buildMonthly')">工作室</div></div></div><div class="card-body"><div class="frow"><div class="fl req">月份</div><div class="fc" style="max-width:240px;"><input type="month" class="form-input" id="monMonth" value="2026-08" oninput="buildMonthly()"><div class="fhint">选择要生成的月份。每份报表首个工作表为当月汇总，其后按日期分表。</div></div></div><div class="frow"><div class="fl">区域类型</div><div class="fc"><label class="opt"><input type="radio" name="monRegion" class="ck" value="cn" onchange="buildMonthly()"> 国内</label><label class="opt"><input type="radio" name="monRegion" class="ck" value="ov" onchange="buildMonthly()"> 海外</label><label class="opt"><input type="radio" name="monRegion" class="ck" value="all" checked onchange="buildMonthly()"> 全部</label><div class="fhint">按国内 / 海外划分报表的数据范围。所选接收邮箱的<b>区域权限</b>必须覆盖此处选择，例如「仅国内」的邮箱不能接收海外或全部区域的报表。</div></div></div><div class="frow"><div class="fl">查询范围</div><div class="fc"><label class="opt"><input type="radio" name="monScope" class="ck" checked onchange="setScope('mon',1)"> 全部邀请人</label><label class="opt"><input type="radio" name="monScope" class="ck" id="monScopeSel" onchange="setScope('mon',0)"> 指定邀请人</label><div class="fhint">月度日报默认覆盖全部邀请人。</div></div></div><div class="frow" id="monInvWrap" style="display:none;"><div class="fl req">邀请人</div><div class="fc"><div id="monInvList"><div class="inv-row"><input class="form-input iv-n" value="user01" placeholder="自定义名称" oninput="buildMonthly()"><input class="form-input iv-a" value="0x37cd6c938706ff0491ee0207a7c0e4890abcd68f" placeholder="钱包地址（0x 开头）" oninput="buildMonthly()"><button class="btn btn-secondary btn-sm" onclick="delInv(this,'buildMonthly')">删除</button></div></div><div style="display:flex;gap:8px;margin-top:3px;"><button class="btn btn-ghost btn-sm" onclick="addInv('monInvList','buildMonthly')">+ 添加一行</button><button class="btn btn-secondary btn-sm" onclick="openInvPick('monInvList','buildMonthly','segMonthly')">从已同步名单选择</button></div></div></div><div class="frow"><div class="fl">接收邮箱</div><div class="fc"><div class="chips" id="monEmails"><span class="chip" data-v="finance@carypact.com">finance@carypact.com<span class="x" onclick="rmChip(this,'buildMonthly')">×</span></span></div><div style="display:flex;gap:8px;margin-top:7px;"><button class="btn btn-secondary btn-sm" onclick="openEmailPick('monEmails','buildMonthly')">选择邮箱</button></div><div class="fhint" id="monMailHint">请指定接收邮箱。</div></div></div><div class="modal-alert info" style="margin-top:14px;"><span class="icon">ℹ</span><span>每次生成固定产出三份 Excel：<b>每日入金</b>、<b>每日质押增量</b>、<b>每日矿机销售业绩</b>，生成完成后邮件发送给接收人。</span></div><div class="chkbox"><div class="chkbox-t">提交前检查</div><div class="chklist" id="monChecks"></div></div><div class="form-actions"><button class="btn btn-primary" onclick="submitMonthly()">生成月度日报</button><span class="total-count" style="margin-left:auto;">全量月报生成通常需要 3~8 分钟</span></div></div></div></div><div class="page" id="page-staking"><div class="page-header"><div><div class="page-title">质押流水导出</div><div class="page-subtitle">导出领导人 / 工作室伞下所有用户的质押流水 Excel，生成后邮件发送</div></div></div><div class="card"><div class="card-header"><div class="card-title">导出参数</div><div class="seg" id="segStk"><div class="seg-item on" data-v="leader" onclick="setSeg(this,'buildStk')">领导人</div><div class="seg-item" data-v="studio" onclick="setSeg(this,'buildStk')">工作室</div></div></div><div class="card-body"><div class="frow"><div class="fl req">质押时间</div><div class="fc"><div class="rng" id="rng-stk"><span class="rn">质押流水</span><input type="datetime-local" step="1" class="form-input tm" id="stkS" value="2026-08-01T00:00:00" oninput="buildStk()"><span class="tilde">~</span><input type="datetime-local" step="1" class="form-input tm" id="stkE" value="2026-08-31T23:59:59" oninput="buildStk()"></div><div style="display:flex;gap:6px;margin-top:8px;"><button class="btn btn-secondary btn-sm" onclick="quickRange('thisMonth')">本月</button><button class="btn btn-secondary btn-sm" onclick="quickRange('lastMonth')">上月</button><button class="btn btn-secondary btn-sm" onclick="quickRange('last7')">近 7 天</button><button class="btn btn-secondary btn-sm" onclick="quickRange('yesterday')">昨日</button></div><div class="fhint">本页时间为<b>必填</b>，开始与结束都要选择。</div></div></div><div class="frow"><div class="fl">区域类型</div><div class="fc"><label class="opt"><input type="radio" name="stkRegion" class="ck" value="cn" onchange="buildStk()"> 国内</label><label class="opt"><input type="radio" name="stkRegion" class="ck" value="ov" onchange="buildStk()"> 海外</label><label class="opt"><input type="radio" name="stkRegion" class="ck" value="all" checked onchange="buildStk()"> 全部</label><div class="fhint">按国内 / 海外划分报表的数据范围。所选接收邮箱的<b>区域权限</b>必须覆盖此处选择，例如「仅国内」的邮箱不能接收海外或全部区域的报表。</div></div></div><div class="frow"><div class="fl">查询范围</div><div class="fc"><label class="opt"><input type="radio" name="stkScope" class="ck" checked onchange="setScope('stk',0)"> 指定邀请人</label><label class="opt"><input type="radio" name="stkScope" class="ck" id="stkScopeAll" onchange="setScope('stk',1)"> 全部邀请人</label></div></div><div class="frow" id="stkInvWrap"><div class="fl req">邀请人</div><div class="fc"><div id="stkInvList"><div class="inv-row"><input class="form-input iv-n" value="user01" placeholder="自定义名称" oninput="buildStk()"><input class="form-input iv-a" value="0x37cd6c938706ff0491ee0207a7c0e4890abcd68f" placeholder="钱包地址（0x 开头）" oninput="buildStk()"><button class="btn btn-secondary btn-sm" onclick="delInv(this,'buildStk')">删除</button></div></div><div style="display:flex;gap:8px;margin-top:3px;"><button class="btn btn-ghost btn-sm" onclick="addInv('stkInvList','buildStk')">+ 添加一行</button><button class="btn btn-secondary btn-sm" onclick="openInvPick('stkInvList','buildStk','segStk')">从已同步名单选择</button></div></div></div><div class="frow"><div class="fl">接收邮箱</div><div class="fc"><div class="chips" id="stkEmails"><span class="chip" data-v="finance@carypact.com">finance@carypact.com<span class="x" onclick="rmChip(this,'buildStk')">×</span></span></div><div style="display:flex;gap:8px;margin-top:7px;"><button class="btn btn-secondary btn-sm" onclick="openEmailPick('stkEmails','buildStk')">选择邮箱</button></div><div class="fhint" id="stkMailHint">请指定接收邮箱。</div></div></div><div class="chkbox"><div class="chkbox-t">提交前检查</div><div class="chklist" id="stkChecks"></div></div><div class="form-actions"><button class="btn btn-primary" onclick="submitStk()">导出并发送</button><span class="total-count" style="margin-left:auto;">流水量大时耗时较长，建议单次区间不超过 1 个月</span></div></div></div></div><div class="page" id="page-email"><div class="page-header"><div><div class="page-title">发送邮箱管理</div><div class="page-subtitle">报表接收邮箱白名单 · 数据权限（能否查全部）与区域权限（国内 / 海外）双重管控</div></div><div class="filter-actions"><button class="btn btn-primary" onclick="openEmailEdit(null)">+ 新增邮箱</button></div></div><div class="modal-alert"><span class="icon">⚠</span><span><b>两类权限</b>：<b>数据权限</b>决定能否在报表页选择「全部邀请人」；<b>区域权限</b>决定能接收哪个区域的报表 —— 「仅国内」的邮箱只能接收国内报表，「仅海外」只能接收海外报表，选择「全部」区域时要求邮箱区域权限也是「全部」。未加入白名单的邮箱不能接收任何报表。</span></div><div class="stat-grid"><div class="stat-card"><div class="stat-label">白名单邮箱</div><div class="stat-value" id="stEmailTotal">0</div></div><div class="stat-card ok"><div class="stat-label">可查看全部数据</div><div class="stat-value" id="stEmailAll">0</div></div><div class="stat-card warn"><div class="stat-label">区域受限</div><div class="stat-value" id="stEmailRgn">0</div></div><div class="stat-card"><div class="stat-label">已停用</div><div class="stat-value" id="stEmailOff">0</div></div></div><div class="card"><div class="card-header"><div class="card-title">白名单邮箱</div><div class="filter-actions"><span class="total-count">变更即时生效，同时写入操作日志</span></div></div><div class="table-wrapper"><table><thead><tr><th>邮箱</th><th>备注 / 所属</th><th>数据权限</th><th>区域权限</th><th>可接收报表</th><th>状态</th><th>添加人</th><th>添加时间</th><th>操作</th></tr></thead><tbody id="emailTable"></tbody></table></div></div></div></div></div><div class="modal-overlay" id="emailPickModal"><div class="modal wide"><div class="modal-header"><div class="modal-title">选择接收邮箱</div><button class="modal-close" onclick="closeModal('emailPickModal')">×</button></div><div class="modal-body"><div class="modal-alert info"><span class="icon">ℹ</span><span>仅列出<b>状态为启用</b>的白名单邮箱，并标注各自的数据权限与区域权限。</span></div><div class="pick-list" id="emailPickList"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('emailPickModal')">取消</button><button class="btn btn-primary" onclick="applyEmailPick()">确定</button></div></div></div><div class="modal-overlay" id="invPickModal"><div class="modal wide"><div class="modal-header"><div class="modal-title">从已同步名单选择邀请人</div><button class="modal-close" onclick="closeModal('invPickModal')">×</button></div><div class="modal-body"><div class="form-group" style="margin-bottom:12px;"><input class="form-input" id="invPickSearch" placeholder="按名称或钱包地址搜索" oninput="renderInvPick()"></div><div class="pick-list" id="invPickList"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('invPickModal')">取消</button><button class="btn btn-primary" onclick="applyInvPick()">添加所选</button></div></div></div><div class="modal-overlay" id="valModal"><div class="modal large"><div class="modal-header"><div class="modal-title danger">⚠ 无法提交</div><button class="modal-close" onclick="closeModal('valModal')">×</button></div><div class="modal-body"><div class="modal-alert danger"><span class="icon">✕</span><span>以下内容需要先修正，否则报表无法生成。</span></div><div id="valList"></div></div><div class="modal-footer"><button class="btn btn-primary" onclick="closeModal('valModal')">我知道了</button></div></div></div><div class="modal-overlay" id="confirmModal"><div class="modal large"><div class="modal-header"><div class="modal-title">确认提交报表任务</div><button class="modal-close" onclick="closeModal('confirmModal')">×</button></div><div class="modal-body"><div id="confirmSummary"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('confirmModal')">返回修改</button><button class="btn btn-primary" onclick="doSubmit()">确认提交</button></div></div></div><div class="modal-overlay" id="syncModal"><div class="modal"><div class="modal-header"><div class="modal-title">确认同步邀请人名单</div><button class="modal-close" onclick="closeModal('syncModal')">×</button></div><div class="modal-body"><div class="modal-alert info"><span class="icon">ℹ</span><span id="syncMsg"></span></div><div class="modal-info-row"><span class="lbl">数据来源</span><span class="val" id="syncSrc">Google 表格 · 领导人名单</span></div><div class="modal-info-row"><span class="lbl">同步方式</span><span class="val">按钱包地址匹配：已存在则更新名称，不存在则新增</span></div><div class="modal-info-row"><span class="lbl">异常处理</span><span class="val">钱包地址格式不正确的行会被跳过</span></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('syncModal')">取消</button><button class="btn btn-primary" onclick="doSync()">开始同步</button></div></div></div><div class="modal-overlay" id="emailModal"><div class="modal large"><div class="modal-header"><div class="modal-title" id="emailModalTitle">新增白名单邮箱</div><button class="modal-close" onclick="closeModal('emailModal')">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">邮箱地址 <span style="color:#ef4444;">*</span></label><input class="form-input" id="emMail" placeholder="name@example.com"></div><div class="form-group"><label class="form-label">备注 / 所属</label><input class="form-input" id="emNote" placeholder="如：财务组、越南社区对接人"></div><div class="form-grid2"><div class="form-group"><label class="form-label">数据权限 <span style="color:#ef4444;">*</span></label><select class="form-select" id="emScope"><option value="all">可查看全部数据</option><option value="limited">仅可查看指定邀请人</option></select></div><div class="form-group"><label class="form-label">区域权限 <span style="color:#ef4444;">*</span></label><select class="form-select" id="emRgn"><option value="all">全部（国内 + 海外）</option><option value="cn">仅国内</option><option value="ov">仅海外</option></select></div></div><div class="form-group"><label class="form-label">可接收报表</label><div class="perm-grid"><label class="perm-item"><input type="checkbox" class="ck" id="emR1" checked> 领导人报表</label><label class="perm-item"><input type="checkbox" class="ck" id="emR2" checked> 工作室报表</label><label class="perm-item"><input type="checkbox" class="ck" id="emR3" checked> 月度日报</label><label class="perm-item"><input type="checkbox" class="ck" id="emR4" checked> 质押流水</label></div></div><div class="form-group"><label class="form-label">状态</label><select class="form-select" id="emState"><option value="on">启用</option><option value="off">停用</option></select></div><div class="modal-alert info"><span class="icon">ℹ</span><span>保存后即刻生效，并同步出现在各报表页的「选择邮箱」列表中。</span></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('emailModal')">取消</button><button class="btn btn-primary" onclick="saveEmail()">保存</button></div></div></div><div class="toast" id="toast"><span id="toast-msg"></span></div>
+<aside class="sidebar"><div class="logo"><div class="logo-icon">📊</div><div class="logo-text">CA 运营后台<small>报表管理模块</small></div></div><nav class="nav"><div class="nav-group-title">报表管理 · 本次新增</div><div class="nav-item active" data-page="send" onclick="switchPage('send')"><span class="ic">📨</span>报表发送<span class="nav-badge new">NEW</span></div><div class="nav-item" data-page="monthly" onclick="switchPage('monthly')"><span class="ic">🗓</span>月度日报<span class="nav-badge new">NEW</span></div><div class="nav-item" data-page="staking" onclick="switchPage('staking')"><span class="ic">📥</span>质押流水导出<span class="nav-badge new">NEW</span></div><div class="nav-item" data-page="email" onclick="switchPage('email')"><span class="ic">✉️</span>发送邮箱管理<span class="nav-badge new">NEW</span></div><div class="nav-group-title">CA 后台 · 既有模块</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">👤</span>会员管理</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">⛓</span>入金记录</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">🔒</span>质押管理</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">🖥</span>矿机销售</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">💸</span>提币审核</div><div class="nav-item dim" onclick="showToastMsg('既有模块，非本次报表迁移范围')"><span class="ic">📋</span>操作日志</div></nav><div class="sidebar-bottom"><div class="avatar">超</div><div><div class="admin-name">admin</div><div class="admin-role">超级管理员 · 报表全部权限</div></div></div></aside><div class="main"><header class="topbar"><div class="breadcrumb"><span>CA 运营后台</span><span class="breadcrumb-sep">/</span><span>报表管理</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">报表发送</span></div><div class="topbar-right"><span class="session-badge"><span class="s-dot"></span>admin · 报表全部权限</span></div></header><div class="content"><div class="page active" id="page-send"><div class="page-header"><div><div class="page-title">报表发送 · 领导人 / 工作室</div><div class="page-subtitle">选择区域、邀请人与统计范围后提交，系统生成 Excel 并发送到指定邮箱</div></div><div class="filter-actions"><button class="btn btn-secondary" onclick="askSync('leader')">🔄 同步领导人名单</button><button class="btn btn-secondary" onclick="askSync('studio')">🔄 同步工作室名单</button></div></div><div class="card"><div class="card-header"><div class="card-title">报表参数</div><div class="seg" id="segSend"><div class="seg-item on" data-v="leader" onclick="setSeg(this)">领导人报表</div><div class="seg-item" data-v="studio" onclick="setSeg(this)">工作室报表</div></div></div><div class="card-body"><div class="frow"><div class="fl">区域类型</div><div class="fc"><label class="opt"><input type="radio" name="sendRegion" class="ck" value="cn"> 国内</label><label class="opt"><input type="radio" name="sendRegion" class="ck" value="ov"> 海外</label><label class="opt"><input type="radio" name="sendRegion" class="ck" value="all" checked> 全部</label><div class="fhint">按国内 / 海外划分报表的数据范围。所选接收邮箱的<b>区域权限</b>必须覆盖此处选择，例如「仅国内」的邮箱不能接收海外或全部区域的报表。</div></div></div><div class="frow"><div class="fl">查询范围</div><div class="fc"><label class="opt"><input type="radio" name="sendScope" class="ck" checked onchange="setScope('send',0)"> 指定邀请人</label><label class="opt"><input type="radio" name="sendScope" class="ck" id="sendScopeAll" onchange="setScope('send',1)"> 全部邀请人</label><div class="fhint">选择「全部邀请人」时无需逐个填写，但<b>仅数据权限为「可查看全部数据」的邮箱可用</b>。</div></div></div><div class="frow" id="sendInvWrap"><div class="fl req">邀请人</div><div class="fc"><div id="sendInvList"><div class="inv-row"><input class="form-input iv-n" value="user01" placeholder="自定义名称" oninput=""><input class="form-input iv-a" value="0x37cd6c938706ff0491ee0207a7c0e4890abcd68f" placeholder="钱包地址（0x 开头）" oninput=""><button class="btn btn-secondary btn-sm" onclick="delInv(this)">删除</button></div><div class="inv-row"><input class="form-input iv-n" value="user02" placeholder="自定义名称" oninput=""><input class="form-input iv-a" value="0x307a5ce6A4F45E5c6bF76cD45f48b5f73EF0e066" placeholder="钱包地址（0x 开头）" oninput=""><button class="btn btn-secondary btn-sm" onclick="delInv(this)">删除</button></div></div><div style="display:flex;gap:8px;margin-top:3px;"><button class="btn btn-ghost btn-sm" onclick="addInv('sendInvList')">+ 添加一行</button><button class="btn btn-secondary btn-sm" onclick="openInvPick('sendInvList','segSend')">从已同步名单选择</button></div><div class="fhint">「自定义名称」为报表内显示的名称，「钱包地址」为该领导人 / 工作室的钱包地址。</div></div></div><div class="frow"><div class="fl">业务切割</div><div class="fc"><label style="display:flex;align-items:center;gap:9px;font-size:12px;color:#374151;cursor:pointer;"><span class="sw"><input type="checkbox" id="splitSw" checked><i></i></span>按零号线地址切割业务</label><div class="fhint"><b>开启</b>：按后台配置的零号线地址切割业务（默认）。<b>关闭</b>：查出所填地址伞下的全部数据。</div></div></div><div class="frow"><div class="fl">统计时间范围</div><div class="fc"><div class="rng off" id="rng-sendStaking"><label class="opt" style="margin:0;"><input type="checkbox" class="ck" onchange="toggleRng('sendStaking',this)"><span class="rn">质押统计</span></label><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-08-01T00:00:00"><span class="tilde">~</span><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-09-01T00:00:00"></div><div class="rng off" id="rng-sendPerf"><label class="opt" style="margin:0;"><input type="checkbox" class="ck" onchange="toggleRng('sendPerf',this)"><span class="rn">业绩统计</span></label><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-08-01T00:00:00"><span class="tilde">~</span><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-09-01T00:00:00"></div><div class="rng off" id="rng-sendMiner"><label class="opt" style="margin:0;"><input type="checkbox" class="ck" onchange="toggleRng('sendMiner',this)"><span class="rn">矿机销售明细</span></label><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-08-01T00:00:00"><span class="tilde">~</span><input type="datetime-local" step="1" class="form-input tm" disabled value="2026-09-01T00:00:00"></div><div class="fhint">三组区间彼此独立、均为可选；勾选后开始与结束<b>必须同时选择</b>；未勾选则该维度不做筛选（全量）。<br>矿机销售明细<b>包含开始时间、不包含结束时间</b>。</div></div></div><div class="frow"><div class="fl req">接收邮箱</div><div class="fc"><div class="chips" id="sendEmails"><span class="chip" data-v="finance@carypact.com">finance@carypact.com<span class="x" onclick="rmChip(this)">×</span></span></div><div style="display:flex;gap:8px;margin-top:7px;"><button class="btn btn-secondary btn-sm" onclick="openEmailPick('sendEmails')">选择邮箱</button></div><div class="fhint">只能选择「发送邮箱管理」白名单内的邮箱，且其区域权限需覆盖上方所选区域类型。</div></div></div><div class="form-actions"><button class="btn btn-primary" onclick="submitSend()">生成并发送报表</button><button class="btn btn-secondary" onclick="showToastMsg('表单已重置为默认值')">重置</button><span class="total-count" style="margin-left:auto;">提交后系统生成报表并自动发送到所选邮箱</span></div></div></div></div><div class="page" id="page-monthly"><div class="page-header"><div><div class="page-title">月度日报</div><div class="page-subtitle">按月生成「每日入金 / 每日质押增量 / 每日矿机销售业绩」三份 Excel，生成后邮件发送</div></div></div><div class="card"><div class="card-header"><div class="card-title">报表参数</div><div class="seg" id="segMonthly"><div class="seg-item on" data-v="leader" onclick="setSeg(this)">领导人</div><div class="seg-item" data-v="studio" onclick="setSeg(this)">工作室</div></div></div><div class="card-body"><div class="frow"><div class="fl req">月份</div><div class="fc" style="max-width:240px;"><input type="month" class="form-input" id="monMonth" value="2026-08"><div class="fhint">选择要生成的月份。每份报表首个工作表为当月汇总，其后按日期分表。</div></div></div><div class="frow"><div class="fl">区域类型</div><div class="fc"><label class="opt"><input type="radio" name="monRegion" class="ck" value="cn"> 国内</label><label class="opt"><input type="radio" name="monRegion" class="ck" value="ov"> 海外</label><label class="opt"><input type="radio" name="monRegion" class="ck" value="all" checked> 全部</label><div class="fhint">按国内 / 海外划分报表的数据范围。所选接收邮箱的<b>区域权限</b>必须覆盖此处选择，例如「仅国内」的邮箱不能接收海外或全部区域的报表。</div></div></div><div class="frow"><div class="fl">查询范围</div><div class="fc"><label class="opt"><input type="radio" name="monScope" class="ck" checked onchange="setScope('mon',1)"> 全部邀请人</label><label class="opt"><input type="radio" name="monScope" class="ck" id="monScopeSel" onchange="setScope('mon',0)"> 指定邀请人</label><div class="fhint">月度日报默认覆盖全部邀请人。</div></div></div><div class="frow" id="monInvWrap" style="display:none;"><div class="fl req">邀请人</div><div class="fc"><div id="monInvList"><div class="inv-row"><input class="form-input iv-n" value="user01" placeholder="自定义名称" oninput=""><input class="form-input iv-a" value="0x37cd6c938706ff0491ee0207a7c0e4890abcd68f" placeholder="钱包地址（0x 开头）" oninput=""><button class="btn btn-secondary btn-sm" onclick="delInv(this)">删除</button></div></div><div style="display:flex;gap:8px;margin-top:3px;"><button class="btn btn-ghost btn-sm" onclick="addInv('monInvList')">+ 添加一行</button><button class="btn btn-secondary btn-sm" onclick="openInvPick('monInvList','segMonthly')">从已同步名单选择</button></div></div></div><div class="frow"><div class="fl">接收邮箱</div><div class="fc"><div class="chips" id="monEmails"><span class="chip" data-v="finance@carypact.com">finance@carypact.com<span class="x" onclick="rmChip(this)">×</span></span></div><div style="display:flex;gap:8px;margin-top:7px;"><button class="btn btn-secondary btn-sm" onclick="openEmailPick('monEmails')">选择邮箱</button></div><div class="fhint" id="monMailHint">请指定接收邮箱。</div></div></div><div class="modal-alert info" style="margin-top:14px;"><span class="icon">ℹ</span><span>每次生成固定产出三份 Excel：<b>每日入金</b>、<b>每日质押增量</b>、<b>每日矿机销售业绩</b>，生成完成后邮件发送给接收人。</span></div><div class="form-actions"><button class="btn btn-primary" onclick="submitMonthly()">生成月度日报</button><span class="total-count" style="margin-left:auto;">全量月报生成通常需要 3~8 分钟</span></div></div></div></div><div class="page" id="page-staking"><div class="page-header"><div><div class="page-title">质押流水导出</div><div class="page-subtitle">导出领导人 / 工作室伞下所有用户的质押流水 Excel，生成后邮件发送</div></div></div><div class="card"><div class="card-header"><div class="card-title">导出参数</div><div class="seg" id="segStk"><div class="seg-item on" data-v="leader" onclick="setSeg(this)">领导人</div><div class="seg-item" data-v="studio" onclick="setSeg(this)">工作室</div></div></div><div class="card-body"><div class="frow"><div class="fl req">质押时间</div><div class="fc"><div class="rng" id="rng-stk"><span class="rn">质押流水</span><input type="datetime-local" step="1" class="form-input tm" id="stkS" value="2026-08-01T00:00:00"><span class="tilde">~</span><input type="datetime-local" step="1" class="form-input tm" id="stkE" value="2026-08-31T23:59:59"></div><div style="display:flex;gap:6px;margin-top:8px;"><button class="btn btn-secondary btn-sm" onclick="quickRange('thisMonth')">本月</button><button class="btn btn-secondary btn-sm" onclick="quickRange('lastMonth')">上月</button><button class="btn btn-secondary btn-sm" onclick="quickRange('last7')">近 7 天</button><button class="btn btn-secondary btn-sm" onclick="quickRange('yesterday')">昨日</button></div><div class="fhint">本页时间为<b>必填</b>，开始与结束都要选择。</div></div></div><div class="frow"><div class="fl">区域类型</div><div class="fc"><label class="opt"><input type="radio" name="stkRegion" class="ck" value="cn"> 国内</label><label class="opt"><input type="radio" name="stkRegion" class="ck" value="ov"> 海外</label><label class="opt"><input type="radio" name="stkRegion" class="ck" value="all" checked> 全部</label><div class="fhint">按国内 / 海外划分报表的数据范围。所选接收邮箱的<b>区域权限</b>必须覆盖此处选择，例如「仅国内」的邮箱不能接收海外或全部区域的报表。</div></div></div><div class="frow"><div class="fl">查询范围</div><div class="fc"><label class="opt"><input type="radio" name="stkScope" class="ck" checked onchange="setScope('stk',0)"> 指定邀请人</label><label class="opt"><input type="radio" name="stkScope" class="ck" id="stkScopeAll" onchange="setScope('stk',1)"> 全部邀请人</label></div></div><div class="frow" id="stkInvWrap"><div class="fl req">邀请人</div><div class="fc"><div id="stkInvList"><div class="inv-row"><input class="form-input iv-n" value="user01" placeholder="自定义名称" oninput=""><input class="form-input iv-a" value="0x37cd6c938706ff0491ee0207a7c0e4890abcd68f" placeholder="钱包地址（0x 开头）" oninput=""><button class="btn btn-secondary btn-sm" onclick="delInv(this)">删除</button></div></div><div style="display:flex;gap:8px;margin-top:3px;"><button class="btn btn-ghost btn-sm" onclick="addInv('stkInvList')">+ 添加一行</button><button class="btn btn-secondary btn-sm" onclick="openInvPick('stkInvList','segStk')">从已同步名单选择</button></div></div></div><div class="frow"><div class="fl">接收邮箱</div><div class="fc"><div class="chips" id="stkEmails"><span class="chip" data-v="finance@carypact.com">finance@carypact.com<span class="x" onclick="rmChip(this)">×</span></span></div><div style="display:flex;gap:8px;margin-top:7px;"><button class="btn btn-secondary btn-sm" onclick="openEmailPick('stkEmails')">选择邮箱</button></div><div class="fhint" id="stkMailHint">请指定接收邮箱。</div></div></div><div class="form-actions"><button class="btn btn-primary" onclick="submitStk()">导出并发送</button><span class="total-count" style="margin-left:auto;">流水量大时耗时较长，建议单次区间不超过 1 个月</span></div></div></div></div><div class="page" id="page-email"><div class="page-header"><div><div class="page-title">发送邮箱管理</div><div class="page-subtitle">报表接收邮箱白名单 · 数据权限（能否查全部）与区域权限（国内 / 海外）双重管控</div></div><div class="filter-actions"><button class="btn btn-primary" onclick="openEmailEdit(null)">+ 新增邮箱</button></div></div><div class="modal-alert"><span class="icon">⚠</span><span><b>两类权限</b>：<b>数据权限</b>决定能否在报表页选择「全部邀请人」；<b>区域权限</b>决定能接收哪个区域的报表 —— 「仅国内」的邮箱只能接收国内报表，「仅海外」只能接收海外报表，选择「全部」区域时要求邮箱区域权限也是「全部」。未加入白名单的邮箱不能接收任何报表。</span></div><div class="stat-grid"><div class="stat-card"><div class="stat-label">白名单邮箱</div><div class="stat-value" id="stEmailTotal">0</div></div><div class="stat-card ok"><div class="stat-label">可查看全部数据</div><div class="stat-value" id="stEmailAll">0</div></div><div class="stat-card warn"><div class="stat-label">区域受限</div><div class="stat-value" id="stEmailRgn">0</div></div><div class="stat-card"><div class="stat-label">已停用</div><div class="stat-value" id="stEmailOff">0</div></div></div><div class="card"><div class="card-header"><div class="card-title">白名单邮箱</div><div class="filter-actions"><span class="total-count">变更即时生效，同时写入操作日志</span></div></div><div class="table-wrapper"><table><thead><tr><th>邮箱</th><th>备注 / 所属</th><th>数据权限</th><th>区域权限</th><th>可接收报表</th><th>状态</th><th>添加人</th><th>添加时间</th><th>操作</th></tr></thead><tbody id="emailTable"></tbody></table></div></div></div></div></div><div class="modal-overlay" id="emailPickModal"><div class="modal wide"><div class="modal-header"><div class="modal-title">选择接收邮箱</div><button class="modal-close" onclick="closeModal('emailPickModal')">×</button></div><div class="modal-body"><div class="modal-alert info"><span class="icon">ℹ</span><span>仅列出<b>状态为启用</b>的白名单邮箱，并标注各自的数据权限与区域权限。</span></div><div class="pick-list" id="emailPickList"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('emailPickModal')">取消</button><button class="btn btn-primary" onclick="applyEmailPick()">确定</button></div></div></div><div class="modal-overlay" id="invPickModal"><div class="modal wide"><div class="modal-header"><div class="modal-title">从已同步名单选择邀请人</div><button class="modal-close" onclick="closeModal('invPickModal')">×</button></div><div class="modal-body"><div class="form-group" style="margin-bottom:12px;"><input class="form-input" id="invPickSearch" placeholder="按名称或钱包地址搜索" oninput="renderInvPick()"></div><div class="pick-list" id="invPickList"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('invPickModal')">取消</button><button class="btn btn-primary" onclick="applyInvPick()">添加所选</button></div></div></div><div class="modal-overlay" id="confirmModal"><div class="modal large"><div class="modal-header"><div class="modal-title">确认提交报表任务</div><button class="modal-close" onclick="closeModal('confirmModal')">×</button></div><div class="modal-body"><div id="confirmSummary"></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('confirmModal')">返回修改</button><button class="btn btn-primary" onclick="doSubmit()">确认提交</button></div></div></div><div class="modal-overlay" id="syncModal"><div class="modal"><div class="modal-header"><div class="modal-title">确认同步邀请人名单</div><button class="modal-close" onclick="closeModal('syncModal')">×</button></div><div class="modal-body"><div class="modal-alert info"><span class="icon">ℹ</span><span id="syncMsg"></span></div><div class="modal-info-row"><span class="lbl">数据来源</span><span class="val" id="syncSrc">Google 表格 · 领导人名单</span></div><div class="modal-info-row"><span class="lbl">同步方式</span><span class="val">按钱包地址匹配：已存在则更新名称，不存在则新增</span></div><div class="modal-info-row"><span class="lbl">异常处理</span><span class="val">钱包地址格式不正确的行会被跳过</span></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('syncModal')">取消</button><button class="btn btn-primary" onclick="doSync()">开始同步</button></div></div></div><div class="modal-overlay" id="emailModal"><div class="modal large"><div class="modal-header"><div class="modal-title" id="emailModalTitle">新增白名单邮箱</div><button class="modal-close" onclick="closeModal('emailModal')">×</button></div><div class="modal-body"><div class="form-group"><label class="form-label">邮箱地址 <span style="color:#ef4444;">*</span></label><input class="form-input" id="emMail" placeholder="name@example.com"></div><div class="form-group"><label class="form-label">备注 / 所属</label><input class="form-input" id="emNote" placeholder="如：财务组、越南社区对接人"></div><div class="form-grid2"><div class="form-group"><label class="form-label">数据权限 <span style="color:#ef4444;">*</span></label><select class="form-select" id="emScope"><option value="all">可查看全部数据</option><option value="limited">仅可查看指定邀请人</option></select></div><div class="form-group"><label class="form-label">区域权限 <span style="color:#ef4444;">*</span></label><select class="form-select" id="emRgn"><option value="all">全部（国内 + 海外）</option><option value="cn">仅国内</option><option value="ov">仅海外</option></select></div></div><div class="form-group"><label class="form-label">可接收报表</label><div class="perm-grid"><label class="perm-item"><input type="checkbox" class="ck" id="emR1" checked> 领导人报表</label><label class="perm-item"><input type="checkbox" class="ck" id="emR2" checked> 工作室报表</label><label class="perm-item"><input type="checkbox" class="ck" id="emR3" checked> 月度日报</label><label class="perm-item"><input type="checkbox" class="ck" id="emR4" checked> 质押流水</label></div></div><div class="form-group"><label class="form-label">状态</label><select class="form-select" id="emState"><option value="on">启用</option><option value="off">停用</option></select></div><div class="modal-alert info"><span class="icon">ℹ</span><span>保存后即刻生效，并同步出现在各报表页的「选择邮箱」列表中。</span></div></div><div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('emailModal')">取消</button><button class="btn btn-primary" onclick="saveEmail()">保存</button></div></div></div><div class="toast" id="toast"><span id="toast-msg"></span></div>
 <script>
   var TITLES = {"send":"报表发送","monthly":"月度日报","staking":"质押流水导出","email":"发送邮箱管理"};
   function switchPage(page){
@@ -338,17 +329,16 @@
   /* ─────────── 通用 ─────────── */
   function $(id){ return document.getElementById(id); }
   function segVal(id){ var e=$(id).querySelector(".seg-item.on"); return e?e.getAttribute("data-v"):"leader"; }
-  function setSeg(el, cb){
+  function setSeg(el){
     el.parentNode.querySelectorAll(".seg-item").forEach(function(s){ s.classList.remove("on"); });
     el.classList.add("on");
-    if(cb && window[cb]) window[cb]();
   }
   function regionOf(name){
     var el = document.querySelector('input[name="'+name+'"]:checked');
     return el ? el.value : "all";
   }
   function chipVals(id){ var a=[]; $(id).querySelectorAll(".chip").forEach(function(c){ a.push(c.getAttribute("data-v")); }); return a; }
-  function rmChip(el, cb){ var c=el.parentNode; c.parentNode.removeChild(c); if(cb && window[cb]) window[cb](); }
+  function rmChip(el){ var c=el.parentNode; c.parentNode.removeChild(c); }
   function invVals(id){
     var a=[];
     $(id).querySelectorAll(".inv-row").forEach(function(r){
@@ -357,19 +347,17 @@
     });
     return a;
   }
-  function addInv(listId, cb){
+  function addInv(listId){
     var d=document.createElement("div"); d.className="inv-row";
-    d.innerHTML='<input class="form-input iv-n" placeholder="自定义名称" oninput="'+cb+'()">'+
-      '<input class="form-input iv-a" placeholder="钱包地址（0x 开头）" oninput="'+cb+'()">'+
-      '<button class="btn btn-secondary btn-sm" onclick="delInv(this,\''+cb+'\')">删除</button>';
+    d.innerHTML='<input class="form-input iv-n" placeholder="自定义名称">'+
+      '<input class="form-input iv-a" placeholder="钱包地址（0x 开头）">'+
+      '<button class="btn btn-secondary btn-sm" onclick="delInv(this)">删除</button>';
     $(listId).appendChild(d);
-    if(window[cb]) window[cb]();
   }
-  function delInv(btn, cb){
+  function delInv(btn){
     var l=btn.parentNode.parentNode;
     if(l.querySelectorAll(".inv-row").length<=1){ showToastMsg("至少保留一行，可切换为「全部邀请人」"); return; }
     l.removeChild(btn.parentNode);
-    if(window[cb]) window[cb]();
   }
   function tsv(el){
     var v=(el.value||"").replace("T"," ").replace(/\.\d+$/,"");
@@ -380,7 +368,6 @@
     var w=$("rng-"+key), on=cb.checked;
     w.classList.toggle("off", !on);
     w.querySelectorAll(".tm").forEach(function(i){ i.disabled=!on; });
-    if(key.slice(0,4)==="send") buildSend();
   }
   function rngOf(key){
     var w=$("rng-"+key); if(!w) return null;
@@ -388,65 +375,11 @@
     var t=w.querySelectorAll(".tm");
     return {s:tsv(t[0]), e:tsv(t[1])};
   }
-  var ADDR_RE = /^0x[a-fA-F0-9]{40}$/;
-  function renderChecks(id, list){
-    $(id).innerHTML = list.map(function(c){
-      return '<div class="chk '+(c.ok?"ok":"ng")+'"><span class="m">'+(c.ok?"✓":"✕")+'</span><span>'+c.t+'</span></div>';
-    }).join("");
-  }
-  function emailChecks(mails, scopeAll){
-    var out=[], unlisted=[], off=[], limited=[];
-    mails.forEach(function(m){
-      var e=emailOf(m);
-      if(!e){ unlisted.push(m); return; }
-      if(!e.on){ off.push(m); }
-      if(e.scope!=="all"){ limited.push(m); }
-    });
-    out.push({ok:mails.length>0, t: mails.length>0 ? ("已选择 "+mails.length+" 个接收邮箱") : "请至少选择一个接收邮箱"});
-    out.push({ok:unlisted.length===0, t: unlisted.length===0 ? "所选邮箱都在白名单中" : ("不在白名单、无法接收报表："+unlisted.join("、"))});
-    out.push({ok:off.length===0, t: off.length===0 ? "所选邮箱都处于启用状态" : ("邮箱已停用："+off.join("、"))});
-    if(scopeAll){
-      out.push({ok:limited.length===0, t: limited.length===0 ? "所选邮箱可以查看全部数据" : ("以下邮箱无权查看全部数据，请改为指定邀请人："+limited.join("、"))});
-    }
-    return out;
-  }
-  function regionChecks(mails, rgn){
-    var bad=[];
-    mails.forEach(function(m){
-      var e=emailOf(m); if(!e) return;
-      if(e.rgn!=="all" && e.rgn!==rgn) bad.push(m+"（"+RGNTXT[e.rgn]+"）");
-    });
-    return [{ok: bad.length===0,
-      t: bad.length===0 ? ("区域类型「"+RGN[rgn]+"」与所选邮箱的区域权限匹配")
-                        : ("以下邮箱无权接收「"+RGN[rgn]+"」区域的报表："+bad.join("、"))}];
-  }
-  function invChecks(list, scopeAll){
-    if(scopeAll) return [{ok:true, t:"查询范围为全部邀请人"}];
-    var out=[];
-    out.push({ok:list.length>0, t: list.length>0 ? ("已指定 "+list.length+" 个邀请人") : "请至少添加一个邀请人"});
-    var badName=list.filter(function(i){ return !i.name; }).length;
-    var badAddr=list.filter(function(i){ return !ADDR_RE.test(i.address); });
-    out.push({ok:badName===0, t: badName===0 ? "邀请人名称已填写完整" : ("有 "+badName+" 行缺少名称")});
-    out.push({ok:badAddr.length===0, t: badAddr.length===0 ? "钱包地址格式都正确" : ("有 "+badAddr.length+" 行钱包地址格式不正确")});
-    return out;
-  }
-  function rangeCheck(r, label){
-    if(!r) return {ok:true, t:label+"：未启用，不做筛选"};
-    if(!r.s || !r.e) return {ok:false, t:label+"：开始与结束时间都要选择"};
-    if(r.s >= r.e) return {ok:false, t:label+"：开始时间必须早于结束时间"};
-    return {ok:true, t:label+"："+r.s+" ~ "+r.e};
-  }
   function row(k,v){ return '<div class="modal-info-row"><span class="lbl">'+k+'</span><span class="val">'+v+'</span></div>'; }
-  function showVal(bad){
-    $("valList").innerHTML = bad.map(function(b,i){
-      return '<div class="modal-info-row"><span class="lbl">'+(i+1)+'</span><span class="val" style="color:#991b1b;">'+b.t+'</span></div>';
-    }).join("");
-    openModal("valModal");
-  }
   function setScope(pfx, all){
-    if(pfx==="send"){ $("sendInvWrap").style.display = all ? "none" : "flex"; buildSend(); }
-    if(pfx==="mon"){  $("monInvWrap").style.display  = all ? "none" : "flex"; buildMonthly(); }
-    if(pfx==="stk"){  $("stkInvWrap").style.display  = all ? "none" : "flex"; buildStk(); }
+    if(pfx==="send"){ $("sendInvWrap").style.display = all ? "none" : "flex"; }
+    if(pfx==="mon"){  $("monInvWrap").style.display  = all ? "none" : "flex"; }
+    if(pfx==="stk"){  $("stkInvWrap").style.display  = all ? "none" : "flex"; }
   }
 
   /* ─────────── 报表发送 ─────────── */
@@ -460,17 +393,6 @@
       staking: rngOf("sendStaking"), perf: rngOf("sendPerf"), miner: rngOf("sendMiner")
     };
   }
-  function buildSend(){
-    var st=sendState();
-    var c = emailChecks(st.emails, st.all)
-      .concat(regionChecks(st.emails, st.rgn))
-      .concat(invChecks(st.inviters, st.all));
-    c.push(rangeCheck(st.staking, "质押统计"));
-    c.push(rangeCheck(st.perf, "业绩统计"));
-    c.push(rangeCheck(st.miner, "矿机销售明细"));
-    renderChecks("sendChecks", c);
-    return c;
-  }
   var PENDING = null;
   function tfText(st){
     var a=[];
@@ -480,8 +402,7 @@
     return a.length ? a.join("<br>") : "未启用，按全量统计";
   }
   function submitSend(){
-    var st=sendState(), c=buildSend(), bad=c.filter(function(x){ return !x.ok; });
-    if(bad.length){ showVal(bad); return; }
+    var st=sendState();
     PENDING = {kind:"send"};
     $("confirmSummary").innerHTML =
       row("报表类型", st.studio?"工作室报表":"领导人报表") +
@@ -502,18 +423,8 @@
       emails: chipVals("monEmails")
     };
   }
-  function buildMonthly(){
-    var st=monState(), c=[];
-    c.push({ok:!!st.month, t: st.month ? ("生成月份 "+st.month) : "请选择要生成的月份"});
-    c = c.concat(emailChecks(st.emails, st.all))
-         .concat(regionChecks(st.emails, st.rgn))
-         .concat(invChecks(st.inviters, st.all));
-    renderChecks("monChecks", c);
-    return c;
-  }
   function submitMonthly(){
-    var st=monState(), c=buildMonthly(), bad=c.filter(function(x){ return !x.ok; });
-    if(bad.length){ showVal(bad); return; }
+    var st=monState();
     PENDING = {kind:"monthly"};
     $("confirmSummary").innerHTML =
       row("月份", st.month) + row("报表对象", st.studio?"工作室":"领导人") + row("区域类型", RGN[st.rgn]) +
@@ -533,16 +444,6 @@
       emails: chipVals("stkEmails")
     };
   }
-  function buildStk(){
-    var st=stkState(), c=[];
-    if(!st.s || !st.e){ c.push({ok:false, t:"质押时间为必填，开始与结束都要选择"}); }
-    else { c.push(rangeCheck({s:st.s, e:st.e}, "质押时间")); }
-    c = c.concat(emailChecks(st.emails, st.all))
-         .concat(regionChecks(st.emails, st.rgn))
-         .concat(invChecks(st.inviters, st.all));
-    renderChecks("stkChecks", c);
-    return c;
-  }
   function quickRange(k){
     var m = {
       thisMonth: ["2026-09-01T00:00:00","2026-09-04T23:59:59"],
@@ -550,11 +451,10 @@
       last7:     ["2026-08-29T00:00:00","2026-09-04T23:59:59"],
       yesterday: ["2026-09-03T00:00:00","2026-09-03T23:59:59"]
     }[k];
-    $("stkS").value=m[0]; $("stkE").value=m[1]; buildStk();
+    $("stkS").value=m[0]; $("stkE").value=m[1];
   }
   function submitStk(){
-    var st=stkState(), c=buildStk(), bad=c.filter(function(x){ return !x.ok; });
-    if(bad.length){ showVal(bad); return; }
+    var st=stkState();
     PENDING = {kind:"staking"};
     $("confirmSummary").innerHTML =
       row("质押时间范围", st.s+" ~ "+st.e) + row("报表对象", st.studio?"工作室":"领导人") +
@@ -575,14 +475,14 @@
   }
 
   /* ─────────── 邮箱选择 ─────────── */
-  var EM_TARGET = null, EM_CB = null;
+  var EM_TARGET = null;
   function rgnBadge(r){
     return r==="all" ? '<span class="badge badge-info">全部区域</span>'
          : r==="cn"  ? '<span class="badge badge-usdt">仅国内</span>'
                      : '<span class="badge badge-special">仅海外</span>';
   }
-  function openEmailPick(target, cb){
-    EM_TARGET = target; EM_CB = cb;
+  function openEmailPick(target){
+    EM_TARGET = target;
     var cur = chipVals(target);
     $("emailPickList").innerHTML = EMAILS.filter(function(e){ return e.on; }).map(function(e){
       return '<label class="pick-item"><input type="checkbox" class="ck" value="'+e.mail+'"'+(cur.indexOf(e.mail)>=0?" checked":"")+'>'+
@@ -599,17 +499,16 @@
       ? sel.map(function(m){
           var e=emailOf(m);
           return '<span class="chip'+(e && e.scope!=="all" ? " limited":"")+'" data-v="'+m+'">'+m+
-                 '<span class="x" onclick="rmChip(this,\''+EM_CB+'\')">×</span></span>';
+                 '<span class="x" onclick="rmChip(this)">×</span></span>';
         }).join("")
       : '<span class="ph">未选择邮箱</span>';
     closeModal("emailPickModal");
-    if(EM_CB && window[EM_CB]) window[EM_CB]();
   }
 
   /* ─────────── 邀请人选择 ─────────── */
-  var IV_TARGET = null, IV_CB = null, IV_TYPE = "leader";
-  function openInvPick(target, cb, segId){
-    IV_TARGET = target; IV_CB = cb; IV_TYPE = segVal(segId);
+  var IV_TARGET = null, IV_TYPE = "leader";
+  function openInvPick(target, segId){
+    IV_TARGET = target; IV_TYPE = segVal(segId);
     $("invPickSearch").value = "";
     renderInvPick();
     openModal("invPickModal");
@@ -640,14 +539,13 @@
     picks.forEach(function(p){
       if(exist.indexOf(p.a.toLowerCase())>=0) return;
       var d=document.createElement("div"); d.className="inv-row";
-      d.innerHTML='<input class="form-input iv-n" value="'+p.n+'" oninput="'+IV_CB+'()">'+
-        '<input class="form-input iv-a" value="'+p.a+'" oninput="'+IV_CB+'()">'+
-        '<button class="btn btn-secondary btn-sm" onclick="delInv(this,\''+IV_CB+'\')">删除</button>';
+      d.innerHTML='<input class="form-input iv-n" value="'+p.n+'">'+
+        '<input class="form-input iv-a" value="'+p.a+'">'+
+        '<button class="btn btn-secondary btn-sm" onclick="delInv(this)">删除</button>';
       list.appendChild(d); added++;
     });
     closeModal("invPickModal");
     showToastMsg("已添加 "+added+" 个邀请人" + (added<picks.length ? "（跳过 "+(picks.length-added)+" 个重复地址）" : ""));
-    if(IV_CB && window[IV_CB]) window[IV_CB]();
   }
 
   /* ─────────── 名单同步（两个按钮，位于报表发送页） ─────────── */
@@ -721,25 +619,23 @@
     var obj = {mail:m, note:$("emNote").value.trim()||"—", scope:$("emScope").value, rgn:$("emRgn").value,
                rpt:rpt, on:$("emState").value==="on", by:"admin", at:"2026-09-04 15:31:02"};
     if(EM_EDIT===null){ EMAILS.push(obj); } else { obj.by=EMAILS[EM_EDIT].by; obj.at=EMAILS[EM_EDIT].at; EMAILS[EM_EDIT]=obj; }
-    closeModal("emailModal"); renderEmails(); refreshAll();
+    closeModal("emailModal"); renderEmails();
     showToastMsg("白名单邮箱已保存：" + m);
   }
   function toggleEmail(idx){
     EMAILS[idx].on = !EMAILS[idx].on;
-    renderEmails(); refreshAll();
+    renderEmails();
     showToastMsg(EMAILS[idx].mail + " 已" + (EMAILS[idx].on?"启用":"停用"));
   }
   function delEmail(idx){
     var m = EMAILS[idx].mail;
     EMAILS.splice(idx,1);
-    renderEmails(); refreshAll();
+    renderEmails();
     showToastMsg("已从白名单移除：" + m);
   }
-  function refreshAll(){ buildSend(); buildMonthly(); buildStk(); }
 
   renderEmails();
   $("monInvWrap").style.display = "none";
-  refreshAll();
 </script>
 </body>
 </html>
