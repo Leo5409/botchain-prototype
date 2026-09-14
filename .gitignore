@@ -2,3 +2,10 @@
 *.jsonl
 memory/
 tasks/
+
+# PRD / 方案 / 需求类文档只在本地维护，不进 git（仓库公开，内含内部业务规则）
+*PRD.md
+*方案.md
+*需求.md
+*设计.md
+*_多语言文案.md
