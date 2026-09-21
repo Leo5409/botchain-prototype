@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CA 运营后台 · 算力挖矿管理 / 用户算力业绩导入</title>
+<style>
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif; background:#f0f2f5; color:#303133; font-size:13px; display:flex; height:100vh; overflow:hidden; }
+  :root{ --blue:#409eff; --green:#67c23a; --red:#f56c6c; --orange:#e6a23c;
+         --bd:#ebeef5; --bd2:#dcdfe6; --t1:#303133; --t2:#606266; --t3:#909399; }
+
+  /* ── 侧边栏 ── */
+  .sidebar { width:238px; background:#304156; flex-shrink:0; display:flex; flex-direction:column; }
+  .nav { flex:1; overflow-y:auto; padding:6px 0 20px; }
+  .nav::-webkit-scrollbar { width:0; }
+  .nav-item { display:flex; align-items:center; gap:10px; padding:11px 20px; color:#bfcbd9; font-size:13.5px; cursor:pointer; }
+  .nav-item:hover { background:#263445; color:#fff; }
+  .nav-item .ic { width:15px; text-align:center; flex-shrink:0; font-size:12.5px; }
+  .nav-item .ar { margin-left:auto; font-size:10px; opacity:.6; }
+  .nav-item.open { color:#fff; }
+  .sub { background:#1f2d3d; }
+  .sub .nav-item { padding-left:48px; font-size:13px; }
+  .sub .nav-item.active { background:var(--blue); color:#fff; }
+
+  /* ── 主区 ── */
+  .main { flex:1; display:flex; flex-direction:column; min-width:0; }
+  .topbar { height:50px; background:#fff; display:flex; align-items:center; padding:0 18px; gap:14px; flex-shrink:0; box-shadow:0 1px 4px rgba(0,21,41,.08); z-index:2; }
+  .burger { font-size:18px; color:#606266; cursor:pointer; }
+  .crumb { font-size:13.5px; color:var(--t3); } .crumb b { color:var(--t1); font-weight:600; }
+  .crumb .sp { margin:0 7px; color:#c0c4cc; }
+  .top-r { margin-left:auto; display:flex; align-items:center; gap:15px; color:#5a5e66; font-size:15px; }
+  .top-r .who { font-size:13.5px; color:#606266; }
+  .avatar { width:28px; height:28px; border-radius:50%; background:linear-gradient(135deg,#ff9a44,#fc6076); }
+  .tabbar { height:40px; background:#fff; border-top:1px solid var(--bd); border-bottom:1px solid var(--bd); display:flex; align-items:center; gap:6px; padding:0 14px; flex-shrink:0; overflow-x:auto; }
+  .tabbar::-webkit-scrollbar { height:0; }
+  .tab { display:flex; align-items:center; gap:7px; height:26px; padding:0 10px; border:1px solid var(--bd2); border-radius:3px; font-size:12px; color:#495060; white-space:nowrap; cursor:pointer; background:#fff; }
+  .tab .dot { width:7px; height:7px; border-radius:50%; background:#c0c4cc; }
+  .tab .x { color:#c0c4cc; font-size:12px; }
+  .tab.on { background:var(--blue); border-color:var(--blue); color:#fff; }
+  .tab.on .dot { background:#fff; } .tab.on .x { color:rgba(255,255,255,.75); }
+  .wrap { flex:1; overflow-y:auto; padding:14px; }
+
+  /* ── 卡片 ── */
+  .card { background:#fff; border-radius:4px; box-shadow:0 1px 4px rgba(0,21,41,.06); margin-bottom:14px; }
+  .card-h { display:flex; align-items:center; gap:10px; padding:15px 20px; border-bottom:1px solid var(--bd); }
+  .card-t { font-size:15px; font-weight:600; color:var(--t1); }
+  .card-t .sub2 { font-size:12px; color:var(--t3); font-weight:400; margin-left:9px; }
+  .card-h .right { margin-left:auto; display:flex; gap:9px; align-items:center; }
+  .card-b { padding:20px; }
+
+  /* ── 按钮 ── */
+  .btn { height:32px; padding:0 15px; border-radius:4px; border:1px solid var(--bd2); background:#fff; color:var(--t2); font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:6px; }
+  .btn:hover { color:var(--blue); border-color:#c6e2ff; background:#ecf5ff; }
+  .btn.pri { background:var(--blue); border-color:var(--blue); color:#fff; } .btn.pri:hover { background:#66b1ff; border-color:#66b1ff; color:#fff; }
+  .btn.suc { background:var(--green); border-color:var(--green); color:#fff; } .btn.suc:hover { background:#85ce61; border-color:#85ce61; color:#fff; }
+  .btn.sm { height:28px; padding:0 11px; font-size:12px; }
+  .btn.off { background:#f5f7fa; border-color:#e4e7ed; color:#c0c4cc; cursor:not-allowed; pointer-events:none; }
+
+  /* ── 步骤条 ── */
+  .steps { display:flex; align-items:flex-start; padding:4px 0 22px; }
+  .stp { flex:1; position:relative; text-align:center; }
+  .stp:not(:last-child):after { content:""; position:absolute; top:13px; left:calc(50% + 18px); right:calc(-50% + 18px); height:2px; background:var(--bd2); }
+  .stp.done:not(:last-child):after { background:var(--blue); }
+  .stp .n { width:26px; height:26px; border-radius:50%; border:2px solid var(--bd2); color:var(--t3); font-size:12px; font-weight:600;
+            display:flex; align-items:center; justify-content:center; margin:0 auto; background:#fff; position:relative; z-index:1; }
+  .stp.done .n, .stp.cur .n { border-color:var(--blue); color:var(--blue); }
+  .stp.cur .n { background:var(--blue); color:#fff; }
+  .stp .tt2 { font-size:13px; color:var(--t3); margin-top:8px; }
+  .stp.done .tt2, .stp.cur .tt2 { color:var(--t1); font-weight:600; }
+
+  /* ── 上传 ── */
+  .drop { border:1px dashed var(--bd2); border-radius:6px; background:#fafbfc; padding:34px 20px; text-align:center; cursor:pointer; }
+  .drop:hover { border-color:var(--blue); background:#f5faff; }
+  .drop .di { font-size:42px; color:#c0c4cc; line-height:1; }
+  .drop .dt { font-size:14px; color:var(--t2); margin-top:12px; }
+  .drop .dt b { color:var(--blue); }
+  .drop .ds { font-size:12px; color:var(--t3); margin-top:8px; }
+  .filebar { display:flex; align-items:center; gap:11px; border:1px solid var(--bd); border-radius:4px; padding:11px 14px; background:#fafbfc; }
+  .filebar .fi { width:30px; height:30px; border-radius:4px; background:#e8f4ea; color:var(--green); display:flex; align-items:center; justify-content:center; font-size:15px; flex-shrink:0; }
+  .filebar .fn2 { font-size:13.5px; color:var(--t1); font-weight:500; }
+  .filebar .fs2 { font-size:12px; color:var(--t3); margin-top:3px; }
+  .filebar .fx { margin-left:auto; color:var(--t3); font-size:13px; cursor:pointer; }
+  .filebar .fx:hover { color:var(--red); }
+  .prog { height:6px; background:#ebeef5; border-radius:3px; overflow:hidden; margin-top:12px; }
+  .prog > i { display:block; height:100%; background:var(--blue); transition:width .3s; }
+
+  /* ── 表格 ── */
+  table.tb { width:100%; border-collapse:collapse; font-size:13px; }
+  table.tb th { background:#fafafa; color:#515a6e; font-weight:600; padding:11px 12px; text-align:left; border-bottom:1px solid var(--bd); white-space:nowrap; }
+  table.tb td { padding:11px 12px; border-bottom:1px solid var(--bd); color:var(--t2); }
+  table.tb tr:last-child td { border-bottom:none; }
+  table.tb tr:hover td { background:#f5f7fa; }
+  table.tb td.mono, table.tb th.mono { font-family:ui-monospace,Menlo,Consolas,monospace; }
+  table.tb .r { text-align:right; } table.tb .c { text-align:center; }
+  .req { color:var(--red); font-weight:600; }
+  .opt2 { color:var(--t3); }
+
+  /* ── 统计 ── */
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  .st { border:1px solid var(--bd); border-radius:4px; padding:18px; text-align:center; }
+  .st .sv { font-size:26px; font-weight:700; color:var(--t1); }
+  .st .sl { font-size:12.5px; color:var(--t3); margin-top:7px; }
+  .st.ok .sv { color:var(--green); } .st.bad .sv { color:var(--red); }
+
+  /* ── 提示条 ── */
+  .alert { display:flex; gap:9px; border-radius:4px; padding:11px 14px; font-size:13px; line-height:1.7; }
+  .alert.info { background:#f4f4f5; color:#909399; }
+  .alert.ok { background:#f0f9eb; color:#67c23a; }
+  .alert.warn { background:#fdf6ec; color:#e6a23c; }
+  .alert.err { background:#fef0f0; color:#f56c6c; }
+  .alert b { color:inherit; }
+  .rules { font-size:13px; color:var(--t2); line-height:2.1; }
+  .rules b { color:var(--t1); }
+  .hint { font-size:12px; color:var(--t3); margin-top:9px; line-height:1.8; }
+
+  /* ── 演示切换 ── */
+  .demo { display:flex; align-items:center; gap:8px; background:#fff; border:1px solid var(--bd); border-radius:4px; padding:9px 13px; margin-bottom:14px; font-size:12.5px; color:var(--t3); }
+  .dbtn { height:26px; padding:0 11px; border-radius:4px; border:1px solid var(--bd2); background:#fff; color:var(--t2); font-size:12px; cursor:pointer; }
+  .dbtn.on { background:var(--blue); border-color:var(--blue); color:#fff; }
+
+  /* ── 弹框 / toast ── */
+  .mask { position:fixed; inset:0; background:rgba(0,0,0,.45); display:none; align-items:center; justify-content:center; z-index:50; }
+  .mask.show { display:flex; }
+  .modal { width:460px; background:#fff; border-radius:4px; overflow:hidden; box-shadow:0 8px 30px rgba(0,0,0,.2); }
+  .modal-h { padding:17px 20px 12px; font-size:16px; font-weight:600; color:var(--t1); display:flex; align-items:center; gap:9px; }
+  .modal-h .x { margin-left:auto; color:#c0c4cc; cursor:pointer; font-size:15px; font-weight:400; }
+  .modal-b { padding:4px 20px 18px; font-size:13.5px; color:var(--t2); line-height:1.85; }
+  .modal-f { padding:0 20px 18px; display:flex; justify-content:flex-end; gap:10px; }
+  .kv2 { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px dashed var(--bd); font-size:13px; }
+  .kv2:last-child { border-bottom:none; }
+  .kv2 .k { color:var(--t3); } .kv2 .v { color:var(--t1); font-weight:500; }
+  .toast { position:fixed; top:20px; left:50%; transform:translateX(-50%) translateY(-16px); background:#fff; border:1px solid var(--bd);
+           border-radius:4px; padding:11px 18px; font-size:13.5px; color:var(--t2); box-shadow:0 4px 14px rgba(0,0,0,.12); z-index:99; opacity:0; transition:all .25s; }
+  .toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+  .toast.ok { background:#f0f9eb; border-color:#e1f3d8; color:#67c23a; }
+  .toast.err { background:#fef0f0; border-color:#fde2e2; color:#f56c6c; }
+  .toast.warn { background:#fdf6ec; border-color:#faecd8; color:#e6a23c; }
+  .hide { display:none !important; }
+</style>
+</head>
+<body><div class="sidebar"><div class="nav"><div class="nav-item"><span class="ic">🏠</span><span>首页</span></div><div class="nav-item"><span class="ic">👥</span><span>系统管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">👤</span><span>会员管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">📁</span><span>内容管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">📋</span><span>提取管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">🔗</span><span>推荐管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">💳</span><span>兑换转账</span><span class="ar">⌄</span></div><div class="nav-item open"><span class="ic">📗</span><span>算力挖矿管理</span><span class="ar">⌃</span></div><div class="sub"><div class="nav-item" onclick="showT('用户入金记录（现有页面）')"><span>用户入金记录</span></div><div class="nav-item active"><span>用户算力业绩导入</span></div></div><div class="nav-item"><span class="ic">🧩</span><span>协议PoS挖矿管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">📄</span><span>收益记录</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">⚙</span><span>参数管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">🔷</span><span>节点管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">🔒</span><span>风控管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">👪</span><span>用户关系管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">🛒</span><span>矿机预售管理</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">💼</span><span>结算发放</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">🖥</span><span>矿机运营</span><span class="ar">⌄</span></div><div class="nav-item"><span class="ic">📊</span><span>报表管理</span><span class="ar">⌄</span></div></div></div><div class="main"><div class="topbar"><span class="burger">☰</span><span class="crumb">首页<span class="sp">/</span>算力挖矿管理<span class="sp">/</span><b>用户算力业绩导入</b></span><span class="top-r"><span>⛶</span><span>🔒</span><span>🎨</span><span class="who">root ⌄</span><span class="avatar"></span></span></div><div class="tabbar"><span class="tab"><span class="dot"></span>公告管理<span class="x">✕</span></span><span class="tab"><span class="dot"></span>编辑新闻<span class="x">✕</span></span><span class="tab"><span class="dot"></span>会员详情<span class="x">✕</span></span><span class="tab"><span class="dot"></span>矿机批次发售<span class="x">✕</span></span><span class="tab"><span class="dot"></span>佣金发放审核<span class="x">✕</span></span><span class="tab"><span class="dot"></span>用户佣金查询<span class="x">✕</span></span><span class="tab"><span class="dot"></span>矿机转移记录<span class="x">✕</span></span><span class="tab"><span class="dot"></span>用户入金记录<span class="x">✕</span></span><span class="tab on"><span class="dot"></span>用户算力业绩导入<span class="x">✕</span></span></div><div class="wrap"><div class="demo"><span>演示场景：</span><span class="dbtn on" id="d-ok"   onclick="setDemo('ok')">全部成功</span><span class="dbtn"    id="d-part" onclick="setDemo('part')">部分失败</span><span class="dbtn"    id="d-auth" onclick="setDemo('auth')">登录失效</span><span class="dbtn"    id="d-head" onclick="setDemo('head')">表头不符</span><span style="margin-left:auto;">选择场景后点「开始导入」查看对应返回</span></div><div class="card"><div class="card-h"><span class="card-t">导入用户算力与业绩<span class="sub2">POST /member/power-performance/import · multipart/form-data · 权限 member:update</span></span><span class="right"><button class="btn" onclick="downloadTpl()">⬇ 下载导入模板</button></span></div><div class="card-b"><div class="steps"><div class="stp cur" id="stp1"><div class="n">1</div><div class="tt2">下载模板</div></div><div class="stp" id="stp2"><div class="n">2</div><div class="tt2">填写数据</div></div><div class="stp" id="stp3"><div class="n">3</div><div class="tt2">上传导入</div></div><div class="stp" id="stp4"><div class="n">4</div><div class="tt2">查看结果</div></div></div><div id="dropBox" class="drop" onclick="pickFile()"><div class="di">⬆</div><div class="dt">将文件拖到此处，或<b>点击选择文件</b></div><div class="ds">仅支持 .xlsx / .xls，表头必须与模板完全一致；上传字段名固定为 <code>file</code></div></div><div id="fileBox" class="hide"><div class="filebar"><span class="fi">📄</span><div><div class="fn2" id="fName">用户算力业绩导入模板.xlsx</div><div class="fs2" id="fSize">18.4 KB · 12 行数据（不含表头）</div></div><span class="fx" onclick="clearFile()">移除</span></div><div class="prog hide" id="progBox"><i id="progBar" style="width:0%;"></i></div><div class="hint" id="progTxt"></div></div><div style="margin-top:16px;display:flex;gap:10px;"><button class="btn pri off" id="btnImport" onclick="openConfirm()">开始导入</button><button class="btn" onclick="clearFile()">重置</button></div><div class="alert warn" style="margin-top:16px;"><span>⚠</span><span>文件中<b>每一行都会立即生效</b>，且单行失败不回滚其他行。重新上传前请先移除已成功处理的行，避免<b>重复加减</b>。</span></div></div></div><div class="card hide" id="resCard"><div class="card-h"><span class="card-t">导入结果</span><span class="right" id="resActions"></span></div><div class="card-b" id="resBody"></div></div><div class="card"><div class="card-h"><span class="card-t">模板与字段说明<span class="sub2">GET /member/power-performance/import/template · 工作表名「用户算力业绩」</span></span></div><div class="card-b" style="padding:0;"><table class="tb"><tr><th style="width:56px;" class="c">列</th><th style="width:150px;">表头</th><th style="width:70px;" class="c">必填</th><th>说明</th></tr><tr><td class="c mono">A</td><td><b style="color:#303133;">用户地址</b></td><td class="c"><span class="req">是</span></td><td>系统中已存在的用户钱包地址，匹配时<b>不区分大小写</b></td></tr><tr><td class="c mono">B</td><td><b style="color:#303133;">用户算力</b></td><td class="c"><span class="req">是</span></td><td>算力增量，可填<b>正数、0 或负数</b>；写入 <code>member.total_power_amount</code></td></tr><tr><td class="c mono">C</td><td><b style="color:#303133;">用户业绩</b></td><td class="c"><span class="req">是</span></td><td>业绩增量，可填<b>正数、0 或负数</b>；写入 <code>member.total_lock_usdt_amount</code></td></tr><tr><td class="c mono">D</td><td><b style="color:#303133;">是否产生流水</b></td><td class="c"><span class="opt2">否</span></td><td><code>true</code> / <code>false</code>；<b>为空时默认 true</b></td></tr></table></div></div><div class="card"><div class="card-h"><span class="card-t">导入处理规则</span></div><div class="card-b"><div class="rules">1、<b>空行自动跳过</b>，不计入总行数。<br>2、每行<b>独立处理</b>，单行失败不会回滚已成功的其他行；行号按 Excel 实际行号计算，<b>数据从第 2 行开始</b>。<br>3、导入负数时，后端校验调整后的算力与业绩<b>不能小于 0</b>；算力或业绩任一扣减不足，<b>该行失败且两个字段均不变更</b>。<br>4、同一用户的更新采用<b>数据库行锁</b>，避免并发导入造成超额扣减。<br>5、「是否产生流水」为空或 <code>true</code> 时新增一条 <code>transfer_history</code>；填 <code>false</code> 时仅更新会员字段。<br>6、流水写入与会员字段更新处于<b>同一事务</b>，流水写入失败时该行会员字段一并回滚。</div><div style="margin-top:18px;font-size:13px;font-weight:600;color:#303133;">流水（transfer_history）写入字段</div><table class="tb" style="margin-top:10px;border:1px solid var(--bd);"><tr><th style="width:200px;">字段</th><th>写入值</th></tr><tr><td class="mono">type</td><td>31</td></tr><tr><td class="mono">to_uid</td><td>目标用户 ID</td></tr><tr><td class="mono">to_address</td><td>目标用户地址</td></tr><tr><td class="mono">coin</td><td>USDT</td></tr><tr><td class="mono">amount</td><td>本行用户业绩增量</td></tr><tr><td class="mono">practical_amount</td><td>本行用户算力增量</td></tr><tr><td class="mono">fee</td><td>0</td></tr><tr><td class="mono">status</td><td>1</td></tr><tr><td class="mono">remark</td><td>当前 admin 用户名 + 手动导入算力/业绩与对应数值</td></tr></table><div class="alert info" style="margin-top:16px;"><span>ⓘ</span><span>接口文档<b>未提供导入历史 / 任务记录查询接口</b>，本页因此不设「导入记录」列表；每次导入的结果仅在本次响应中展示，离开页面后不再保留。</span></div></div></div></div></div><div class="mask" id="mConfirm"><div class="modal"><div class="modal-h"><span style="color:var(--orange);">⚠</span>确认导入<span class="x" onclick="closeM('mConfirm')">✕</span></div><div class="modal-b"><div class="kv2"><span class="k">文件</span><span class="v" id="cmFile">用户算力业绩导入模板.xlsx</span></div><div class="kv2"><span class="k">数据行数</span><span class="v">12 行（不含表头，空行自动跳过）</span></div><div class="kv2"><span class="k">接口</span><span class="v">POST /member/power-performance/import</span></div><div style="margin-top:13px;color:#f56c6c;">导入后<b>每行立即生效且无法撤销</b>，请确认文件内容无误。</div></div><div class="modal-f"><button class="btn" onclick="closeM('mConfirm')">取消</button><button class="btn pri" onclick="runImport()">确认导入</button></div></div></div><div class="toast" id="toast"></div><script>
+  var ERRS = ['第 3 行：用户地址不存在', '第 5 行：用户自身算力不足，无法扣减 100', '第 8 行：用户业绩不足，无法扣减 50', '第 11 行：用户算力必须为数字'];
+
+  function $(id){ return document.getElementById(id); }
+  var DEMO = "ok", picked = false, tOut = null;
+
+  function showT(msg, kind){
+    var t = $("toast");
+    t.className = "toast show" + (kind ? " " + kind : "");
+    t.textContent = msg;
+    if(tOut){ clearTimeout(tOut); }
+    tOut = setTimeout(function(){ t.className = "toast" + (kind ? " " + kind : ""); }, 2200);
+  }
+  function openM(id){ $(id).classList.add("show"); }
+  function closeM(id){ $(id).classList.remove("show"); }
+
+  function setDemo(k){
+    DEMO = k;
+    ["ok","part","auth","head"].forEach(function(x){
+      $("d-" + x).className = (x === k) ? "dbtn on" : "dbtn";
+    });
+  }
+  function downloadTpl(){ showT("已下载「用户算力业绩导入模板.xlsx」", "ok"); setStep(2); }
+
+  function setStep(n){
+    for(var i = 1; i <= 4; i++){
+      var e = $("stp" + i);
+      e.className = "stp" + (i < n ? " done" : (i === n ? " cur" : ""));
+    }
+  }
+  function pickFile(){
+    picked = true;
+    $("dropBox").classList.add("hide");
+    $("fileBox").classList.remove("hide");
+    $("btnImport").className = "btn pri";
+    $("resCard").classList.add("hide");
+    setStep(3);
+  }
+  function clearFile(){
+    picked = false;
+    $("dropBox").classList.remove("hide");
+    $("fileBox").classList.add("hide");
+    $("btnImport").className = "btn pri off";
+    $("progBox").classList.add("hide");
+    $("progBar").style.width = "0%";
+    $("progTxt").textContent = "";
+    $("resCard").classList.add("hide");
+    setStep(1);
+  }
+  function openConfirm(){ if(!picked) return; $("cmFile").textContent = $("fName").textContent; openM("mConfirm"); }
+
+  function runImport(){
+    closeM("mConfirm");
+    $("progBox").classList.remove("hide");
+    $("progBar").style.width = "0%";
+    $("btnImport").className = "btn pri off";
+    var p = 0;
+    var timer = setInterval(function(){
+      p += 20; if(p > 100){ p = 100; }
+      $("progBar").style.width = p + "%";
+      $("progTxt").textContent = p < 100 ? ("上传中 " + p + "%") : "上传完成，后端处理中…";
+      if(p >= 100){ clearInterval(timer); setTimeout(renderResult, 400); }
+    }, 160);
+  }
+
+  function renderResult(){
+    $("btnImport").className = "btn pri";
+    $("progTxt").textContent = "";
+    $("progBox").classList.add("hide");
+    setStep(4);
+    var card = $("resCard"), b = $("resBody"), a = $("resActions");
+    card.classList.remove("hide");
+    a.innerHTML = "";
+
+    if(DEMO === "auth"){
+      b.innerHTML = '<div class="alert err"><span>✕</span><span><b>请求失败（code 500）</b>：请重新登录<br>'
+        + 'Token 已失效，本次<b>未提交任何数据</b>，重新登录后可再次导入。</span></div>';
+      showT("请重新登录", "err"); return;
+    }
+    if(DEMO === "head"){
+      b.innerHTML = '<div class="alert err"><span>✕</span><span><b>请求失败（code ≠ 0）</b>：表头与模板不一致<br>'
+        + '第一行表头必须严格为：<b>用户地址、用户算力、用户业绩、是否产生流水</b>。本次<b>未写入任何数据</b>。</span></div>'
+        + '<div style="margin-top:14px;"><button class="btn" onclick="downloadTpl()">⬇ 重新下载模板</button></div>';
+      showT("表头与模板不一致", "err"); return;
+    }
+
+    var total, ok, fail, errs, msg;
+    if(DEMO === "ok"){ total = 12; ok = 12; fail = 0; errs = []; msg = "导入成功，共导入 12 条记录"; }
+    else { total = 12; ok = 8; fail = 4; errs = ERRS; msg = "导入完成，成功 8 条，失败 4 条"; }
+
+    var h = '<div class="alert ' + (fail ? "warn" : "ok") + '"><span>' + (fail ? "⚠" : "✓") + '</span><span><b>' + msg + '</b></span></div>';
+    h += '<div class="stats" style="margin-top:16px;">'
+       + '<div class="st"><div class="sv">' + total + '</div><div class="sl">总行数 total</div></div>'
+       + '<div class="st ok"><div class="sv">' + ok + '</div><div class="sl">成功 successCount</div></div>'
+       + '<div class="st ' + (fail ? "bad" : "") + '"><div class="sv">' + fail + '</div><div class="sl">失败 failCount</div></div></div>';
+
+    if(fail){
+      h += '<div style="margin-top:20px;font-size:13px;font-weight:600;color:#303133;">失败明细（data.errors）</div>'
+         + '<table class="tb" style="margin-top:10px;border:1px solid var(--bd);">'
+         + '<tr><th style="width:90px;" class="c">Excel 行号</th><th>失败原因</th></tr>';
+      errs.forEach(function(e){
+        var m = e.match(/第\s*(\d+)\s*行[：:]\s*(.+)$/);
+        h += '<tr><td class="c mono">' + (m ? m[1] : "-") + '</td><td>' + (m ? m[2] : e) + '</td></tr>';
+      });
+      h += '</table>'
+         + '<div class="alert info" style="margin-top:14px;"><span>ⓘ</span><span>'
+         + '失败行<b>未做任何变更</b>；成功行已生效。修正后重新上传时，请<b>只保留失败行</b>，避免成功行被重复加减。</span></div>';
+      a.innerHTML = '<button class="btn sm" onclick="copyErrs()">复制失败明细</button>'
+                  + '<button class="btn sm suc" onclick="showT(\'已导出 失败明细.xlsx\', \'ok\')">导出失败明细</button>';
+      showT("导入完成，成功 " + ok + " 条，失败 " + fail + " 条", "warn");
+    } else {
+      h += '<div class="alert ok" style="margin-top:16px;"><span>✓</span><span>全部 ' + total + ' 行均已写入，'
+         + '算力与业绩已更新，并按「是否产生流水」生成对应 <b>transfer_history</b> 记录。</span></div>';
+      showT("导入成功，共导入 " + total + " 条记录", "ok");
+    }
+    b.innerHTML = h;
+  }
+  function copyErrs(){ showT("已复制 " + ERRS.length + " 条失败明细", "ok"); }
+
+</script></body>
+</html>
