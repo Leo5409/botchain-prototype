@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ODYSSEY · 二期管理后台原型</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #f0f2f5; color: #1a1a2e; font-size: 13px; display: flex; height: 100vh; overflow: hidden; }
+
+  /* ── Sidebar ── */
+  .sidebar { width: 240px; background: #141627; display: flex; flex-direction: column; flex-shrink: 0; }
+  .logo { padding: 20px 20px 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid rgba(255,255,255,.07); }
+  .logo-icon { width: 32px; height: 32px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 16px; }
+  .logo-text { color: #fff; font-size: 14px; font-weight: 600; line-height: 1.2; }
+  .logo-text small { display: block; font-size: 10px; color: rgba(255,255,255,.45); font-weight: 400; margin-top: 2px; letter-spacing: .5px; }
+  .nav { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .nav-group-title { color: rgba(255,255,255,.3); font-size: 11px; letter-spacing: 1px; padding: 14px 20px 6px; text-transform: uppercase; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; color: rgba(255,255,255,.55); cursor: pointer; transition: all .15s; font-size: 13px; }
+  .nav-item:hover { background: rgba(255,255,255,.06); color: rgba(255,255,255,.9); }
+  .nav-item.active { background: rgba(91,106,240,.2); color: #7c8ff7; border-right: 2px solid #5b6af0; }
+  .nav-item .ic { width: 16px; text-align: center; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: #ef4444; color: #fff; font-size: 10px; padding: 1px 5px; border-radius: 10px; }
+  .nav-badge.warn { background: #f59e0b; }
+  .nav-badge.new { background: #10b981; }
+  .sidebar-bottom { padding: 12px 20px; border-top: 1px solid rgba(255,255,255,.07); display: flex; align-items: center; gap: 10px; }
+  .avatar { width: 28px; height: 28px; background: linear-gradient(135deg, #5b6af0, #8b5cf6); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 11px; font-weight: 600; }
+  .admin-name { color: rgba(255,255,255,.75); font-size: 12px; line-height: 1.2; }
+  .admin-role { color: rgba(255,255,255,.4); font-size: 10px; }
+
+  /* ── Main ── */
+  .main { flex: 1; display: flex; flex-direction: column; overflow: hidden; }
+  .topbar { height: 52px; background: #fff; border-bottom: 1px solid #e8eaed; display: flex; align-items: center; padding: 0 24px; gap: 8px; flex-shrink: 0; }
+  .breadcrumb { display: flex; align-items: center; gap: 6px; color: #6b7280; font-size: 13px; }
+  .breadcrumb .current { color: #1a1a2e; font-weight: 500; }
+  .breadcrumb-sep { color: #d1d5db; }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 10px; }
+  .session-badge { display: flex; align-items: center; gap: 6px; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; background: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+  .session-badge .s-dot { width: 6px; height: 6px; border-radius: 50%; background: #10b981; }
+
+  /* ── Content ── */
+  .content { flex: 1; overflow-y: auto; padding: 20px 24px; }
+  .page { display: none; }
+  .page.active { display: block; }
+  .page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .page-title { font-size: 16px; font-weight: 600; color: #1a1a2e; }
+  .page-subtitle { font-size: 12px; color: #9ca3af; margin-top: 2px; }
+  .tag-module { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 10px; background: #eef0fe; color: #5b6af0; font-weight: 600; margin-left: 8px; vertical-align: middle; }
+  .tag-new { background: #d1fae5; color: #065f46; }
+
+  /* ── Card ── */
+  .card { background: #fff; border-radius: 10px; border: 1px solid #e8eaed; margin-bottom: 14px; }
+  .card-header { padding: 14px 20px; border-bottom: 1px solid #f3f4f6; display: flex; align-items: center; justify-content: space-between; }
+  .card-title { font-size: 13px; font-weight: 600; color: #374151; display: flex; align-items: center; gap: 7px; }
+  .card-title::before { content: ''; width: 3px; height: 14px; background: #5b6af0; border-radius: 2px; display: inline-block; }
+  .card-body { padding: 16px 20px; }
+
+  /* ── Stat Grid ── */
+  .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 14px; }
+  .stat-card { background: #fff; border: 1px solid #e8eaed; border-radius: 10px; padding: 14px 16px; }
+  .stat-label { font-size: 11px; color: #9ca3af; margin-bottom: 6px; display: flex; align-items: center; gap: 5px; }
+  .stat-value { font-size: 20px; font-weight: 700; color: #1a1a2e; font-variant-numeric: tabular-nums; }
+  .stat-value small { font-size: 11px; font-weight: 400; color: #9ca3af; margin-left: 4px; }
+  .stat-trend { font-size: 11px; margin-top: 4px; }
+  .stat-trend.up { color: #ef4444; }
+  .stat-trend.down { color: #10b981; }
+  .stat-trend.neutral { color: #9ca3af; }
+  .stat-card.alert { border-color: #fecaca; background: linear-gradient(135deg, #fef2f2, #fff); }
+  .stat-card.warn { border-color: #fde68a; background: linear-gradient(135deg, #fffbeb, #fff); }
+  .stat-card.ok { border-color: #a7f3d0; background: linear-gradient(135deg, #ecfdf5, #fff); }
+
+  /* ── Filter ── */
+  .filter-row { display: flex; align-items: flex-end; gap: 12px; flex-wrap: wrap; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; flex: 1; min-width: 140px; }
+  .form-group.wide { flex: 1.5; }
+  .form-label { font-size: 12px; color: #6b7280; }
+  .req { color: #ef4444; }
+  .form-input, .form-select { height: 32px; border: 1px solid #e0e2e7; border-radius: 6px; padding: 0 10px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; transition: border-color .15s; }
+  .form-input:focus, .form-select:focus { border-color: #5b6af0; background: #fff; }
+  .form-input::placeholder { color: #c0c4cc; }
+  .form-textarea { min-height: 70px; padding: 8px 10px; border: 1px solid #e0e2e7; border-radius: 6px; font-size: 12px; color: #374151; background: #fafafa; outline: none; width: 100%; font-family: inherit; resize: vertical; }
+  .form-textarea:focus { border-color: #5b6af0; background: #fff; }
+  .filter-actions { display: flex; gap: 8px; flex-shrink: 0; }
+
+  /* ── Buttons ── */
+  .btn { height: 32px; padding: 0 16px; border-radius: 6px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; display: inline-flex; align-items: center; gap: 5px; transition: all .15s; }
+  .btn-primary { background: #5b6af0; color: #fff; }
+  .btn-primary:hover { background: #4f5de6; }
+  .btn-secondary { background: #fff; color: #374151; border: 1px solid #e0e2e7; }
+  .btn-secondary:hover { background: #f9fafb; border-color: #d1d5db; }
+  .btn-success { background: #10b981; color: #fff; }
+  .btn-success:hover { background: #059669; }
+  .btn-danger { background: #ef4444; color: #fff; }
+  .btn-danger:hover { background: #dc2626; }
+  .btn-warn { background: #f59e0b; color: #fff; }
+  .btn-warn:hover { background: #d97706; }
+  .btn-sm { height: 26px; padding: 0 10px; font-size: 11px; }
+  .btn-ghost { background: none; border: 1px dashed #d1d5db; color: #6b7280; }
+  .btn-ghost:hover { border-color: #5b6af0; color: #5b6af0; }
+
+  /* ── Table ── */
+  .table-wrapper { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  thead tr { background: #f8f9fd; }
+  th { padding: 10px 14px; text-align: left; color: #6b7280; font-weight: 600; font-size: 11px; white-space: nowrap; border-bottom: 1px solid #e8eaed; }
+  td { padding: 10px 14px; border-bottom: 1px solid #f3f4f6; color: #374151; white-space: nowrap; vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafbff; }
+  .td-address { font-family: monospace; font-size: 11px; color: #5b6af0; cursor: pointer; white-space: nowrap; }
+  .td-address:hover { text-decoration: underline; }
+  .td-num { text-align: right; font-variant-numeric: tabular-nums; }
+  .td-mono { font-family: monospace; font-size: 11px; color: #4f5de6; white-space: nowrap; }
+  .td-green { color: #059669; font-weight: 600; }
+  .td-red   { color: #dc2626; font-weight: 600; }
+  .td-blue  { color: #2563eb; font-weight: 500; }
+  .td-orange { color: #d97706; font-weight: 600; }
+  .ops-cell { display: flex; align-items: center; gap: 6px; }
+
+  /* ── Badges ── */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-pending { background: #fef3c7; color: #92400e; }
+  .badge-process { background: #dbeafe; color: #1d4ed8; }
+  .badge-signing { background: #ede9fe; color: #5b21b6; }
+  .badge-done    { background: #d1fae5; color: #065f46; }
+  .badge-fail    { background: #fee2e2; color: #991b1b; }
+  .badge-grey    { background: #f3f4f6; color: #6b7280; }
+  .badge-warn    { background: #fef3c7; color: #92400e; }
+  .badge-info    { background: #eef0fe; color: #4f5de6; }
+  .badge-usdt    { background: #ccfbf1; color: #0f766e; }
+  .badge-special { background: #ffe4e6; color: #be123c; }
+
+  /* ── Status Dot ── */
+  .dot-status { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .dot-on { background: #10b981; box-shadow: 0 0 0 3px rgba(16,185,129,.18); }
+  .dot-off { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.18); }
+  .dot-wait { background: #f59e0b; box-shadow: 0 0 0 3px rgba(245,158,11,.18); }
+
+  /* ── Pagination ── */
+  .table-footer { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; border-top: 1px solid #f3f4f6; }
+  .pagination { display: flex; align-items: center; gap: 4px; }
+  .page-btn { width: 28px; height: 28px; border-radius: 6px; border: 1px solid #e0e2e7; background: #fff; color: #374151; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all .15s; }
+  .page-btn:hover { border-color: #5b6af0; color: #5b6af0; }
+  .page-btn.active { background: #5b6af0; border-color: #5b6af0; color: #fff; }
+  .page-btn.disabled { opacity: .4; cursor: not-allowed; }
+  .total-count { font-size: 12px; color: #9ca3af; }
+  .total-count strong { color: #374151; }
+
+  /* ── Detail / Trace ── */
+  .detail-block { padding: 16px 20px; border-top: 1px solid #f3f4f6; }
+  .detail-block:first-child { border-top: none; }
+  .trace-table th, .trace-table td { padding: 8px 12px; }
+  .trace-table tfoot td { background: #f8f9fd; font-weight: 700; color: #1a1a2e; border-top: 2px solid #e8eaed; }
+
+  /* ── Checkbox ── */
+  .ck { width: 15px; height: 15px; accent-color: #5b6af0; cursor: pointer; }
+
+  /* ── Modal ── */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .modal-overlay.show { opacity: 1; pointer-events: all; }
+  .modal { background: #fff; border-radius: 12px; width: 480px; box-shadow: 0 20px 60px rgba(0,0,0,.2); transform: translateY(10px); transition: transform .2s; max-height: 90vh; overflow: auto; }
+  .modal.large { width: 620px; }
+  .modal.wide { width: 760px; }
+  .modal-overlay.show .modal { transform: none; }
+  .modal-header { padding: 20px 24px 12px; display: flex; align-items: flex-start; justify-content: space-between; border-bottom: 1px solid #f3f4f6; }
+  .modal-title { font-size: 15px; font-weight: 700; color: #1a1a2e; display: flex; align-items: center; gap: 8px; }
+  .modal-title.danger { color: #dc2626; }
+  .modal-close { width: 28px; height: 28px; border-radius: 6px; border: none; background: none; cursor: pointer; color: #9ca3af; font-size: 18px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .modal-close:hover { background: #f3f4f6; color: #374151; }
+  .modal-body { padding: 16px 24px 20px; }
+  .modal-body .form-group { margin-bottom: 12px; }
+  .modal-footer { padding: 12px 24px 20px; display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #f3f4f6; }
+  .modal-info-row { display: flex; align-items: center; gap: 10px; font-size: 12px; padding: 7px 0; border-bottom: 1px dashed #f3f4f6; }
+  .modal-info-row:last-child { border-bottom: none; }
+  .modal-info-row .lbl { color: #9ca3af; min-width: 96px; }
+  .modal-info-row .val { color: #1a1a2e; font-weight: 500; word-break: break-all; }
+  .modal-alert { padding: 10px 12px; background: #fffbeb; border: 1px solid #fde68a; border-radius: 8px; color: #92400e; font-size: 12px; line-height: 1.6; margin-bottom: 12px; display: flex; gap: 8px; align-items: flex-start; }
+  .modal-alert.danger { background: #fef2f2; border-color: #fecaca; color: #991b1b; }
+  .modal-alert.info { background: #eef0fe; border-color: #c7d2fe; color: #3730a3; }
+  .modal-alert .icon { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+  .form-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+  /* ── Misc ── */
+  .empty-hint { padding: 40px 20px; text-align: center; color: #9ca3af; font-size: 12px; }
+  .text-mute { color: #9ca3af; }
+  .text-mono { font-family: monospace; }
+  .divider-h { height: 1px; background: #f3f4f6; margin: 14px 0; }
+  .inline-tag { display: inline-block; padding: 1px 6px; background: #f3f4f6; color: #6b7280; border-radius: 4px; font-size: 10px; margin-left: 4px; }
+  .pill { display:inline-block; padding: 1px 7px; border-radius: 6px; font-size: 11px; font-weight:600; }
+  .pill-v { background:#eef0fe; color:#4f5de6; }
+  .toast { position: fixed; bottom: 26px; left: 50%; transform: translateX(-50%) translateY(20px); background: #1a1a2e; color: #fff; padding: 11px 20px; border-radius: 8px; font-size: 13px; z-index: 2000; opacity: 0; transition: all .25s; box-shadow: 0 10px 30px rgba(0,0,0,.3); }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 3px; }
+
+  /* ── A2 后台新增 ── */
+  .login-wrap { display:flex; align-items:center; justify-content:center; padding:40px 0; }
+  .login-card { width:380px; background:#fff; border:1px solid #e8eaed; border-radius:14px; box-shadow:0 12px 40px rgba(20,22,39,.10); padding:30px 30px 26px; }
+  .login-logo { display:flex; align-items:center; gap:10px; justify-content:center; margin-bottom:6px; }
+  .login-logo .logo-icon { width:36px; height:36px; font-size:18px; }
+  .login-title { text-align:center; font-size:17px; font-weight:700; color:#1a1a2e; margin-bottom:4px; }
+  .login-sub { text-align:center; font-size:12px; color:#9ca3af; margin-bottom:22px; }
+  .login-card .form-group { margin-bottom:14px; }
+  .login-card .form-input { height:38px; }
+  .ga-row { display:flex; gap:8px; }
+  .ga-box { flex:1; height:44px; border:1px solid #e0e2e7; border-radius:8px; background:#fafafa; text-align:center; font-size:20px; font-weight:700; color:#374151; line-height:42px; font-variant-numeric:tabular-nums; }
+  .ga-box.filled { border-color:#5b6af0; background:#fff; color:#5b6af0; }
+  .kvbox { background:#f8f9fd; border:1px solid #e8eaed; border-radius:8px; padding:10px 12px; font-size:11.5px; color:#4b5563; line-height:1.9; font-family:monospace; }
+  .diff-old { background:#fef2f2; color:#991b1b; padding:1px 6px; border-radius:4px; font-family:monospace; font-size:11px; }
+  .diff-new { background:#ecfdf5; color:#065f46; padding:1px 6px; border-radius:4px; font-family:monospace; font-size:11px; }
+  .perm-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px 14px; }
+  .perm-item { display:flex; align-items:center; gap:7px; font-size:12px; color:#374151; }
+  .lang-tabs { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:8px; }
+  .lang-tab { padding:4px 10px; border-radius:7px; border:1px solid #e0e2e7; background:#fafafa;
+              font-size:11.5px; color:#6b7280; cursor:pointer; user-select:none; }
+  .lang-tab:hover { border-color:#c7cbf5; }
+  .lang-tab.on { background:#5b6af0; border-color:#5b6af0; color:#fff; font-weight:600; }
+  .lang-tab .dot { display:inline-block; width:5px; height:5px; border-radius:50%;
+                   background:#10b981; margin-left:5px; vertical-align:middle; }
+  .lang-tab.on .dot { background:#fff; }
+  .lang-chip { display:inline-block; padding:2px 8px; border-radius:6px; background:#eef0fe; color:#4f5de6; font-size:11px; font-weight:600; }
+  .pill-t { background:#ecfdf5; color:#047857; }
+  .pill-none { background:#f3f4f6; color:#9ca3af; }
+  .sumrow td { background:#f8f9fd; font-weight:700; color:#1a1a2e; }
+  .node-info-bar { background: linear-gradient(135deg,#eef0fe,#f5f3ff); border:1px solid #c7d2fe; border-radius:10px; padding:14px 20px; margin-bottom:14px; display:flex; align-items:center; flex-wrap:wrap; }
+  .node-info-item { padding:0 20px; border-right:1px solid #c7d2fe; }
+  .node-info-item:first-child { padding-left:0; }
+  .node-info-item:last-child { border-right:none; }
+  .node-info-label { font-size:11px; color:#6b7280; margin-bottom:4px; }
+  .node-info-value { font-size:13px; font-weight:600; color:#1a1a2e; }
+  .node-info-addr { font-family:monospace; font-size:11.5px; color:#4f5de6; font-weight:600; }
+  .bcbar { display:flex; align-items:center; gap:6px; flex-wrap:wrap; margin-bottom:12px; }
+  .bc-item { display:inline-flex; align-items:center; gap:5px; font-size:12px; color:#5b6af0; cursor:pointer; padding:4px 10px; border-radius:6px; border:1px solid #e8eaed; background:#fff; transition:all .15s; white-space:nowrap; }
+  .bc-item:hover { background:#f0f1fe; border-color:#5b6af0; }
+  .bc-item.active { background:#eef0fe; border-color:#5b6af0; color:#374151; font-weight:600; cursor:default; }
+  .bc-arrow { color:#d1d5db; font-size:14px; flex-shrink:0; }
+  .no-children { color:#9ca3af; font-size:11px; font-style:italic; }
+  .drill { cursor:pointer; color:#4f5de6; font-weight:600; }
+.mt-legend { display:flex; gap:18px; flex-wrap:wrap; font-size:12px; color:#9ca3af; margin-bottom:10px; }
+.mtree { font-size:13px; color:#374151; overflow-x:auto; }
+.mt-line { display:flex; align-items:center; gap:8px; padding:7px 8px; border-radius:6px; white-space:nowrap; }
+.mt-line:hover { background:#f9fafb; }
+.mt-line.hit { background:#fef9c3; box-shadow:inset 3px 0 0 #f59e0b; }
+.mt-tog { width:16px; flex-shrink:0; text-align:center; color:#4b5563; cursor:pointer; font-size:11px; user-select:none; }
+.mt-tog.leaf { cursor:default; color:transparent; }
+.mt-addr { font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12.5px; color:#1f2937; }
+.mt-cnt { color:#6b7280; }
+.mt-copy { color:#3b82f6; cursor:pointer; font-size:12px; }
+.mt-meta { display:flex; align-items:center; gap:6px; color:#6b7280; font-size:12px; }
+.mt-meta b { color:#111827; font-weight:600; }
+.mt-sep { color:#d1d5db; }
+.mt-kids { margin-left:18px; border-left:1px dashed #e5e7eb; }
+.pill-geo { white-space:nowrap; background:#e0f2fe; color:#0369a1; } .pill-geo-off { opacity:.55; text-decoration:line-through; }
+.geo-list { max-height:120px; overflow:auto; background:#f9fafb; border:1px solid #eef0f4; border-radius:8px; padding:6px 10px; font-family:ui-monospace,Menlo,monospace; font-size:11.5px; color:#374151; line-height:1.7; margin-top:6px; word-break:break-all; }
+  .drill:hover { text-decoration:underline; }
+
+  .sw { display:inline-flex; align-items:center; gap:8px; cursor:pointer; font-size:12.5px; color:#374151; height:36px; }
+  .sw input { display:none; } .sw span { width:36px; height:20px; border-radius:20px; background:#d1d5db; position:relative; transition:.2s; flex-shrink:0; }
+  .sw span::after { content:""; position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%; background:#fff; transition:.2s; box-shadow:0 1px 2px rgba(0,0,0,.2); }
+  .sw input:checked + span { background:#4f46e5; } .sw input:checked + span::after { left:18px; }
+  .card .card-body + .card-header { border-top:1px solid #eef0f4; }
+</style>
+</head>
+<body>
+<aside class="sidebar"><div class="logo"><div class="logo-icon">◎</div><div class="logo-text">ODYSSEY 二期<small>管理后台</small></div></div><nav class="nav" id="nav"></nav></aside>
+<div class="main"><header class="topbar"><div class="breadcrumb"><span>ODYSSEY 管理后台</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">经济模型 · 每日产出</span></div><div class="topbar-right"><span class="session-badge"><span class="s-dot"></span>GA 已验证 · 会话 28:14</span></div></header><div class="content"><div class="page active" id="page-eco"></div><div class="page" id="page-pool"></div><div class="page" id="page-order"></div><div class="page" id="page-powpay"></div><div class="page" id="page-nodepow"></div><div class="page" id="page-stake"></div><div class="page" id="page-wd"></div><div class="page" id="page-swap"></div><div class="page" id="page-level"></div><div class="page" id="page-perf"></div><div class="page" id="page-referral"></div><div class="page" id="page-dynamic"></div><div class="page" id="page-dividend"></div><div class="page" id="page-noderebate"></div></div></div>
+<div class="modal-overlay" id="gm"><div class="modal large" style="width:640px;max-width:94vw;"><div class="modal-header"><div class="modal-title" id="gmTitle"></div><button class="modal-close" onclick="closeGM()">×</button></div><div class="modal-body" id="gmBody"></div><div class="modal-footer" id="gmFoot"></div></div></div>
+<div class="toast" id="toast"><span id="toast-msg"></span></div>
+<script>
+/* ═══════════ ODYSSEY 二期 · 管理后台原型（示例数据） ═══════════ */
+function $(id){ return document.getElementById(id); }
+function fmt(n, d){ d = d === undefined ? 2 : d; return Number(n).toLocaleString('en-US', {minimumFractionDigits:d, maximumFractionDigits:d}); }
+function pct(r){ return +(r * 100).toFixed(2) + '%'; }
+function addr(i){ var h = ['0xE240a1853a7fdC3231EAB768AEB4041E5Eb428d2','0x7A31c97F0B463bA70b010Fd4e89FDbb4848b4f2C','0x2F41c8D5f13E04A6009374325AC2374E599e7b30','0x88Da16Ee9822e1B6758165821a11d72A30c04e77','0x55C29a9c8D3135C62B699D378c98c7936Dc19e04','0x3B90466126eF3202ba07AdBC56fdA917c0d7a1D7']; return h[i % h.length]; }
+function stat(l, v, s, cls){ return '<div class="stat-card' + (cls ? ' ' + cls : '') + '"><div class="stat-label">' + l + '</div><div class="stat-value">' + v + '</div>' + (s ? '<div class="stat-trend neutral">' + s + '</div>' : '') + '</div>'; }
+function stats(a){ return '<div class="stat-grid" style="grid-template-columns:repeat(' + a.length + ',1fr);">' + a.join('') + '</div>'; }
+function tbl(h, rows, id){ return '<div class="table-wrapper"><table><thead><tr>' + h.map(function(x){ return '<th>' + x + '</th>'; }).join('') + '</tr></thead><tbody' + (id ? ' id="' + id + '"' : '') + '>' + rows.map(function(r){ return '<tr>' + r.map(function(c){ return '<td>' + c + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div>'; }
+function card(title, body, right){ return '<div class="card"><div class="card-header"><div class="card-title">' + title + '</div><div class="filter-actions">' + (right || '') + '</div></div><div class="card-body">' + body + '</div></div>'; }
+function cardT(title, table, right){ return '<div class="card"><div class="card-header"><div class="card-title">' + title + '</div><div class="filter-actions">' + (right || '') + '</div></div>' + table + '</div>'; }
+function head(t, s, right){ return '<div class="page-header"><div><div class="page-title">' + t + '</div><div class="page-subtitle">' + s + '</div></div><div class="filter-actions">' + (right || '') + '</div></div>'; }
+function fld(l, v, id, hint, extra){ return '<div class="form-group"><label class="form-label">' + l + '</label><input class="form-input"' + (id ? ' id="' + id + '"' : '') + ' value="' + v + '"' + (extra || '') + '>' + (hint ? '<div class="text-mute" style="font-size:11px;margin-top:4px;">' + hint + '</div>' : '') + '</div>'; }
+function sw(l, on, hint){ return '<div class="form-group"><label class="form-label">' + l + '</label><label class="sw"><input type="checkbox"' + (on ? ' checked' : '') + '><span></span>' + (on ? '开启' : '关闭') + '</label>' + (hint ? '<div class="text-mute" style="font-size:11px;margin-top:4px;">' + hint + '</div>' : '') + '</div>'; }
+function grid(n, items){ return '<div style="display:grid;grid-template-columns:repeat(' + n + ',1fr);gap:12px 16px;">' + items.join('') + '</div>'; }
+function bdg(t, c){ return '<span class="badge badge-' + c + '">' + t + '</span>'; }
+function btn(t, fn, c){ return '<button class="btn ' + (c || 'btn-secondary') + ' btn-sm" onclick="' + fn + '">' + t + '</button>'; }
+function bigBtn(t, fn, c){ return '<button class="btn ' + (c || 'btn-primary') + '" onclick="' + fn + '">' + t + '</button>'; }
+function filters(items){ return '<div class="card"><div class="card-body"><div class="filter-row">' + items.join('') + '<div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">查询</button><button class="btn btn-secondary" onclick="showToastMsg(\'已生成导出任务\')">📤 导出</button></div></div></div></div>'; }
+function fi(l, ph){ return '<div class="form-group"><label class="form-label">' + l + '</label><input class="form-input" placeholder="' + ph + '"></div>'; }
+function fs(l, opts){ return '<div class="form-group"><label class="form-label">' + l + '</label><select class="form-select">' + opts.map(function(o){ return '<option>' + o + '</option>'; }).join('') + '</select></div>'; }
+function saveP(name){ showToastMsg(name + '已保存 · C 端实时生效'); }
+function short(a){ return a.slice(0, 6) + '…' + a.slice(-4); }
+
+/* ═══════════ 数据 ═══════════ */
+var P = {daily:20000, base:0.0020, burn:0.05, refSrc:1.0, direct:0.05, directOn:true, dyn:1.0, vipDaily:6000, rebate:0.20, swapSell:0.05, swapBuy:0, combo:true};
+var DIST = [['算力产出',0.50,'算力认购用户按占比分配'],['回流池',0.30,'兑付质押复利收益'],['VIP 级别分红',0.15,'V4–V10 权重分红'],['DAO',0.03,'0x9D4a…b21e（DAO 多签）'],['基金会',0.02,'0x51C0…7f03（基金会多签）']];
+var PERIODS = [['活期',1.0,0,false],['30 天',1.3,30,false],['90 天',1.6,90,false],['180 天',2.0,180,false],['360 天',2.5,360,true]];
+var WDCFG = [['T+1',1,0.30,true],['T+15',15,0.15,true],['T+30',30,0.01,true]];
+var LV = [['普通会员',100,0,'团队',0,0.05],['V1',500,10000,'团队',0,0.08],['V2',1000,30000,'团队',0,0.11],['V3',1500,100000,'团队',0,0.14],['V4',2000,100000,'小区',10,0.17],['V5',3000,300000,'小区',20,0.20],['V6',4000,800000,'小区',40,0.23],['V7',5000,2000000,'小区',80,0.25],['V8',10000,5000000,'小区',160,0.27],['V9',15000,12000000,'小区',240,0.285],['V10',20000,30000000,'小区',360,0.30],['V11（隐藏）',30000,60000000,'小区',500,0.32],['V12（隐藏）',50000,100000000,'小区',800,0.34]];
+var POWPAY = [
+  {d:'2026-11-14',day:14,pw:1286400,amt:20000,st:'已结算',per:0.015547},
+  {d:'2026-11-13',day:13,pw:1280100,amt:20000,st:'已发放',per:0.015624},
+  {d:'2026-11-12',day:12,pw:1271900,amt:20000,st:'已发放',per:0.015725},
+  {d:'2026-11-11',day:11,pw:1262000,amt:20000,st:'已发放',per:0.015848}
+];
+var STKPAY = [
+  {d:'2026-11-14',cp:8420500,amt:31260.42,n:2318,st:'已结算'},
+  {d:'2026-11-13',cp:8395100,amt:31188.10,n:2301,st:'已发放'},
+  {d:'2026-11-12',cp:8360800,amt:31066.95,n:2285,st:'已发放'}
+];
+var NODEPOW = [
+  {a:addr(0),t:'C',amt:6000,at:'2026-11-01 00:00',by:'admin',rm:'历史节点 · C × 1'},
+  {a:addr(1),t:'D',amt:30000,at:'2026-11-01 00:00',by:'admin',rm:'历史节点 · D × 1'},
+  {a:addr(2),t:'A',amt:1000,at:'2026-11-01 00:00',by:'admin',rm:'历史节点 · A × 1'},
+  {a:addr(3),t:'B',amt:10000,at:'2026-11-02 10:20',by:'ops02',rm:'补发 · B × 2'}
+];
+var FUSE = {on:true, n:1, slip:0.13, left:4, trig:'2026-11-13 09:12', drop:'−6.8%'};
+
+/* ═══════════ 页面 ═══════════ */
+function pEco(){
+  var y = [0,1,2,3,10];
+  $('page-eco').innerHTML = head('经济模型 · 每日产出', 'ODS 总发行 2.1 亿：LP 池 1,000 万逐步打入；挖矿 2 亿，每天 4 万枚，每 2 年减产 10%，22 年挖完；全网算力入金 5% 进底池买 ODS 销毁', bigBtn('保存参数', "saveP('经济模型参数')"))
+    + stats([stat('总发行量', '210,000,000', 'ODS'), stat('已产出', '9,640,000', '第 1 周期 · 第 241 天'), stat('当前每日产出', '40,000', '第 1–2 年'), stat('累计销毁', '1,842,650', '入金 5% 回购', 'alert'), stat('LP 池已打入', '3,500,000', '/ 10,000,000')])
+    + card('产出参数', grid(4, [fld('当前每日产出（ODS）', '40000', '', '按减产周期自动计算'), fld('减产周期（年）', '2'), fld('每期减产比例', '10%'), fld('入金回购销毁比例', '5%', '', '算力认购入金的 5% 进底池买 ODS 销毁')]))
+    + cardT('每日 4 万枚分配', tbl(['分配板块', '占比', '每日数量（ODS）', '去向 / 接收地址', '操作'], DIST.map(function(d){ return ['<b>' + d[0] + '</b>', pct(d[1]), fmt(40000 * d[1], 0), d[2], btn('编辑', "openDist('" + d[0] + "')")]; }).concat([['合计', '100%', '40,000', '', '']])), '<span class="text-mute" style="font-size:12px;">占比合计须为 100%</span>')
+    + cardT('减产计划', tbl(['周期', '年份', '每日产出', '周期产出', '算力产出 / 日', '回流池 / 日', 'VIP 分红 / 日'], y.map(function(i){ var dd = 40000 * Math.pow(0.9, i); return ['第 ' + (i + 1) + ' 期', '第 ' + (i * 2 + 1) + '–' + (i * 2 + 2) + ' 年', fmt(dd, 0), fmt(dd * 730, 0), fmt(dd * 0.5, 0), fmt(dd * 0.3, 0), fmt(dd * 0.15, 0)]; }).concat([['合计', '22 年', '', '≈ 200,367,306', '', '', '']])))
+    + cardT('每日产出台账', tbl(['日期', '产出', '算力产出', '回流池', 'VIP 分红', 'DAO', '基金会', '状态'], ['2026-11-14','2026-11-13','2026-11-12'].map(function(d, i){ return [d, '40,000', '20,000', '12,000', '6,000', '1,200', '800', i ? bdg('已分配', 'done') : bdg('已结算', 'info')]; })))
+    + cardT('LP 池打入记录', tbl(['时间', '数量（ODS）', '累计打入', '交易 Hash', '操作人'], [['2026-11-10 10:00', '1,000,000', '3,500,000', '0x4ad1…9e07', 'admin'], ['2026-11-01 10:00', '2,500,000', '2,500,000', '0x77c2…1a3b', 'admin']]), bigBtn('+ 打入 LP 池', "openLp()"));
+}
+function pPool(){
+  $('page-pool').innerHTML = head('回流池 · 销毁', '回流池「四进」：每日产出 30% 固定打入 · Swap 卖出手续费 80% · 熔断砸盘税 · 提币手续费；回流池兑付质押静态收益')
+    + stats([stat('回流池余额', '3,268,400', 'ODS', 'ok'), stat('今日流入', '38,642.18', '四进合计'), stat('今日兑付', '31,260.42', '质押静态收益'), stat('可兑付天数', '≈ 104 天', '按近 7 日兑付均值')])
+    + cardT('今日流入 · 四进', tbl(['渠道', '规则', '今日流入（ODS）', '本月累计'], [['第一进 · 每日产出', '4 万枚 × 30%', '12,000.00', '168,000.00'], ['第二进 · Swap 手续费', '卖出 ODS 手续费 × 80%', '9,486.20', '120,330.55'], ['第三进 · 熔断砸盘税', '熔断滑点超出 5% 部分', '6,812.40', '6,812.40'], ['第四进 · 提币手续费', 'T+1 30% / T+15 15% / T+30 1% / 本金 1%', '10,343.58', '142,906.12']]))
+    + filters([fs('渠道', ['全部', '每日产出', 'Swap 手续费', '熔断砸盘税', '提币手续费', '质押收益兑付']), fi('时间', '2026-11-01 ~ 2026-11-14')])
+    + cardT('回流池流水', tbl(['时间', '渠道', '变动（ODS）', '余额', '关联'], [['2026-11-15 12:00', '质押收益兑付', '<span style="color:#dc2626;">−31,260.42</span>', '3,268,400.00', '静态收益 2026-11-14'], ['2026-11-15 00:00', '每日产出', '<span style="color:#16a34a;">+12,000.00</span>', '3,299,660.42', '第 241 天'], ['2026-11-14 22:41', 'Swap 手续费', '<span style="color:#16a34a;">+42.50</span>', '3,287,660.42', 'SW-20261114-8812'], ['2026-11-14 18:03', '提币手续费', '<span style="color:#16a34a;">+150.00</span>', '3,287,617.92', 'WD-20261108-0412 · T+15']]))
+    + cardT('回购销毁记录（算力入金 5%）', tbl(['时间', '入金（U）', '回购金额（U）', '买入 ODS', '销毁 Hash'], [['2026-11-14 23:59', '128,500.00', '6,425.00', '15,297.62', '0xdead…31f0'], ['2026-11-13 23:59', '96,200.00', '4,810.00', '11,595.18', '0xdead…8c21']]));
+}
+function pOrder(){
+  var rows = [['A2O-20261115-0031', addr(0), '1,000.00', '1,000', 'USDT + ODS', '500.00', '1,190.4762 ODS', '50.00', '2026-11-15 10:35', bdg('已生效', 'done')], ['A2O-20261114-0412', addr(1), '1,000.00', '1,000', 'USDT', '1,000.00', '—', '50.00', '2026-11-14 10:12', bdg('已生效', 'done')], ['A2O-20261113-0388', addr(2), '500.00', '500', 'USDT', '500.00', '—', '25.00', '2026-11-13 21:40', bdg('已生效', 'done')], ['A2O-20261113-0377', addr(4), '3,000.00', '3,000', 'USDT + BOT', '1,500.00', '621.1180 BOT', '150.00', '2026-11-13 18:02', bdg('已生效', 'done')], ['A2O-20261113-0370', addr(5), '100.00', '100', 'USDT', '—', '—', '—', '2026-11-13 17:55', bdg('已过期', 'grey')]];
+  $('page-order').innerHTML = head('奥德赛算力认购订单', '认购档位 100 / 500 / 1000 / 3000 U 或自由输入（最低 100 U）· 1 U = 1 算力 · 计入个人与团队业绩 · 入金 5% 回购销毁')
+    + stats([stat('全网奥德赛算力', '1,286,400', '含节点赠送 182,000'), stat('今日认购', '128,500.00 U', '214 笔', 'ok'), stat('累计认购', '1,104,400.00 U'), stat('今日回购销毁', '6,425.00 U', '入金 × 5%')])
+    + card('认购参数', grid(4, [fld('认购档位（U）', '100, 500, 1000, 3000'), fld('最低认购（U）', '100'), sw('组合支付（USDT + ODS / USDT + BOT）', true, 'ODS / BOT 占 50%，按实时价折算'), fld('组合支付中 ODS / BOT 占比', '50%')]), bigBtn('保存', "saveP('认购参数')"))
+    + filters([fi('订单号', 'A2O-…'), fi('钱包地址', '0x…'), fs('支付方式', ['全部', 'USDT', 'USDT + ODS', 'USDT + BOT']), fs('状态', ['全部', '已生效', '待支付', '已过期'])])
+    + cardT('认购订单', tbl(['订单号', '钱包地址', '认购金额（U）', '获得算力', '支付方式', 'USDT', 'ODS / BOT', '回购销毁（U）', '下单时间', '状态'], rows.map(function(r){ r[1] = '<span class="td-mono" style="font-size:11.5px;">' + r[1] + '</span>'; return r; })));
+}
+function pPowpay(){
+  $('page-powpay').innerHTML = head('奥德赛算力收益发放', '按个人奥德赛算力占全网比例分配每日产出 · 24:00 快照 → 12:00 发放 · 「已结算」可核对并重新发放（按昨日快照、用最新参数重算并覆盖）')
+    + stats([stat('每日发放量', fmt(P.daily, 0) + ' ODS', '后台可配'), stat('昨日快照全网算力', '1,286,400', '2026-11-14 24:00'), stat('今日待发放', '20,000.00 ODS', '12:00 发放', 'ok'), stat('累计发放', '280,000.00 ODS', '14 天')])
+    + card('发放参数', grid(4, [fld('每日发放量（ODS）', P.daily, 'pDaily', '默认 = 每日产出 × 50%'), fld('快照时间', '24:00'), fld('发放时间', '12:00'), fs('减产时', ['同步按 50% 缩减', '保持当前值'])]), bigBtn('保存', "pDailySave()"))
+    + cardT('每日发放记录', tbl(['日期', '第 N 天', '快照全网算力', '发放总量（ODS）', '涉及地址', '状态', '操作'], POWPAY.map(function(r, i){ return [r.d, r.day, fmt(r.pw, 0), fmt(r.amt), fmt(2418 - i * 9, 0), r.st === '已结算' ? bdg('已结算 · 待 12:00 发放', 'info') : bdg('已发放', 'done'), r.st === '已结算' ? btn('核对', "showToastMsg('已导出 " + r.d + " 发放明细供核对')") + btn('重新发放', 'redoPow(' + i + ')', 'btn-primary') : '<span class="text-mute">—</span>']; }), 'powBody'));
+}
+function pDailySave(){ var v = parseFloat($('pDaily').value); if(!(v > 0)){ showToastMsg('每日发放量须大于 0'); return; } P.daily = v; saveP('每日发放量 ' + fmt(v, 0) + ' ODS'); }
+function redoPow(i){ var r = POWPAY[i]; openGM('重新发放 · ' + r.d, '<div class="modal-info-row"><span class="lbl">快照全网算力</span><span class="val">' + fmt(r.pw, 0) + '（昨日 24:00）</span></div><div class="modal-info-row"><span class="lbl">原发放总量</span><span class="val">' + fmt(r.amt) + ' ODS</span></div><div class="modal-info-row"><span class="lbl">按最新参数</span><span class="val" style="color:#16a34a;font-weight:700;">' + fmt(P.daily) + ' ODS</span></div>' + fld('重新发放原因 *', '', 'redoWhy'), '<button class="btn btn-secondary" onclick="closeGM()">取消</button><button class="btn btn-primary" onclick="redoPowOk(' + i + ')">确认重新发放</button>'); }
+function redoPowOk(i){ if(!$('redoWhy').value.trim()){ showToastMsg('请填写重新发放原因'); return; } POWPAY[i].amt = P.daily; closeGM(); pPowpay(); showToastMsg('已按最新参数重新计算并覆盖，12:00 发放'); }
+function pNodepow(){
+  $('page-nodepow').innerHTML = head('节点奥德赛算力发放', '历史节点持有人的奥德赛算力由后台手动赠送（单个 / 批量导入）· 发放后计入 C 端「我的算力 · 节点赠送」，参与每日算力收益分配', bigBtn('📥 批量导入', "showToastMsg('请上传 CSV：钱包地址, 节点等级, 赠送算力, 备注')", 'btn-secondary') + bigBtn('+ 手动赠送', 'openNodePow()'))
+    + stats([stat('已赠送地址', NODEPOW.length + ' 个'), stat('赠送算力合计', fmt(NODEPOW.reduce(function(s, n){ return s + n.amt; }, 0), 0), '', 'ok'), stat('参考口径', 'A 1,000 · B 5,000 · C 6,000 · D 30,000', '按节点认购金额（可调整）')])
+    + cardT('赠送记录', tbl(['钱包地址', '节点等级', '赠送算力', '发放时间', '操作人', '备注'], NODEPOW.map(function(n){ return ['<span class="td-mono" style="font-size:11.5px;">' + n.a + '</span>', bdg(n.t + ' 节点', 'info'), '<b>' + fmt(n.amt, 0) + '</b>', n.at, n.by, n.rm]; }), 'nodeBody'));
+}
+function openNodePow(){ openGM('手动赠送节点算力', grid(2, [fld('钱包地址 *', '', 'npA', '0x + 40 位'), '<div class="form-group"><label class="form-label">节点等级 *</label><select class="form-select" id="npT"><option>A</option><option>B</option><option>C</option><option>D</option></select></div>', fld('赠送算力 *', '', 'npN', '正整数'), fld('备注', '', 'npR')]), '<button class="btn btn-secondary" onclick="closeGM()">取消</button><button class="btn btn-primary" onclick="nodePowOk()">确认赠送</button>'); }
+function nodePowOk(){ var a = $('npA').value.trim(), n = $('npN').value.trim(); if(!/^0x[0-9a-fA-F]{40}$/.test(a)){ showToastMsg('请填写正确的钱包地址'); return; } if(!/^[1-9]\d*$/.test(n)){ showToastMsg('赠送算力须为正整数'); return; } NODEPOW.unshift({a:a, t:$('npT').value, amt:+n, at:'2026-11-15 10:50', by:'admin', rm:$('npR').value || '手动赠送'}); closeGM(); pNodepow(); showToastMsg('已赠送 ' + fmt(+n, 0) + ' 奥德赛算力'); }
+function pStake(){
+  $('page-stake').innerHTML = head('质押管理', '日收益 = 复利本金 × 基准日化 × 周期倍数；复利本金 = 未提取本金 + 未提取收益 · 本金按天线性释放 · 静态收益 24:00 快照、12:00 发放，由回流池兑付')
+    + stats([stat('全网质押本金', '7,186,300 ODS'), stat('全网复利本金', '8,420,500 ODS'), stat('今日静态收益', '31,260.42 ODS', '12:00 发放', 'ok'), stat('360 天质押业绩', '1,248,600 U', '质押量 × 质押时刻单价')])
+    + card('质押参数', grid(4, [fld('基准日化', '0.20%', '', '区间 0.15%–0.25%'), fld('快照时间', '24:00'), fld('静态收益发放时间', '12:00'), fs('定期到期后', ['自动转活期', '自动续期同周期'])])
+      + '<div style="margin-top:14px;">' + tbl(['质押周期', '收益倍数', '日收益率', '本金释放', '计入业绩', '启用'], PERIODS.map(function(p){ return ['<b>' + p[0] + '</b>', '<input class="form-input" style="width:80px;height:32px;" value="' + p[1].toFixed(1) + '"> M', (0.2 * p[1]).toFixed(3) + '%', p[2] ? '每天 1/' + p[2] : '随时可提', '<label class="sw"><input type="checkbox"' + (p[3] ? ' checked' : '') + '><span></span></label>', '<label class="sw"><input type="checkbox" checked><span></span></label>']; })) + '</div>', bigBtn('保存', "saveP('质押参数')"))
+    + cardT('每日静态收益发放', tbl(['日期', '快照复利本金（ODS）', '发放总量（ODS）', '涉及订单', '兑付来源', '状态', '操作'], STKPAY.map(function(r, i){ return [r.d, fmt(r.cp, 0), fmt(r.amt), fmt(r.n, 0), '回流池', r.st === '已结算' ? bdg('已结算 · 待 12:00 发放', 'info') : bdg('已发放', 'done'), r.st === '已结算' ? btn('核对', "showToastMsg('已导出明细')") + btn('重新发放', "showToastMsg('已按最新参数重算 " + r.d + " 静态收益并覆盖')", 'btn-primary') : '<span class="text-mute">—</span>']; })))
+    + filters([fi('钱包地址', '0x…'), fs('周期', ['全部', '活期', '30 天', '90 天', '180 天', '360 天']), fs('状态', ['全部', '质押中', '已到期', '已转活期'])])
+    + cardT('质押订单', tbl(['订单号', '钱包地址', '周期', '质押本金', '复利本金', '累计收益', '已质押 / 周期', '可释放本金', '质押单价', '计业绩（U）', '状态'], [['S-20261001-0003', addr(0), '360 天 · 2.5 M', '5,000.00', '6,258.06', '1,258.06', '45 / 360', '625.00', '0.40', '2,000.00', bdg('质押中', 'done')], ['S-20261016-0002', addr(0), '90 天 · 1.6 M', '2,000.00', '2,201.40', '201.40', '30 / 90', '666.67', '0.41', '—', bdg('质押中', 'done')], ['S-20261026-0001', addr(0), '活期 · 1.0 M', '1,200.00', '1,248.92', '48.92', '—', '1,200.00', '0.41', '—', bdg('质押中', 'done')], ['S-20261108-0188', addr(3), '360 天 · 2.5 M', '3,000.00', '3,107.65', '107.65', '7 / 360', '58.33', '0.41', '1,230.00', bdg('质押中', 'done')]].map(function(r){ r[1] = '<span class="td-mono" style="font-size:11.5px;">' + short(r[1]) + '</span>'; return r; })));
+}
+function pWd(){
+  var rows = [['WD-20261115-0502', addr(0), '算力类收益', 'T+15', '1,000.0000', '150.0000', '850.0000', '2026-11-15 10:45', '2026-11-30 10:45', bdg('待到账 · 剩 15 天', 'warn')], ['WD-20261112-0388', addr(0), '质押本金', 'T+1', '300.0000', '3.0000', '297.0000', '2026-11-12 09:10', '2026-11-13 09:10', bdg('已到账', 'done')], ['WD-20261108-0412', addr(1), '算力类收益', 'T+1', '500.0000', '150.0000', '350.0000', '2026-11-08 14:20', '2026-11-09 14:20', bdg('已到账', 'done')], ['WD-20261020-0102', addr(0), '算力类收益', 'T+30', '500.0000', '5.0000', '495.0000', '2026-10-20 18:02', '2026-11-19 18:02', bdg('待到账 · 剩 4 天', 'warn')]];
+  $('page-wd').innerHTML = head('提币管理', '算力类收益 / 质押类收益：T+1 30% · T+15 15% · T+30 1%（天数与比例可配，可开关）；质押本金：T+1 1%（静默期）· 到期一次性到账 · 手续费全部进入回流池')
+    + stats([stat('待到账', '186 笔', '41,230.50 ODS', 'alert'), stat('今日到账', '92 笔', '18,406.20 ODS', 'ok'), stat('今日手续费', '10,343.58 ODS', '→ 回流池'), stat('T+1 / T+15 / T+30 占比', '38% / 41% / 21%', '近 7 日笔数')])
+    + card('提币参数 · 算力类收益 / 质押类收益', tbl(['档位', '到账天数（T+N）', '手续费比例', '启用'], WDCFG.map(function(w){ return ['<b>' + w[0] + '</b>', '<input class="form-input" style="width:90px;height:32px;" value="' + w[1] + '">', '<input class="form-input" style="width:90px;height:32px;" value="' + pct(w[2]) + '">', '<label class="sw"><input type="checkbox"' + (w[3] ? ' checked' : '') + '><span></span></label>' + (w[0] === 'T+30' ? ' <span class="text-mute">（保底档，不可关闭）</span>' : '')]; }))
+      + '<div style="margin-top:14px;">' + grid(4, [fld('质押本金 · 到账天数', 'T+1'), fld('质押本金 · 手续费', '1%'), fld('最小提币数量（ODS）', '10'), fs('中途是否线性释放', ['否（到期一次性到账）', '是（按天释放）'])]) + '</div>', bigBtn('保存', "saveP('提币参数')"))
+    + filters([fi('单号', 'WD-…'), fi('钱包地址', '0x…'), fs('资产类型', ['全部', '算力类收益', '质押类收益', '质押本金']), fs('档位', ['全部', 'T+1', 'T+15', 'T+30']), fs('状态', ['全部', '待到账', '已到账', '失败'])])
+    + cardT('提币记录', tbl(['单号', '钱包地址', '资产类型', '档位', '提币数量', '手续费', '实际到账', '申请时间', '到账时间', '状态'], rows.map(function(r){ r[1] = '<span class="td-mono" style="font-size:11.5px;">' + short(r[1]) + '</span>'; return r; })));
+}
+function pLevel(){
+  $('page-level').innerHTML = head('等级与业绩', 'V1–V3 看团队整体业绩（不含本人，不分大小区）；V4 起看小区业绩 · V11 / V12 为隐藏等级（C 端达到前不展示）', bigBtn('保存参数', "saveP('等级参数')"))
+    + stats([stat('普通会员', '18,240'), stat('V1–V3', '1,286'), stat('V4–V10', '142', '可参与 VIP 分红', 'ok'), stat('V11 / V12', '2', '隐藏等级')])
+    + card('等级参数', tbl(['等级', '个人有效业绩（U）', '团队 / 小区业绩（U）', '口径', '分红权重', '推荐比例'], LV.map(function(l){ return ['<b>' + l[0] + '</b>', '<input class="form-input" style="width:110px;height:32px;" value="' + l[1] + '">', l[2] ? '<input class="form-input" style="width:130px;height:32px;" value="' + l[2] + '">' : '—', l[2] ? l[3] : '—', l[4] ? '<input class="form-input" style="width:70px;height:32px;" value="' + l[4] + '">' : '—', '<input class="form-input" style="width:80px;height:32px;" value="' + pct(l[5]) + '">']; })))
+    + card('业绩计入配置', grid(4, [sw('算力认购计入业绩', true, '个人 + 团队'), sw('活期质押计入', false), sw('30 天质押计入', false), sw('90 天质押计入', false), sw('180 天质押计入', false), sw('360 天质押计入', true, '质押量 × 质押时刻单价'), fs('提币是否扣减业绩', ['不扣减', '扣减']), fs('返佣数据源比例', ['100%', '50%'])]) + '<div class="text-mute" style="font-size:12px;margin-top:10px;">返佣数据源：下级入金 100 U，设为 100% 时普通会员级差得 5 U；设为 50% 时得 2.5 U。</div>')
+    + filters([fi('钱包地址', '0x…'), fs('等级', ['全部'].concat(LV.map(function(l){ return l[0]; })))])
+    + cardT('会员等级', tbl(['钱包地址', '当前等级', '个人有效业绩', '团队业绩', '小区业绩', '升级时间', '操作'], [[addr(1), 'V6', '8,200', '1,120,000', '842,000', '2026-11-10 16:00'], [addr(0), 'V4', '5,600', '186,000', '142,000', '2026-11-08 16:00'], [addr(2), 'V2', '1,600', '42,000', '—', '2026-11-03 16:00']].map(function(r){ r[0] = '<span class="td-mono" style="font-size:11.5px;">' + r[0] + '</span>'; r[1] = bdg(r[1], 'special'); r.push(btn('业绩流水', "switchPage('perf')")); return r; })));
+}
+function pPerf(){
+  $('page-perf').innerHTML = head('业绩流水', '业绩增减明细：算力认购、360 天质押（质押时刻价值）计入个人与团队业绩；提币不扣减业绩')
+    + filters([fi('钱包地址', '0x…'), fs('类型', ['全部', '算力认购', '质押', '后台调整']), fs('业绩口径', ['全部', '个人', '团队'])])
+    + cardT('业绩流水', tbl(['时间', '钱包地址', '类型', '来源', '个人业绩', '团队业绩（向上传递）'], [['2026-11-15 10:35', short(addr(0)), '算力认购', 'A2O-20261115-0031 · 1,000 U', '+1,000', '上级 12 级 +1,000'], ['2026-11-15 10:40', short(addr(0)), '质押 360 天', '1,000 ODS × 0.42', '+420', '上级 12 级 +420'], ['2026-11-14 10:12', short(addr(1)), '算力认购', 'A2O-20261114-0412 · 1,000 U', '+1,000', '上级 11 级 +1,000'], ['2026-11-08 11:05', short(addr(3)), '质押 360 天', '3,000 ODS × 0.41', '+1,230', '上级 13 级 +1,230'], ['2026-11-05 09:00', short(addr(2)), '后台调整', '数据修正 · admin', '−200', '上级 9 级 −200']]));
+}
+function pReferral(){
+  $('page-referral').innerHTML = head('推荐奖励 · 级差 / 直推', '级差奖：算力入金按上级等级推荐比例做级差，一次性发放；直推奖：算力入金 5%，独立于级差奖单独发放 · 均于 16:00 发放，按发放时 ODS 价格折算', bigBtn('保存参数', "saveP('推荐奖励参数')"))
+    + stats([stat('今日级差奖', '18,240.00 U', '≈ 43,428.57 ODS'), stat('今日直推奖', '6,425.00 U', '≈ 15,297.62 ODS'), stat('涉及地址', '612'), stat('发放时间', '16:00', '一次性')])
+    + card('奖励参数', grid(4, [fld('级差发放时间', '16:00'), fld('直推奖比例', '5%'), sw('直推奖开关', true), fs('奖励发放币种', ['ODS（按发放时价格折算）', 'USDT', 'USDT + ODS', 'USDT + BOT']), fs('返佣数据源比例', ['100%', '50%']), sw('级差奖开关', true)]) + '<div class="text-mute" style="font-size:12px;margin-top:10px;">级差 = 上级等级推荐比例 − 链路中已发放的最高比例；推荐比例见「等级与业绩」。</div>')
+    + filters([fi('获得人地址', '0x…'), fs('类型', ['全部', '级差奖', '直推奖']), fi('日期', '2026-11-14')])
+    + cardT('发放记录', tbl(['发放时间', '类型', '获得人', '获得人等级', '来源（下级入金）', '比例', '金额（U）', '折算 ODS', '状态'], [['2026-11-14 16:00', bdg('级差奖', 'info'), short(addr(0)), 'V4', '0x7A31…4f2C · 1,000 U', '17% − 11% = 6%', '60.00', '142.8571', bdg('已发放', 'done')], ['2026-11-14 16:00', bdg('直推奖', 'warn'), short(addr(0)), 'V4', '0x7A31…4f2C · 1,000 U', '5%', '50.00', '119.0476', bdg('已发放', 'done')], ['2026-11-14 16:00', bdg('级差奖', 'info'), short(addr(1)), 'V6', '0x7A31…4f2C · 1,000 U', '23% − 17% = 6%', '60.00', '142.8571', bdg('已发放', 'done')], ['2026-11-13 16:00', bdg('级差奖', 'info'), short(addr(0)), 'V4', '0x2F41…7b30 · 500 U', '17% − 14% = 3%', '15.00', '35.7143', bdg('已发放', 'done')]]));
+}
+function pDynamic(){
+  $('page-dynamic').innerHTML = head('质押动态级差奖', '每天按级差获得伞下质押静态收益的 100%（比例可调）· 16:00 发放 · 归入质押类收益', bigBtn('保存参数', "saveP('动态级差参数')"))
+    + stats([stat('今日动态奖', '28,406.18 ODS'), stat('伞下静态收益基数', '31,260.42 ODS'), stat('涉及地址', '486')])
+    + card('参数', grid(4, [fld('动态级差比例', '100%', '', '获得 = 伞下质押收益 × 级差 × 该比例'), fld('发放时间', '16:00'), sw('动态级差开关', true), fs('级差口径', ['按推荐比例级差', '按等级固定比例'])]))
+    + cardT('发放记录', tbl(['发放时间', '获得人', '等级', '伞下质押收益（ODS）', '级差', '比例', '获得（ODS）'], [['2026-11-14 16:00', short(addr(0)), 'V4', '312.40', '15%', '100%', '46.86'], ['2026-11-14 16:00', short(addr(1)), 'V6', '1,840.20', '6%', '100%', '110.41']]));
+}
+function pDividend(){
+  var rows = [[addr(1), 'V6', 40, 1.10, 44.0], [addr(4), 'V5', 20, 1.21, 24.2], [addr(0), 'V4', 10, 1.05, 10.5]];
+  $('page-dividend').innerHTML = head('VIP 级别分红', 'V4 及以上有资格；每日固定 6,000 ODS 按「等级权重 × K 值时间系数」加权分配 · 12:00 发放', bigBtn('保存参数', "saveP('VIP 分红参数')"))
+    + stats([stat('每日分红总量', '6,000 ODS', '每日产出 × 15%'), stat('参与地址', '142', 'V4 及以上'), stat('全网有效权重', '5,640'), stat('每单位权重', '1.0638 ODS', '6,000 ÷ 5,640')])
+    + card('分红参数', grid(4, [fld('每日分红总量（ODS）', '6000'), fld('参与最低等级', 'V4'), fld('K 值时间系数', '1.1ⁿ', '', 'n = 达到该等级的周数（待确认）'), fld('K 值上限', '3.15')]) + '<div class="text-mute" style="font-size:12px;margin-top:10px;">个人有效权重 = 等级权重（V4 10 … V10 360，见「等级与业绩」）× K 值；个人分红 = 6,000 × 个人有效权重 ÷ 全网有效权重。</div>')
+    + cardT('今日分红明细（2026-11-14）', tbl(['钱包地址', '等级', '等级权重', 'K 值', '有效权重', '分得（ODS）'], rows.map(function(r){ return ['<span class="td-mono" style="font-size:11.5px;">' + short(r[0]) + '</span>', r[1], r[2], r[3].toFixed(2), r[4].toFixed(1), fmt(6000 * r[4] / 5640, 4)]; })));
+}
+function pSwap(){
+  $('page-swap').innerHTML = head('Swap 与熔断', '对内 Swap：ODS / BOT；BOT / USDT 跳转外部 BOTswap · 卖出 ODS 手续费 5%（20% 节点返佣、80% 回流），买入 ODS 免手续费 · 24h 跌幅超阈值触发熔断，滑点（砸盘税）全部回流', bigBtn('保存参数', "saveP('Swap 参数')"))
+    + stats([stat('ODS 价格', '0.4200 USDT', '1 ODS = 0.1739 BOT'), stat('24h 涨跌', FUSE.drop, '触发熔断', 'alert'), stat('当前卖出滑点', pct(FUSE.slip), '第 ' + FUSE.n + ' 次熔断 · 剩 ' + FUSE.left + ' 天'), stat('今日交易额', '1,862,400 ODS', '3,128 笔')])
+    + card('熔断状态', '<div class="modal-alert" style="margin:0 0 12px;"><span class="icon">⚠</span><span>熔断中 · 第 ' + FUSE.n + ' 次（触发于 ' + FUSE.trig + '，24h 跌幅 ' + FUSE.drop + '）：卖出滑点 15% 起每天降 2%，当前 ' + pct(FUSE.slip) + '，剩 ' + FUSE.left + ' 天恢复 5%。</span></div>' + grid(4, [fld('触发阈值（24h 跌幅）', '5%'), fld('正常卖出手续费', '5%'), fld('买入 ODS 手续费', '0%'), fs('恢复期内再次触发', ['升级为下一档熔断并重新计时', '保持当前档并重新计时'])])
+      + '<div style="margin-top:14px;">' + tbl(['熔断档', '滑点', '恢复天数', '每日下降', '说明'], [['一次熔断', '<input class="form-input" style="width:80px;height:32px;" value="15%">', '<input class="form-input" style="width:70px;height:32px;" value="5">', '2%', '24h 跌幅超阈值'], ['二次熔断', '<input class="form-input" style="width:80px;height:32px;" value="25%">', '<input class="form-input" style="width:70px;height:32px;" value="10">', '2%', '恢复期内再次触发'], ['三次熔断', '<input class="form-input" style="width:80px;height:32px;" value="35%">', '<input class="form-input" style="width:70px;height:32px;" value="15">', '2%', '极端情况']]) + '</div>', btn('手动解除熔断', "showToastMsg('需二次确认，操作留痕')"))
+    + cardT('交易对', tbl(['交易对', '类型', '卖出手续费', '买入手续费', '手续费去向', '状态'], [['ODS / BOT', '对内 Swap', '5%（熔断时为当前滑点）', '0%', '20% 节点返佣 · 80% 回流池', bdg('启用', 'done')], ['BOT / USDT', '外链 · BOTswap', '—', '—', '—', bdg('外链', 'info')]]))
+    + filters([fi('钱包地址', '0x…'), fs('方向', ['全部', 'ODS → BOT', 'BOT → ODS'])])
+    + cardT('交易流水', tbl(['单号', '时间', '钱包地址', '方向', '支付', '获得', '手续费 / 滑点', '节点返佣', '回流池'], [['SW-20261115-9012', '2026-11-15 10:52', short(addr(0)), 'ODS → BOT', '1,000 ODS', '151.3043 BOT', '13%（130 ODS）', '10.00 ODS', '120.00 ODS'], ['SW-20261115-9008', '2026-11-15 10:41', short(addr(2)), 'BOT → ODS', '100 BOT', '575.0000 ODS', '0%', '—', '—']]));
+}
+function pNoderebate(){
+  $('page-noderebate').innerHTML = head('节点手续费返佣', 'Swap 卖出 5% 手续费中：20% 按奥德赛节点身份权重返佣给节点持有人，80% 回流 · 每日 12:00 发放', bigBtn('保存参数', "saveP('节点返佣参数')"))
+    + stats([stat('昨日手续费', '11,857.75 ODS', 'Swap 卖出'), stat('返佣池（20%）', '2,371.55 ODS', '', 'ok'), stat('回流（80%）', '9,486.20 ODS', '→ 回流池'), stat('全网节点有效权重', '28,160')])
+    + card('返佣参数', grid(3, [fld('返佣比例', '20%'), fld('回流比例', '80%', '', '二者合计 100%'), fld('发放时间', '12:00')]) + '<div style="margin-top:14px;">' + tbl(['节点身份', '对应节点', '权重', '持有份数', '有效权重'], [['探索家', 'A 节点', '<input class="form-input" style="width:80px;height:32px;" value="100%">', '5,945', '5,945'], ['勇士', 'B 节点', '<input class="form-input" style="width:80px;height:32px;" value="100%">', '836', '836'], ['智者', 'C 节点', '<input class="form-input" style="width:80px;height:32px;" value="150%">', '1,056', '1,584'], ['领航者', 'D 节点', '<input class="form-input" style="width:80px;height:32px;" value="200%">', '703', '1,406']]) + '</div>')
+    + cardT('发放记录', tbl(['日期', '返佣池（ODS）', '全网有效权重', '每单位权重', '涉及地址', '状态'], [['2026-11-14', '2,371.55', '9,771', '0.2427', '3,128', bdg('已发放', 'done')], ['2026-11-13', '2,108.40', '9,771', '0.2158', '3,128', bdg('已发放', 'done')]]));
+}
+
+/* ═══════════ 弹框 / 通用 ═══════════ */
+function openDist(n){ var d = DIST.filter(function(x){ return x[0] === n; })[0]; openGM('编辑分配 · ' + n, grid(2, [fld('占比', pct(d[1])), fld('去向 / 接收地址', d[2])]) + '<p class="text-mute" style="font-size:12px;margin-top:10px;">五个板块占比合计须为 100%，保存后次日 00:00 生效。</p>', '<button class="btn btn-secondary" onclick="closeGM()">取消</button><button class="btn btn-primary" onclick="closeGM();saveP(\'分配比例\')">保存</button>'); }
+function openLp(){ openGM('打入 LP 池', grid(2, [fld('打入数量（ODS）*', '', 'lpN'), fld('交易 Hash', '', '')]) + '<p class="text-mute" style="font-size:12px;margin-top:10px;">LP 池总额 10,000,000，已打入 3,500,000，剩余 6,500,000。</p>', '<button class="btn btn-secondary" onclick="closeGM()">取消</button><button class="btn btn-primary" onclick="closeGM();showToastMsg(\'已记录 LP 打入\')">确认</button>'); }
+function openGM(t, body, foot){ $('gmTitle').textContent = t; $('gmBody').innerHTML = body; $('gmFoot').innerHTML = foot; $('gm').classList.add('show'); }
+function closeGM(){ $('gm').classList.remove('show'); }
+var NAV = [['经济模型',[['eco','◎','经济模型 · 每日产出'],['pool','♻','回流池 · 销毁']]],['算力',[['order','🧾','算力认购订单'],['powpay','⚡','算力收益发放'],['nodepow','🎁','节点算力发放']]],['质押与资金',[['stake','🔒','质押管理'],['wd','💸','提币管理'],['swap','⇄','Swap 与熔断']]],['等级与奖励',[['level','👑','等级与业绩'],['perf','📈','业绩流水'],['referral','🤝','推荐奖励 · 级差 / 直推'],['dynamic','🌊','质押动态级差'],['dividend','💎','VIP 级别分红'],['noderebate','🪙','节点手续费返佣']]]];
+var TITLES = {}; NAV.forEach(function(g){ g[1].forEach(function(i){ TITLES[i[0]] = i[2]; }); });
+function renderNav(){ $('nav').innerHTML = NAV.map(function(g){ return '<div class="nav-group-title">' + g[0] + '</div>' + g[1].map(function(i){ return '<div class="nav-item' + (i[0] === CUR ? ' active' : '') + '" data-page="' + i[0] + '" onclick="switchPage(\'' + i[0] + '\')"><span class="ic">' + i[1] + '</span>' + i[2] + '</div>'; }).join(''); }).join(''); }
+var CUR = 'eco';
+function switchPage(p){ CUR = p; document.querySelectorAll('.page').forEach(function(x){ x.classList.toggle('active', x.id === 'page-' + p); }); renderNav(); $('topbar-title').textContent = TITLES[p]; var c = document.querySelector('.content'); if(c) c.scrollTop = 0; }
+var toastTimer;
+function showToastMsg(m){ var t = $('toast'); $('toast-msg').textContent = m; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
+document.querySelectorAll('.modal-overlay').forEach(function(m){ m.addEventListener('click', function(e){ if(e.target === m) m.classList.remove('show'); }); });
+pEco(); pPool(); pOrder(); pPowpay(); pNodepow(); pStake(); pWd(); pLevel(); pPerf(); pReferral(); pDynamic(); pDividend(); pSwap(); pNoderebate(); renderNav();
+
+</script>
+</body>
+</html>
