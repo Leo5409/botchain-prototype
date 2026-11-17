@@ -266,7 +266,7 @@
 </head>
 <body>
 <aside class="sidebar"><div class="logo"><div class="logo-icon">⛓</div><div class="logo-text">A2 节点 DAPP<small>管理后台 · ODYSSEY</small></div></div><nav class="nav" id="nav"></nav></aside>
-<div class="main"><header class="topbar"><div class="breadcrumb"><span>A2 节点 DAPP 管理后台</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">经济模型 · 每日产出</span></div><div class="topbar-right"><span class="session-badge"><span class="s-dot"></span>GA 已验证 · 会话 28:14</span></div></header><div class="content"><div class="page active" id="page-eco"></div><div class="page" id="page-pool"></div><div class="page" id="page-kval"></div><div class="page" id="page-order"></div><div class="page" id="page-powpay"></div><div class="page" id="page-nodepow"></div><div class="page" id="page-stake"></div><div class="page" id="page-wd"></div><div class="page" id="page-swap"></div><div class="page" id="page-level"></div><div class="page" id="page-perf"></div><div class="page" id="page-referral"></div><div class="page" id="page-dynamic"></div><div class="page" id="page-dividend"></div><div class="page" id="page-noderebate"></div></div></div>
+<div class="main"><header class="topbar"><div class="breadcrumb"><span>A2 节点 DAPP 管理后台</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">算力系数（K 值）</span></div><div class="topbar-right"><span class="session-badge"><span class="s-dot"></span>GA 已验证 · 会话 28:14</span></div></header><div class="content"><div class="page active" id="page-kval"></div><div class="page" id="page-order"></div><div class="page" id="page-powpay"></div><div class="page" id="page-nodepow"></div><div class="page" id="page-stake"></div><div class="page" id="page-wd"></div><div class="page" id="page-swap"></div><div class="page" id="page-level"></div><div class="page" id="page-perf"></div><div class="page" id="page-referral"></div><div class="page" id="page-dynamic"></div><div class="page" id="page-dividend"></div><div class="page" id="page-noderebate"></div></div></div>
 <div class="modal-overlay" id="gm"><div class="modal large" style="width:640px;max-width:94vw;"><div class="modal-header"><div class="modal-title" id="gmTitle"></div><button class="modal-close" onclick="closeGM()">×</button></div><div class="modal-body" id="gmBody"></div><div class="modal-footer" id="gmFoot"></div></div></div>
 <div class="toast" id="toast"><span id="toast-msg"></span></div>
 <script>
@@ -295,7 +295,6 @@ function short(a){ return a.slice(0, 6) + '…' + a.slice(-4); }
 
 /* ═══════════ 数据 ═══════════ */
 var P = {daily:20000, base:0.0020, burn:0.05, refSrc:1.0, direct:0.05, directOn:true, dyn:1.0, vipDaily:6000, rebate:0.20, swapSell:0.05, swapBuy:0, combo:true};
-var DIST = [['算力产出',0.50,'算力认购用户按占比分配'],['回流池',0.30,'兑付质押复利收益'],['VIP 级别分红',0.15,'V4–V10 权重分红'],['DAO',0.03,'0x9D4a…b21e（DAO 多签）'],['基金会',0.02,'0x51C0…7f03（基金会多签）']];
 var PERIODS = [['活期',1.0,0,false],['30 天',1.3,30,false],['90 天',1.6,90,false],['180 天',2.0,180,false],['360 天',2.5,360,true]];
 var WDCFG = [['T+1',1,0.30,true],['T+15',15,0.15,true],['T+30',30,0.01,true]];
 var LV = [['普通会员',100,0,'团队',0,0.05],['V1',500,10000,'团队',0,0.08],['V2',1000,30000,'团队',0,0.11],['V3',1500,100000,'团队',0,0.14],['V4',2000,100000,'小区',10,0.17],['V5',3000,300000,'小区',20,0.20],['V6',4000,800000,'小区',40,0.23],['V7',5000,2000000,'小区',80,0.25],['V8',10000,5000000,'小区',160,0.27],['V9',15000,12000000,'小区',240,0.285],['V10',20000,30000000,'小区',360,0.30],['V11（隐藏）',30000,60000000,'小区',500,0.32],['V12（隐藏）',50000,100000000,'小区',800,0.34]];
@@ -336,24 +335,6 @@ function curBuy(){ return SWC.mode === 'manual' ? SWC.buy : 0; }
 var FUSE = {on:true, n:1, slip:0.13, left:4, trig:'2026-11-13 09:12', drop:'−6.8%'};
 
 /* ═══════════ 页面 ═══════════ */
-function pEco(){
-  var y = [0,1,2,3,10];
-  $('page-eco').innerHTML = head('经济模型 · 每日产出', 'ODS 总发行 2.1 亿：LP 池 1,000 万逐步打入；挖矿 2 亿，每天 4 万枚，每 2 年减产 10%，22 年挖完；全网算力入金 5% 进底池买 ODS 销毁', bigBtn('保存参数', "saveP('经济模型参数')"))
-    + stats([stat('总发行量', '210,000,000', 'ODS'), stat('已产出', '9,640,000', '第 1 周期 · 第 241 天'), stat('当前每日产出', '40,000', '第 1–2 年'), stat('累计销毁', '1,842,650', '入金 5% 回购', 'alert'), stat('LP 池已打入', '3,500,000', '/ 10,000,000')])
-    + card('产出参数', grid(4, [fld('当前每日产出（ODS）', '40000', '', '按减产周期自动计算'), fld('减产周期（年）', '2'), fld('每期减产比例', '10%'), fld('入金回购销毁比例', '5%', '', '算力认购入金的 5% 进底池买 ODS 销毁')]))
-    + cardT('每日 4 万枚分配', tbl(['分配板块', '占比', '每日数量（ODS）', '去向 / 接收地址', '操作'], DIST.map(function(d){ return ['<b>' + d[0] + '</b>', pct(d[1]), fmt(40000 * d[1], 0), d[2], btn('编辑', "openDist('" + d[0] + "')")]; }).concat([['合计', '100%', '40,000', '', '']])), '<span class="text-mute" style="font-size:12px;">占比合计须为 100%</span>')
-    + cardT('减产计划', tbl(['周期', '年份', '每日产出', '周期产出', '算力产出 / 日', '回流池 / 日', 'VIP 分红 / 日'], y.map(function(i){ var dd = 40000 * Math.pow(0.9, i); return ['第 ' + (i + 1) + ' 期', '第 ' + (i * 2 + 1) + '–' + (i * 2 + 2) + ' 年', fmt(dd, 0), fmt(dd * 730, 0), fmt(dd * 0.5, 0), fmt(dd * 0.3, 0), fmt(dd * 0.15, 0)]; }).concat([['合计', '22 年', '', '≈ 200,367,306', '', '', '']])))
-    + cardT('每日产出台账', tbl(['日期', '产出', '算力产出', '回流池', 'VIP 分红', 'DAO', '基金会', '状态'], ['2026-11-14','2026-11-13','2026-11-12'].map(function(d, i){ return [d, '40,000', '20,000', '12,000', '6,000', '1,200', '800', i ? bdg('已分配', 'done') : bdg('已结算', 'info')]; })))
-    + cardT('LP 池打入记录', tbl(['时间', '数量（ODS）', '累计打入', '交易 Hash', '操作人'], [['2026-11-10 10:00', '1,000,000', '3,500,000', '0x4ad1…9e07', 'admin'], ['2026-11-01 10:00', '2,500,000', '2,500,000', '0x77c2…1a3b', 'admin']]), bigBtn('+ 打入 LP 池', "openLp()"));
-}
-function pPool(){
-  $('page-pool').innerHTML = head('回流池 · 销毁', '回流池「四进」：每日产出 30% 固定打入 · Swap 卖出手续费 80% · 熔断砸盘税 · 提币手续费；回流池兑付质押静态收益')
-    + stats([stat('回流池余额', '3,268,400', 'ODS', 'ok'), stat('今日流入', '38,642.18', '四进合计'), stat('今日兑付', '31,260.42', '质押静态收益'), stat('可兑付天数', '≈ 104 天', '按近 7 日兑付均值')])
-    + cardT('今日流入 · 四进', tbl(['渠道', '规则', '今日流入（ODS）', '本月累计'], [['第一进 · 每日产出', '4 万枚 × 30%', '12,000.00', '168,000.00'], ['第二进 · Swap 手续费', '卖出 ODS 手续费 × 80%', '9,486.20', '120,330.55'], ['第三进 · 熔断砸盘税', '熔断滑点超出 5% 部分', '6,812.40', '6,812.40'], ['第四进 · 提币手续费', 'T+1 30% / T+15 15% / T+30 1% / 本金 1%', '10,343.58', '142,906.12']]))
-    + filters([fs('渠道', ['全部', '每日产出', 'Swap 手续费', '熔断砸盘税', '提币手续费', '质押收益兑付']), fi('时间', '2026-11-01 ~ 2026-11-14')])
-    + cardT('回流池流水', tbl(['时间', '渠道', '变动（ODS）', '余额', '关联'], [['2026-11-15 12:00', '质押收益兑付', '<span style="color:#dc2626;">−31,260.42</span>', '3,268,400.00', '静态收益 2026-11-14'], ['2026-11-15 00:00', '每日产出', '<span style="color:#16a34a;">+12,000.00</span>', '3,299,660.42', '第 241 天'], ['2026-11-14 22:41', 'Swap 手续费', '<span style="color:#16a34a;">+42.50</span>', '3,287,660.42', 'SW-20261114-8812'], ['2026-11-14 18:03', '提币手续费', '<span style="color:#16a34a;">+150.00</span>', '3,287,617.92', 'WD-20261108-0412 · T+15']]))
-    + cardT('回购销毁记录（算力入金 5%）', tbl(['时间', '入金（U）', '回购金额（U）', '买入 ODS', '销毁 Hash'], [['2026-11-14 23:59', '128,500.00', '6,425.00', '15,297.62', '0xdead…31f0'], ['2026-11-13 23:59', '96,200.00', '4,810.00', '11,595.18', '0xdead…8c21']]));
-}
 function pKval(){
   var c = COEF[COEF.length - 1], nk = KLOG[0].d > TODAY ? KLOG[0] : null;
   $('page-kval').innerHTML = head('算力系数（K 值）', '第 1 天算力系数 = 1；每天 24:00 更新：今日系数 A = 昨日系数 B × K；用户当日认购获得算力 = 入金 × A（C 端「获得奥德赛算力」与「!」说明弹框展示）· 调整 K 值于次日 24:00 更新时生效')
@@ -473,15 +454,12 @@ function pNoderebate(){
 }
 
 /* ═══════════ 弹框 / 通用 ═══════════ */
-function openDist(n){ var d = DIST.filter(function(x){ return x[0] === n; })[0]; openGM('编辑分配 · ' + n, grid(2, [fld('占比', pct(d[1])), fld('去向 / 接收地址', d[2])]) + '<p class="text-mute" style="font-size:12px;margin-top:10px;">五个板块占比合计须为 100%，保存后次日 00:00 生效。</p>', '<button class="btn btn-secondary" onclick="closeGM()">取消</button><button class="btn btn-primary" onclick="closeGM();saveP(\'分配比例\')">保存</button>'); }
-function openLp(){ openGM('打入 LP 池', grid(2, [fld('打入数量（ODS）*', '', 'lpN'), fld('交易 Hash', '', '')]) + '<p class="text-mute" style="font-size:12px;margin-top:10px;">LP 池总额 10,000,000，已打入 3,500,000，剩余 6,500,000。</p>', '<button class="btn btn-secondary" onclick="closeGM()">取消</button><button class="btn btn-primary" onclick="closeGM();showToastMsg(\'已记录 LP 打入\')">确认</button>'); }
 function openGM(t, body, foot){ $('gmTitle').textContent = t; $('gmBody').innerHTML = body; $('gmFoot').innerHTML = foot; $('gm').classList.add('show'); }
 function closeGM(){ $('gm').classList.remove('show'); }
 /* 侧边栏：沿用一期分组（一期页面已上线，本原型不展示内容）+ 二期新增分组 */
 var NAV = [
   ['会员与社区',[['p1','member','👤','会员管理'],['p1','teamtag','🏷','团队标签管理']]],
   ['财务管理',[['p1','community','🏷','社区编号管理'],['p1','tree','🌳','会员树查询'],['p1','deposit','⛓','入金记录'],['p1','order1','🧾','订单管理'],['p1','rebate','💵','直推返佣流水'],['p1','power','⚡','BOT 算力奖励发放'],['p1','powflow','📜','BOT 算力奖励发放流水'],['p1','award','🧾','佣金奖励审核'],['p1','withdraw','💸','提币审核'],['p1','teamwd','🏦','团队奖励提币审核']]],
-  ['ODS 经济模型',[['p2','eco','◎','经济模型 · 每日产出'],['p2','pool','♻','回流池 · 销毁']]],
   ['奥德赛算力',[['p2','kval','📈','算力系数（K 值）'],['p2','order','🧾','算力认购订单'],['p2','powpay','⚡','算力收益发放'],['p2','nodepow','🎁','节点算力发放']]],
   ['质押与资金',[['p2','stake','🔒','质押管理'],['p2','wd','💸','ODS 提币管理'],['p2','swap','⇄','Swap 与熔断']]],
   ['等级与奖励',[['p2','level','👑','等级与业绩'],['p2','perf','📈','业绩流水'],['p2','referral','🤝','推荐奖励 · 级差 / 直推'],['p2','dynamic','🌊','质押动态级差'],['p2','dividend','💎','VIP 级别分红'],['p2','noderebate','🪙','节点手续费返佣']]],
@@ -495,12 +473,12 @@ function renderNav(){ $('nav').innerHTML = NAV.map(function(g){
     return i[0] === 'p1' ? '<div class="nav-item p1" data-page="' + i[1] + '" onclick="p1(\'' + i[3] + '\')"><span class="ic">' + i[2] + '</span>' + i[3] + '</div>'
       : '<div class="nav-item' + (i[1] === CUR ? ' active' : '') + '" data-page="' + i[1] + '" onclick="switchPage(\'' + i[1] + '\')"><span class="ic">' + i[2] + '</span>' + i[3] + '</div>'; }).join(''); }).join(''); }
 function p1(name){ openGM(name, '<p style="font-size:13px;color:#374151;line-height:1.8;">「<b>' + name + '</b>」为一期已上线页面，本原型不重复展示，请查看一期 A2 后台原型。二期新增的页面需在「管理员与权限」中补充对应的页面与按钮权限。</p>', '<button class="btn btn-secondary" onclick="closeGM()">知道了</button><a class="btn btn-primary" href="a2-admin.html" target="_blank" style="text-decoration:none;">打开一期后台原型</a>'); }
-var CUR = 'eco';
+var CUR = 'kval';
 function switchPage(p){ CUR = p; document.querySelectorAll('.page').forEach(function(x){ x.classList.toggle('active', x.id === 'page-' + p); }); renderNav(); $('topbar-title').textContent = TITLES[p]; var c = document.querySelector('.content'); if(c) c.scrollTop = 0; }
 var toastTimer;
 function showToastMsg(m){ var t = $('toast'); $('toast-msg').textContent = m; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
 document.querySelectorAll('.modal-overlay').forEach(function(m){ m.addEventListener('click', function(e){ if(e.target === m) m.classList.remove('show'); }); });
-pEco(); pPool(); pKval(); pOrder(); pPowpay(); pNodepow(); pStake(); pWd(); pLevel(); pPerf(); pReferral(); pDynamic(); pDividend(); pSwap(); pNoderebate(); renderNav();
+pKval(); pOrder(); pPowpay(); pNodepow(); pStake(); pWd(); pLevel(); pPerf(); pReferral(); pDynamic(); pDividend(); pSwap(); pNoderebate(); renderNav();
 
 </script>
 </body>
