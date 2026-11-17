@@ -330,6 +330,9 @@ calcCoef();
 function coefOn(ds){ return COEF.filter(function(c){ return c.d === ds; })[0].a; }
 function powOf(u, a){ return Math.floor(u * a * 100 + 1e-7) / 100; }
 function nextDay(ds){ var d = new Date(ds + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0, 10); }
+var SWC = {mode:'auto', sell:0.05, buy:0};             // 手续费 / 滑点控制：auto 按熔断规则；manual 手动设定
+function curSell(){ return SWC.mode === 'manual' ? SWC.sell : (FUSE.on ? FUSE.slip : 0.05); }
+function curBuy(){ return SWC.mode === 'manual' ? SWC.buy : 0; }
 var FUSE = {on:true, n:1, slip:0.13, left:4, trig:'2026-11-13 09:12', drop:'−6.8%'};
 
 /* ═══════════ 页面 ═══════════ */
@@ -444,12 +447,23 @@ function pDividend(){
 }
 function pSwap(){
   $('page-swap').innerHTML = head('Swap 与熔断', '对内 Swap：ODS / BOT；BOT / USDT 跳转外部 BOTswap · 卖出 ODS 手续费 5%（20% 节点返佣、80% 回流），买入 ODS 免手续费 · 24h 跌幅超阈值触发熔断，滑点（砸盘税）全部回流', bigBtn('保存参数', "saveP('Swap 参数')"))
-    + stats([stat('ODS 价格', '0.4200 USDT', '1 ODS = 0.1739 BOT'), stat('24h 涨跌', FUSE.drop, '触发熔断', 'alert'), stat('当前卖出滑点', pct(FUSE.slip), '第 ' + FUSE.n + ' 次熔断 · 剩 ' + FUSE.left + ' 天'), stat('今日交易额', '1,862,400 ODS', '3,128 笔')])
+    + stats([stat('ODS 价格', '0.4200 USDT', '1 ODS = 0.1739 BOT'), stat('24h 涨跌', FUSE.drop, '触发熔断', 'alert'), stat('当前卖出手续费 / 滑点', pct(curSell()), SWC.mode === 'manual' ? '手动设定' : '自动 · 第 ' + FUSE.n + ' 次熔断 · 剩 ' + FUSE.left + ' 天'), stat('当前买入手续费 / 滑点', pct(curBuy()), SWC.mode === 'manual' ? '手动设定' : '自动'), stat('今日交易额', '1,862,400 ODS', '3,128 笔')])
+    + card('手续费 / 滑点控制', grid(4, ['<div class="form-group"><label class="form-label">控制方式</label><select class="form-select" id="swMode" onchange="swModeChg(this.value)"><option value="auto"' + (SWC.mode === 'auto' ? ' selected' : '') + '>自动（按熔断规则）</option><option value="manual"' + (SWC.mode === 'manual' ? ' selected' : '') + '>手动设定</option></select></div>', fld('卖出 ODS 手续费 / 滑点', pct(SWC.mode === 'manual' ? SWC.sell : curSell()), 'swSell', '0%–50%', SWC.mode === 'manual' ? '' : ' disabled'), fld('买入 ODS 手续费 / 滑点', pct(SWC.mode === 'manual' ? SWC.buy : curBuy()), 'swBuy', '0%–50%', SWC.mode === 'manual' ? '' : ' disabled'), fld('调整原因 *', '', 'swWhy')]), bigBtn('保存并立即生效', 'swCtlSave()'))
     + card('熔断状态', '<div class="modal-alert" style="margin:0 0 12px;"><span class="icon">⚠</span><span>熔断中 · 第 ' + FUSE.n + ' 次（触发于 ' + FUSE.trig + '，24h 跌幅 ' + FUSE.drop + '）：卖出滑点 15% 起每天降 2%，当前 ' + pct(FUSE.slip) + '，剩 ' + FUSE.left + ' 天恢复 5%。</span></div>' + grid(4, [fld('触发阈值（24h 跌幅）', '5%'), fld('正常卖出手续费', '5%'), fld('买入 ODS 手续费', '0%'), fs('恢复期内再次触发', ['升级为下一档熔断并重新计时', '保持当前档并重新计时'])])
       + '<div style="margin-top:14px;">' + tbl(['熔断档', '滑点', '恢复天数', '每日下降', '说明'], [['一次熔断', '<input class="form-input" style="width:80px;height:32px;" value="15%">', '<input class="form-input" style="width:70px;height:32px;" value="5">', '2%', '24h 跌幅超阈值'], ['二次熔断', '<input class="form-input" style="width:80px;height:32px;" value="25%">', '<input class="form-input" style="width:70px;height:32px;" value="10">', '2%', '恢复期内再次触发'], ['三次熔断', '<input class="form-input" style="width:80px;height:32px;" value="35%">', '<input class="form-input" style="width:70px;height:32px;" value="15">', '2%', '极端情况']]) + '</div>', btn('手动解除熔断', "showToastMsg('需二次确认，操作留痕')"))
-    + cardT('交易对', tbl(['交易对', '类型', '卖出手续费', '买入手续费', '手续费去向', '状态'], [['ODS / BOT', '对内 Swap', '5%（熔断时为当前滑点）', '0%', '20% 节点返佣 · 80% 回流池', bdg('启用', 'done')], ['BOT / USDT', '外链 · BOTswap', '—', '—', '—', bdg('外链', 'info')]]))
+    + cardT('交易对', tbl(['交易对', '类型', '卖出手续费', '买入手续费', '手续费去向', '状态'], [['ODS / BOT', '对内 Swap', pct(curSell()) + (SWC.mode === 'manual' ? '（手动）' : '（自动）'), pct(curBuy()) + (SWC.mode === 'manual' ? '（手动）' : '（自动）'), '20% 节点返佣 · 80% 回流池', bdg('启用', 'done')], ['BOT / USDT', '外链 · BOTswap', '—', '—', '—', bdg('外链', 'info')]]))
     + filters([fi('钱包地址', '0x…'), fs('方向', ['全部', 'ODS → BOT', 'BOT → ODS'])])
     + cardT('交易流水', tbl(['单号', '时间', '钱包地址', '方向', '支付', '获得', '手续费 / 滑点', '节点返佣', '回流池'], [['SW-20261115-9012', '2026-11-15 10:52', short(addr(0)), 'ODS → BOT', '1,000 ODS', '151.3043 BOT', '13%（130 ODS）', '10.00 ODS', '120.00 ODS'], ['SW-20261115-9008', '2026-11-15 10:41', short(addr(2)), 'BOT → ODS', '100 BOT', '575.0000 ODS', '0%', '—', '—']]));
+}
+function swModeChg(v){ SWC.mode = v; pSwap(); }
+function swCtlSave(){
+  if(SWC.mode === 'manual'){
+    var a = parseFloat($('swSell').value) / 100, b = parseFloat($('swBuy').value) / 100;
+    if(!(a >= 0 && a <= 0.5) || !(b >= 0 && b <= 0.5)){ showToastMsg('手续费 / 滑点须在 0%–50% 之间'); return; }
+    if(!$('swWhy').value.trim()){ showToastMsg('请填写调整原因'); return; }
+    SWC.sell = a; SWC.buy = b;
+  } else if(!$('swWhy').value.trim()){ showToastMsg('请填写调整原因'); return; }
+  pSwap(); showToastMsg('已保存 · 卖出 ' + pct(curSell()) + ' / 买入 ' + pct(curBuy()) + '，C 端立即生效');
 }
 function pNoderebate(){
   $('page-noderebate').innerHTML = head('节点手续费返佣', 'Swap 卖出 5% 手续费中：20% 按奥德赛节点身份权重返佣给节点持有人，80% 回流 · 每日 12:00 发放', bigBtn('保存参数', "saveP('节点返佣参数')"))
