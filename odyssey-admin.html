@@ -266,7 +266,7 @@
 </head>
 <body>
 <aside class="sidebar"><div class="logo"><div class="logo-icon">⛓</div><div class="logo-text">A2 节点 DAPP<small>管理后台 · ODYSSEY</small></div></div><nav class="nav" id="nav"></nav></aside>
-<div class="main"><header class="topbar"><div class="breadcrumb"><span>A2 节点 DAPP 管理后台</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">经济模型 · 每日产出</span></div><div class="topbar-right"><span class="session-badge"><span class="s-dot"></span>GA 已验证 · 会话 28:14</span></div></header><div class="content"><div class="page active" id="page-eco"></div><div class="page" id="page-pool"></div><div class="page" id="page-order"></div><div class="page" id="page-powpay"></div><div class="page" id="page-nodepow"></div><div class="page" id="page-stake"></div><div class="page" id="page-wd"></div><div class="page" id="page-swap"></div><div class="page" id="page-level"></div><div class="page" id="page-perf"></div><div class="page" id="page-referral"></div><div class="page" id="page-dynamic"></div><div class="page" id="page-dividend"></div><div class="page" id="page-noderebate"></div></div></div>
+<div class="main"><header class="topbar"><div class="breadcrumb"><span>A2 节点 DAPP 管理后台</span><span class="breadcrumb-sep">/</span><span class="current" id="topbar-title">经济模型 · 每日产出</span></div><div class="topbar-right"><span class="session-badge"><span class="s-dot"></span>GA 已验证 · 会话 28:14</span></div></header><div class="content"><div class="page active" id="page-eco"></div><div class="page" id="page-pool"></div><div class="page" id="page-kval"></div><div class="page" id="page-order"></div><div class="page" id="page-powpay"></div><div class="page" id="page-nodepow"></div><div class="page" id="page-stake"></div><div class="page" id="page-wd"></div><div class="page" id="page-swap"></div><div class="page" id="page-level"></div><div class="page" id="page-perf"></div><div class="page" id="page-referral"></div><div class="page" id="page-dynamic"></div><div class="page" id="page-dividend"></div><div class="page" id="page-noderebate"></div></div></div>
 <div class="modal-overlay" id="gm"><div class="modal large" style="width:640px;max-width:94vw;"><div class="modal-header"><div class="modal-title" id="gmTitle"></div><button class="modal-close" onclick="closeGM()">×</button></div><div class="modal-body" id="gmBody"></div><div class="modal-footer" id="gmFoot"></div></div></div>
 <div class="toast" id="toast"><span id="toast-msg"></span></div>
 <script>
@@ -316,6 +316,20 @@ var NODEPOW = [
   {a:addr(2),t:'A',amt:1000,at:'2026-11-01 00:00',by:'admin',rm:'历史节点 · A × 1'},
   {a:addr(3),t:'B',amt:10000,at:'2026-11-02 10:20',by:'ops02',rm:'补发 · B × 2'}
 ];
+/* 算力系数：第 1 天 = 1；每天 24:00 更新，今日系数 A = 昨日系数 B × K；获得算力 = 入金 × A */
+var KLOG = [
+  {d:'2026-11-07',k:1.020,old:1.018,by:'admin',at:'2026-11-06 18:20',why:'第二阶段上调'},
+  {d:'2026-11-05',k:1.018,old:1.015,by:'admin',at:'2026-11-04 17:05',why:'第一阶段上调'},
+  {d:'2026-11-01',k:1.015,old:null,by:'admin',at:'2026-10-31 20:00',why:'上线初始值'}
+];
+var TODAY = '2026-11-15', COEF = [];
+function calcCoef(){ COEF = []; var d = new Date('2026-11-01T00:00:00Z'), a = 1, n = 1;
+  while(true){ var ds = d.toISOString().slice(0, 10), k = KLOG.filter(function(l){ return l.d <= ds; })[0].k, b = a;
+    if(n > 1) a = a * k; COEF.push({d:ds, n:n, k:k, b:n > 1 ? b : null, a:a}); if(ds === TODAY) break; d.setUTCDate(d.getUTCDate() + 1); n++; } }
+calcCoef();
+function coefOn(ds){ return COEF.filter(function(c){ return c.d === ds; })[0].a; }
+function powOf(u, a){ return Math.floor(u * a * 100 + 1e-7) / 100; }
+function nextDay(ds){ var d = new Date(ds + 'T00:00:00Z'); d.setUTCDate(d.getUTCDate() + 1); return d.toISOString().slice(0, 10); }
 var FUSE = {on:true, n:1, slip:0.13, left:4, trig:'2026-11-13 09:12', drop:'−6.8%'};
 
 /* ═══════════ 页面 ═══════════ */
@@ -337,13 +351,29 @@ function pPool(){
     + cardT('回流池流水', tbl(['时间', '渠道', '变动（ODS）', '余额', '关联'], [['2026-11-15 12:00', '质押收益兑付', '<span style="color:#dc2626;">−31,260.42</span>', '3,268,400.00', '静态收益 2026-11-14'], ['2026-11-15 00:00', '每日产出', '<span style="color:#16a34a;">+12,000.00</span>', '3,299,660.42', '第 241 天'], ['2026-11-14 22:41', 'Swap 手续费', '<span style="color:#16a34a;">+42.50</span>', '3,287,660.42', 'SW-20261114-8812'], ['2026-11-14 18:03', '提币手续费', '<span style="color:#16a34a;">+150.00</span>', '3,287,617.92', 'WD-20261108-0412 · T+15']]))
     + cardT('回购销毁记录（算力入金 5%）', tbl(['时间', '入金（U）', '回购金额（U）', '买入 ODS', '销毁 Hash'], [['2026-11-14 23:59', '128,500.00', '6,425.00', '15,297.62', '0xdead…31f0'], ['2026-11-13 23:59', '96,200.00', '4,810.00', '11,595.18', '0xdead…8c21']]));
 }
+function pKval(){
+  var c = COEF[COEF.length - 1], nk = KLOG[0].d > TODAY ? KLOG[0] : null;
+  $('page-kval').innerHTML = head('算力系数（K 值）', '第 1 天算力系数 = 1；每天 24:00 更新：今日系数 A = 昨日系数 B × K；用户当日认购获得算力 = 入金 × A（C 端「获得奥德赛算力」与「!」说明弹框展示）· 调整 K 值于次日 24:00 更新时生效')
+    + stats([stat('当前 K 值', c.k.toFixed(3), '自 ' + KLOG.filter(function(l){ return l.d <= TODAY; })[0].d + ' 起'), stat('今日算力系数 A', c.a.toFixed(8), TODAY + ' · 第 ' + c.n + ' 天', 'ok'), stat('昨日算力系数 B', c.b.toFixed(8), '1 U 昨日可得算力'), stat('下次更新', TODAY + ' 24:00', nk ? '新 K ' + nk.k.toFixed(3) + ' 待生效' : 'K 不变')])
+    + card('K 值设置', grid(4, [fld('当前 K 值', c.k.toFixed(3), '', '', ' disabled'), fld('新 K 值 *', '', 'kNew', '≥ 1.000，保留 3 位小数'), fld('生效日期', nextDay(TODAY), '', '次日 24:00 更新系数时生效', ' disabled'), fld('调整原因 *', '', 'kWhy')]), bigBtn('保存', 'kSave()'))
+    + cardT('K 值调整记录', tbl(['生效日期', 'K 值', '调整前', '操作人', '操作时间', '原因', '状态'], KLOG.map(function(l){ return [l.d, '<b>' + l.k.toFixed(3) + '</b>', l.old ? l.old.toFixed(3) : '—', l.by, l.at, l.why, l.d > TODAY ? bdg('待生效', 'warn') : bdg('已生效', 'done')]; }), 'kLogBody'))
+    + cardT('每日算力系数', tbl(['日期', '第 N 天', 'K 值', '昨日系数 B', '今日系数 A（1 U 可得算力）', '1,000 U 可得算力'], COEF.slice().reverse().map(function(r){ return [r.d, r.n, r.k.toFixed(3), r.b === null ? '—（首日）' : r.b.toFixed(8), '<b>' + r.a.toFixed(8) + '</b>', fmt(powOf(1000, r.a))]; }), 'coefBody'));
+}
+function kSave(){
+  var v = parseFloat($('kNew').value), why = $('kWhy').value.trim();
+  if(!(v >= 1) || !/^\d+(\.\d{1,3})?$/.test($('kNew').value.trim())){ showToastMsg('K 值须 ≥ 1.000，最多 3 位小数'); return; }
+  if(!why){ showToastMsg('请填写调整原因'); return; }
+  var d = nextDay(TODAY); KLOG = KLOG.filter(function(l){ return l.d !== d; });
+  KLOG.unshift({d:d, k:v, old:COEF[COEF.length - 1].k, by:'admin', at:TODAY + ' 15:20', why:why}); pKval(); showToastMsg('已保存 · K = ' + v.toFixed(3) + '，' + d + ' 起生效');
+}
 function pOrder(){
-  var rows = [['A2O-20261115-0031', addr(0), '1,000.00', '1,000', 'ETH', '1,000.00', '50.00', '2026-11-15 10:35', bdg('已生效', 'done')], ['A2O-20261114-0412', addr(1), '1,000.00', '1,000', 'BOT Chain', '1,000.00', '50.00', '2026-11-14 10:12', bdg('已生效', 'done')], ['A2O-20261113-0388', addr(2), '500.00', '500', 'BNB Chain', '500.00', '25.00', '2026-11-13 21:40', bdg('已生效', 'done')], ['A2O-20261113-0377', addr(4), '3,000.00', '3,000', 'BOT Chain', '3,000.00', '150.00', '2026-11-13 18:02', bdg('已生效', 'done')], ['A2O-20261113-0370', addr(5), '100.00', '100', 'BNB Chain', '—', '—', '2026-11-13 17:55', bdg('已过期', 'grey')]];
-  $('page-order').innerHTML = head('奥德赛算力认购订单', '认购档位 100 / 500 / 1000 / 3000 U 或自由输入（最低 100 U）· 支付网络 BOT Chain / BNB Chain / ETH，均以 USDT 支付 · 1 U = 1 算力 · 计入个人与团队业绩 · 入金 5% 回购销毁')
+  var rows = [['A2O-20261115-0031', addr(0), 1000, 'ETH', true, '2026-11-15 10:35'], ['A2O-20261114-0412', addr(1), 1000, 'BOT Chain', true, '2026-11-14 10:12'], ['A2O-20261113-0388', addr(2), 500, 'BNB Chain', true, '2026-11-13 21:40'], ['A2O-20261113-0377', addr(4), 3000, 'BOT Chain', true, '2026-11-13 18:02'], ['A2O-20261113-0370', addr(5), 100, 'BNB Chain', false, '2026-11-13 17:55']].map(function(o){
+    var a = coefOn(o[5].slice(0, 10)); return [o[0], o[1], fmt(o[2]), a.toFixed(8), o[4] ? '<b>' + fmt(powOf(o[2], a)) + '</b>' : '—', o[3], o[4] ? fmt(o[2]) : '—', o[4] ? fmt(o[2] * 0.05) : '—', o[5], o[4] ? bdg('已生效', 'done') : bdg('已过期', 'grey')]; });
+  $('page-order').innerHTML = head('奥德赛算力认购订单', '每笔 ≥ 100 U（输入框 ± 100 步进）· 支付网络 BOT Chain / BNB Chain / ETH，均以 USDT 支付 · 获得算力 = 认购金额 × 下单当日算力系数（见「算力系数（K 值）」）· 认购金额计入个人与团队业绩 · 入金 5% 回购销毁')
     + stats([stat('全网奥德赛算力', '1,286,400', '含节点赠送 182,000'), stat('今日认购', '128,500.00 U', '214 笔', 'ok'), stat('累计认购', '1,104,400.00 U'), stat('今日回购销毁', '6,425.00 U', '入金 × 5%')])
-    + card('认购参数', grid(4, [fld('认购档位（U）', '100, 500, 1000, 3000'), fld('最低认购（U）', '100'), '<div class="form-group"><label class="form-label">支付网络（USDT）</label><div style="display:flex;gap:14px;height:36px;align-items:center;"><label><input type="checkbox" checked> BOT Chain</label><label><input type="checkbox" checked> BNB Chain</label><label><input type="checkbox" checked> ETH</label></div></div>', fld('各网络收款地址', '见一期「收款地址」', '', '沿用一期收款地址配置')]), bigBtn('保存', "saveP('认购参数')"))
+    + card('认购参数', grid(4, [fld('最低认购（U）', '100', '', '每笔不低于 100 U'), fld('步进（U）', '100', '', 'C 端 − / + 按钮'), '<div class="form-group"><label class="form-label">支付网络（USDT）</label><div style="display:flex;gap:14px;height:36px;align-items:center;"><label><input type="checkbox" checked> BOT Chain</label><label><input type="checkbox" checked> BNB Chain</label><label><input type="checkbox" checked> ETH</label></div></div>', fld('各网络收款地址', '见一期「收款地址」', '', '沿用一期收款地址配置')]), bigBtn('保存', "saveP('认购参数')"))
     + filters([fi('订单号', 'A2O-…'), fi('钱包地址', '0x…'), fs('支付网络', ['全部', 'BOT Chain', 'BNB Chain', 'ETH']), fs('状态', ['全部', '已生效', '待支付', '已过期'])])
-    + cardT('认购订单', tbl(['订单号', '钱包地址', '认购金额（U）', '获得算力', '支付网络', 'USDT 实付', '回购销毁（U）', '下单时间', '状态'], rows.map(function(r){ r[1] = '<span class="td-mono" style="font-size:11.5px;">' + r[1] + '</span>'; r[4] = bdg(r[4], 'info'); return r; })));
+    + cardT('认购订单', tbl(['订单号', '钱包地址', '认购金额（U）', '算力系数', '获得算力', '支付网络', 'USDT 实付', '回购销毁（U）', '下单时间', '状态'], rows.map(function(r){ r[1] = '<span class="td-mono" style="font-size:11.5px;">' + r[1] + '</span>'; r[5] = bdg(r[5], 'info'); return r; })));
 }
 function pPowpay(){
   $('page-powpay').innerHTML = head('奥德赛算力收益发放', '按个人奥德赛算力占全网比例分配每日产出 · 24:00 快照 → 12:00 发放 · 「已结算」可核对并重新发放（按昨日快照、用最新参数重算并覆盖）')
@@ -383,14 +413,14 @@ function pLevel(){
   $('page-level').innerHTML = head('等级与业绩', 'V1–V3 看团队整体业绩（不含本人，不分大小区）；V4 起看小区业绩 · V11 / V12 为隐藏等级（C 端达到前不展示）', bigBtn('保存参数', "saveP('等级参数')"))
     + stats([stat('普通会员', '18,240'), stat('V1–V3', '1,286'), stat('V4–V10', '142', '可参与 VIP 分红', 'ok'), stat('V11 / V12', '2', '隐藏等级')])
     + card('等级参数', tbl(['等级', '个人有效业绩（U）', '团队 / 小区业绩（U）', '口径', '分红权重', '推荐比例'], LV.map(function(l){ return ['<b>' + l[0] + '</b>', '<input class="form-input" style="width:110px;height:32px;" value="' + l[1] + '">', l[2] ? '<input class="form-input" style="width:130px;height:32px;" value="' + l[2] + '">' : '—', l[2] ? l[3] : '—', l[4] ? '<input class="form-input" style="width:70px;height:32px;" value="' + l[4] + '">' : '—', '<input class="form-input" style="width:80px;height:32px;" value="' + pct(l[5]) + '">']; })))
-    + card('业绩计入配置', grid(4, [sw('算力认购计入业绩', true, '个人 + 团队'), sw('活期质押计入', false), sw('30 天质押计入', false), sw('90 天质押计入', false), sw('180 天质押计入', false), sw('360 天质押计入', true, '质押量 × 质押时刻单价'), fs('提币是否扣减业绩', ['不扣减', '扣减']), fs('返佣数据源比例', ['100%', '50%'])]) + '<div class="text-mute" style="font-size:12px;margin-top:10px;">返佣数据源：下级入金 100 U，设为 100% 时普通会员级差得 5 U；设为 50% 时得 2.5 U。</div>')
+    + card('业绩计入配置', grid(4, [sw('算力认购计入业绩', true, '个人 + 团队'), sw('活期质押计入', false), sw('30 天质押计入', false), sw('90 天质押计入', false), sw('180 天质押计入', false), sw('360 天质押计入', true, '质押量 × 质押时刻单价'), fld('业绩变动规则', '只升不降', '', '提币、提取本金、质押到期均不扣减', ' disabled'), fs('返佣数据源比例', ['100%', '50%'])]) + '<div class="text-mute" style="font-size:12px;margin-top:10px;">返佣数据源：下级入金 100 U，设为 100% 时普通会员级差得 5 U；设为 50% 时得 2.5 U。</div>')
     + filters([fi('钱包地址', '0x…'), fs('等级', ['全部'].concat(LV.map(function(l){ return l[0]; })))])
     + cardT('会员等级', tbl(['钱包地址', '当前等级', '个人有效业绩', '团队业绩', '小区业绩', '升级时间', '操作'], [[addr(1), 'V6', '8,200', '1,120,000', '842,000', '2026-11-10 16:00'], [addr(0), 'V4', '5,600', '186,000', '142,000', '2026-11-08 16:00'], [addr(2), 'V2', '1,600', '42,000', '—', '2026-11-03 16:00']].map(function(r){ r[0] = '<span class="td-mono" style="font-size:11.5px;">' + r[0] + '</span>'; r[1] = bdg(r[1], 'special'); r.push(btn('业绩流水', "switchPage('perf')")); return r; })));
 }
 function pPerf(){
-  $('page-perf').innerHTML = head('业绩流水', '业绩增减明细：算力认购、360 天质押（质押时刻价值）计入个人与团队业绩；提币不扣减业绩')
-    + filters([fi('钱包地址', '0x…'), fs('类型', ['全部', '算力认购', '质押', '后台调整']), fs('业绩口径', ['全部', '个人', '团队'])])
-    + cardT('业绩流水', tbl(['时间', '钱包地址', '类型', '来源', '个人业绩', '团队业绩（向上传递）'], [['2026-11-15 10:35', short(addr(0)), '算力认购', 'A2O-20261115-0031 · 1,000 U', '+1,000', '上级 12 级 +1,000'], ['2026-11-15 10:40', short(addr(0)), '质押 360 天', '1,000 ODS × 0.42', '+420', '上级 12 级 +420'], ['2026-11-14 10:12', short(addr(1)), '算力认购', 'A2O-20261114-0412 · 1,000 U', '+1,000', '上级 11 级 +1,000'], ['2026-11-08 11:05', short(addr(3)), '质押 360 天', '3,000 ODS × 0.41', '+1,230', '上级 13 级 +1,230'], ['2026-11-05 09:00', short(addr(2)), '后台调整', '数据修正 · admin', '−200', '上级 9 级 −200']]));
+  $('page-perf').innerHTML = head('业绩流水', '业绩只升不降：算力认购（认购金额）、360 天质押（质押量 × 质押时刻单价）计入个人与团队业绩；提币、提取本金不扣减')
+    + filters([fi('钱包地址', '0x…'), fs('类型', ['全部', '算力认购', '质押 360 天']), fs('业绩口径', ['全部', '个人', '团队'])])
+    + cardT('业绩流水', tbl(['时间', '钱包地址', '类型', '来源', '个人业绩', '团队业绩（向上传递）'], [['2026-11-15 10:35', short(addr(0)), '算力认购', 'A2O-20261115-0031 · 1,000 U', '+1,000', '上级 12 级 +1,000'], ['2026-11-15 10:40', short(addr(0)), '质押 360 天', '1,000 ODS × 0.42', '+420', '上级 12 级 +420'], ['2026-11-14 10:12', short(addr(1)), '算力认购', 'A2O-20261114-0412 · 1,000 U', '+1,000', '上级 11 级 +1,000'], ['2026-11-08 11:05', short(addr(3)), '质押 360 天', '3,000 ODS × 0.41', '+1,230', '上级 13 级 +1,230'], ['2026-11-05 09:00', short(addr(2)), '算力认购', 'A2O-20261105-0102 · 200 U', '+200', '上级 9 级 +200']]));
 }
 function pReferral(){
   $('page-referral').innerHTML = head('推荐奖励 · 级差 / 直推', '级差奖：算力入金按上级等级推荐比例做级差，一次性发放；直推奖：算力入金 5%，独立于级差奖单独发放 · 均于 16:00 发放，按发放时 ODS 价格折算', bigBtn('保存参数', "saveP('推荐奖励参数')"))
@@ -438,7 +468,7 @@ var NAV = [
   ['会员与社区',[['p1','member','👤','会员管理'],['p1','teamtag','🏷','团队标签管理']]],
   ['财务管理',[['p1','community','🏷','社区编号管理'],['p1','tree','🌳','会员树查询'],['p1','deposit','⛓','入金记录'],['p1','order1','🧾','订单管理'],['p1','rebate','💵','直推返佣流水'],['p1','power','⚡','BOT 算力奖励发放'],['p1','powflow','📜','BOT 算力奖励发放流水'],['p1','award','🧾','佣金奖励审核'],['p1','withdraw','💸','提币审核'],['p1','teamwd','🏦','团队奖励提币审核']]],
   ['ODS 经济模型',[['p2','eco','◎','经济模型 · 每日产出'],['p2','pool','♻','回流池 · 销毁']]],
-  ['奥德赛算力',[['p2','order','🧾','算力认购订单'],['p2','powpay','⚡','算力收益发放'],['p2','nodepow','🎁','节点算力发放']]],
+  ['奥德赛算力',[['p2','kval','📈','算力系数（K 值）'],['p2','order','🧾','算力认购订单'],['p2','powpay','⚡','算力收益发放'],['p2','nodepow','🎁','节点算力发放']]],
   ['质押与资金',[['p2','stake','🔒','质押管理'],['p2','wd','💸','ODS 提币管理'],['p2','swap','⇄','Swap 与熔断']]],
   ['等级与奖励',[['p2','level','👑','等级与业绩'],['p2','perf','📈','业绩流水'],['p2','referral','🤝','推荐奖励 · 级差 / 直推'],['p2','dynamic','🌊','质押动态级差'],['p2','dividend','💎','VIP 级别分红'],['p2','noderebate','🪙','节点手续费返佣']]],
   ['节点与参数',[['p1','nodeparam','⚙','节点参数'],['p1','sysparam','🎛','系统参数'],['p1','stage','📊','发售阶段'],['p1','address','🏦','收款地址']]],
@@ -456,7 +486,7 @@ function switchPage(p){ CUR = p; document.querySelectorAll('.page').forEach(func
 var toastTimer;
 function showToastMsg(m){ var t = $('toast'); $('toast-msg').textContent = m; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(function(){ t.classList.remove('show'); }, 2600); }
 document.querySelectorAll('.modal-overlay').forEach(function(m){ m.addEventListener('click', function(e){ if(e.target === m) m.classList.remove('show'); }); });
-pEco(); pPool(); pOrder(); pPowpay(); pNodepow(); pStake(); pWd(); pLevel(); pPerf(); pReferral(); pDynamic(); pDividend(); pSwap(); pNoderebate(); renderNav();
+pEco(); pPool(); pKval(); pOrder(); pPowpay(); pNodepow(); pStake(); pWd(); pLevel(); pPerf(); pReferral(); pDynamic(); pDividend(); pSwap(); pNoderebate(); renderNav();
 
 </script>
 </body>
