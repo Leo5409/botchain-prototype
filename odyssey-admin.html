@@ -292,6 +292,7 @@ function filters(items){ return '<div class="card"><div class="card-body"><div c
 function fi(l, ph){ return '<div class="form-group"><label class="form-label">' + l + '</label><input class="form-input" placeholder="' + ph + '"></div>'; }
 function fs(l, opts){ return '<div class="form-group"><label class="form-label">' + l + '</label><select class="form-select">' + opts.map(function(o){ return '<option>' + o + '</option>'; }).join('') + '</select></div>'; }
 function saveP(name){ showToastMsg(name + '已保存 · C 端实时生效'); }
+function txh(h){ return '<span class="td-mono" style="font-size:11.5px;color:#4f46e5;cursor:pointer;" title="' + h + '" onclick="showToastMsg(\'已在区块浏览器打开交易 ' + h.slice(0, 10) + '…\')">' + h.slice(0, 10) + '…' + h.slice(-8) + '</span>'; }
 function short(a){ return a.slice(0, 6) + '…' + a.slice(-4); }
 
 /* ═══════════ 数据 ═══════════ */
@@ -445,7 +446,7 @@ function pSwap(){
     + stats([stat('ODS 价格', '0.4200 USDT', '1 ODS = 0.1739 BOT'), stat('24h 涨跌', FUSE.drop, '触发熔断', 'alert'), stat('当前卖出手续费 / 滑点', pct(curSell()), SWC.mode === 'manual' ? '手动设定' : '自动 · 第 ' + FUSE.n + ' 次熔断 · 剩 ' + FUSE.left + ' 天'), stat('当前买入手续费 / 滑点', pct(curBuy()), SWC.mode === 'manual' ? '手动设定' : '自动'), stat('今日交易额', '1,862,400 ODS', '3,128 笔')])
     + card('熔断状态', '<div class="modal-alert" style="margin:0;"><span class="icon">⚠</span><span>熔断中 · 第 ' + FUSE.n + ' 次（触发于 ' + FUSE.trig + '，24h 跌幅 ' + FUSE.drop + '）：卖出滑点 15% 起每天降 2%，当前 ' + pct(FUSE.slip) + '，剩 ' + FUSE.left + ' 天恢复 5%。</span></div>', btn('手动解除熔断', "showToastMsg('需二次确认，操作留痕')"))
     + filters([fi('钱包地址', '0x…'), fs('方向', ['全部', 'ODS → BOT', 'BOT → ODS']), dtr('到账时间', 'swAt')])
-    + cardT('交易流水', tbl(['单号', '下单时间', '钱包地址', '方向', '支付', '获得', '手续费 / 滑点', '到账时间'], [['SW-20261115-9012', '2026-11-15 10:52:14', short(addr(0)), 'ODS → BOT', '1,000 ODS', '151.3043 BOT', '13%（130 ODS）', '2026-11-15 10:52:20'], ['SW-20261115-9008', '2026-11-15 10:41:02', short(addr(2)), 'BOT → ODS', '100 BOT', '575.0000 ODS', '0%', '2026-11-15 10:41:09']]));
+    + cardT('交易流水', tbl(['单号', '下单时间', '钱包地址', '方向', '支付', '获得', '手续费 / 滑点', '到账时间', '交易 Hash'], [['SW-20261115-9012', '2026-11-15 10:52:14', short(addr(0)), 'ODS → BOT', '1,000 ODS', '151.3043 BOT', '13%（130 ODS）', '2026-11-15 10:52:20', txh('0x8f3a1c62d94e07b5a2f18c3d6e9b40a7c51d2e8f6a93b07c4d15e2f8a6b9c3d1')], ['SW-20261115-9008', '2026-11-15 10:41:02', short(addr(2)), 'BOT → ODS', '100 BOT', '575.0000 ODS', '0%', '2026-11-15 10:41:09', txh('0x2c7e94b1a05d38f6e2b9c4a7d18f53e0b6a2c9d4e71f08b3a5c6d2e9f4b17a80')]]));
 }
 
 /* ═══════════ 等级与业绩 ═══════════ */
