@@ -233,7 +233,7 @@
       <div class="page-header">
         <div>
           <div class="page-title">佣金发放审核<span class="tag-module">F-01</span></div>
-          <div class="page-subtitle">销售佣金（USDT）· 被邀请人得等级佣金，其上级得级差佣金 · 被邀请人所购矿机开机后，佣金由「待结算」转「待发放」 · 单笔 ≤ 免审阈值自动通过发放，其余运营复核 · 试算 → 待结算 → 待发放 → 复核 → 发放（幂等）</div>
+          <div class="page-subtitle">销售佣金 + <b style="color:#c2410c;">🆕 托管费返佣</b>（USDT）· 被邀请人得等级佣金，其上级得级差佣金 · 被邀请人所购 / 所缴费矿机开机后，佣金由「待结算」转「待发放」（续费时矿机已在收益中则直接待发放） · 单笔 ≤ 免审阈值自动通过发放，其余运营复核 · 试算 → 待结算 → 待发放 → 复核 → 发放（幂等）</div>
         </div>
         <div style="display:flex;gap:8px;">
           <button class="btn btn-secondary" onclick="showToastMsg('已生成佣金审核流水导出任务，前往下载中心')">⭳ 导出全部流水</button>
@@ -241,7 +241,7 @@
         </div>
       </div>
       <div class="stat-grid" style="grid-template-columns:repeat(5,1fr);">
-        <div class="stat-card"><div class="stat-label">待结算</div><div class="stat-value">1 <small>笔</small></div><div class="stat-trend neutral">待矿机开机</div></div>
+        <div class="stat-card"><div class="stat-label">待结算</div><div class="stat-value">3 <small>笔</small></div><div class="stat-trend neutral">待矿机开机</div></div>
         <div class="stat-card"><div class="stat-label">待发放</div><div class="stat-value">4 <small>笔</small></div><div class="stat-trend neutral">待运营复核</div></div>
         <div class="stat-card ok"><div class="stat-label">待发放金额</div><div class="stat-value">20,580.00 <small>USDT</small></div><div class="stat-trend neutral">复核后发放</div></div>
         <div class="stat-card"><div class="stat-label">今日已发放</div><div class="stat-value">6,400.00 <small>USDT</small></div><div class="stat-trend down">12 笔</div></div>
@@ -251,8 +251,8 @@
         <div class="card-body">
           <div class="filter-row">
             <div class="form-group"><label class="form-label">受益人地址</label><input class="form-input" placeholder="0x…"></div>
-            <div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待结算</option><option>待发放</option><option>已发放</option><option>自动发放</option><option>驳回</option></select></div>
-            <div class="form-group"><label class="form-label">触发时间</label><input class="form-input" value="2026-06-20 — 2026-07-06"></div>
+            <div class="form-group"><label class="form-label">返佣类型 <span class="pill" style="background:#fff7ed;color:#c2410c;">🆕</span></label><select class="form-select"><option>全部</option><option>矿机销售</option><option>托管费</option></select></div><div class="form-group"><label class="form-label">状态</label><select class="form-select"><option>全部</option><option>待结算</option><option>待发放</option><option>已发放</option><option>自动发放</option><option>驳回</option></select></div>
+            <div class="form-group"><label class="form-label">触发时间</label><input class="form-input" value="2026-06-20 00:00:00 — 2026-08-10 23:59:59"></div>
             <div class="filter-actions"><button class="btn btn-secondary">重置</button><button class="btn btn-primary">搜索</button></div>
           </div>
         </div>
@@ -260,14 +260,59 @@
           <table>
             <thead><tr>
               <th style="width:32px;"><input type="checkbox" class="ck" onclick="toggleAll(this)"></th>
-              <th>奖励单号</th><th>受益人 / 级别</th><th>被邀请人</th><th class="td-num">台数</th><th>订单</th>
+              <th>奖励单号</th><th>返佣类型 <span class="pill" style="background:#fff7ed;color:#c2410c;">🆕</span></th><th>受益人 / 级别</th><th>被邀请人</th><th class="td-num">台数</th><th>订单 / 缴费单</th>
               <th class="td-num">合计佣金 (USDT)</th>
               <th>状态</th><th>驳回备注</th><th>操作</th>
             </tr></thead>
             <tbody>
               <tr>
                 <td><input type="checkbox" class="ck" disabled></td>
+                <td class="td-mono">RW-88213</td>
+                <td><span class="pill" style="background:#fff7ed;color:#c2410c;">托管费</span></td>
+                <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
+                <td><span class="td-address">0x2236…dEF2</span> <span class="pill pill-v">V3</span></td><td class="td-num">1</td><td class="td-mono">HF-20260810-0031<div class="text-mute" style="font-size:11px;">360 天 × 1 台 · 780 U</div></td>
+                <td class="td-num" style="font-weight:700;">29.40</td>
+                <td><span class="badge badge-warn">待结算</span></td>
+                <td class="text-mute">矿机未开机</td>
+                <td class="ops-cell"><span class="text-mute">待矿机开机后结算</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck" disabled></td>
+                <td class="td-mono">RW-88212</td>
+                <td><span class="pill" style="background:#fff7ed;color:#c2410c;">托管费</span></td>
+                <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
+                <td><span class="text-mute">本人</span></td><td class="td-num">1</td><td class="td-mono">HF-20260810-0031<div class="text-mute" style="font-size:11px;">360 天 × 1 台 · 780 U</div></td>
+                <td class="td-num" style="font-weight:700;">133.27</td>
+                <td><span class="badge badge-warn">待结算</span></td>
+                <td class="text-mute">矿机未开机</td>
+                <td class="ops-cell"><span class="text-mute">待矿机开机后结算</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck" disabled></td>
+                <td class="td-mono">RW-88211</td>
+                <td><span class="pill" style="background:#fff7ed;color:#c2410c;">托管费</span></td>
+                <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
+                <td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span></td><td class="td-num">1</td><td class="td-mono">HF-20260718-0016<div class="text-mute" style="font-size:11px;">180 天 × 1 台 · 420 U</div></td>
+                <td class="td-num" style="font-weight:700;">15.83</td>
+                <td><span class="badge badge-done">已发放</span> <span class="pill" style="background:#ecfdf5;color:#047857;">自动</span></td>
+                <td class="text-mute">—</td>
+                <td class="ops-cell"><span class="text-mute">自动发放 · 已入账</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck" disabled></td>
+                <td class="td-mono">RW-88210</td>
+                <td><span class="pill" style="background:#fff7ed;color:#c2410c;">托管费</span></td>
+                <td class="td-address">0x74d4…f1f <span class="pill pill-v">V3</span></td>
+                <td><span class="text-mute">本人</span></td><td class="td-num">1</td><td class="td-mono">HF-20260718-0016<div class="text-mute" style="font-size:11px;">180 天 × 1 台 · 420 U</div></td>
+                <td class="td-num" style="font-weight:700;">71.76</td>
+                <td><span class="badge badge-done">已发放</span> <span class="pill" style="background:#ecfdf5;color:#047857;">自动</span></td>
+                <td class="text-mute">—</td>
+                <td class="ops-cell"><span class="text-mute">自动发放 · 已入账</span></td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" class="ck" disabled></td>
                 <td class="td-mono">RW-88208</td>
+                <td><span class="pill" style="background:#f3f4f6;color:#4b5563;">矿机销售</span></td>
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0x5b71…9d2</span> <span class="pill pill-v">V1</span></td><td class="td-num">2</td><td class="td-mono">ORD-77320</td>
                 <td class="td-num" style="font-weight:700;">1,760.00</td>
@@ -278,6 +323,7 @@
               <tr>
                 <td><input type="checkbox" class="ck row-ck"></td>
                 <td class="td-mono">RW-88205</td>
+                <td><span class="pill" style="background:#f3f4f6;color:#4b5563;">矿机销售</span></td>
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0x93cd…7a1</span> <span class="pill pill-v">V1</span></td><td class="td-num">1</td><td class="td-mono">ORD-77301</td>
                 <td class="td-num" style="font-weight:700;">880.00</td>
@@ -288,6 +334,7 @@
               <tr>
                 <td><input type="checkbox" class="ck row-ck"></td>
                 <td class="td-mono">RW-88204</td>
+                <td><span class="pill" style="background:#f3f4f6;color:#4b5563;">矿机销售</span></td>
                 <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
                 <td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span></td><td class="td-num">18</td><td class="td-mono">ORD-77298</td>
                 <td class="td-num" style="font-weight:700;">17,640.00</td>
@@ -298,6 +345,7 @@
               <tr>
                 <td><input type="checkbox" class="ck" disabled></td>
                 <td class="td-mono">RW-88203</td>
+                <td><span class="pill" style="background:#f3f4f6;color:#4b5563;">矿机销售</span></td>
                 <td class="td-address">0x88f3…2f13 <span class="pill pill-v">V4</span></td>
                 <td><span class="td-address">0x5b71…9d2</span> <span class="pill pill-v">V2</span></td><td class="td-num">1</td><td class="td-mono">ORD-77290</td>
                 <td class="td-num" style="font-weight:700;">440.00</td>
@@ -308,6 +356,7 @@
               <tr>
                 <td><input type="checkbox" class="ck row-ck"></td>
                 <td class="td-mono">RW-88201</td>
+                <td><span class="pill" style="background:#f3f4f6;color:#4b5563;">矿机销售</span></td>
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="td-address">0xba11…e2</span> <span class="pill pill-v">V0</span></td><td class="td-num">1</td><td class="td-mono">ORD-77260</td>
                 <td class="td-num" style="font-weight:700;">980.00</td>
@@ -318,6 +367,7 @@
               <tr>
                 <td><input type="checkbox" class="ck row-ck"></td>
                 <td class="td-mono">RW-88190</td>
+                <td><span class="pill" style="background:#f3f4f6;color:#4b5563;">矿机销售</span></td>
                 <td class="td-address">0x9f2c…a1b <span class="pill pill-v">V8</span></td>
                 <td><span class="td-address">0x33de…7c0</span> <span class="pill pill-v">V5</span></td><td class="td-num">1</td><td class="td-mono">ORD-77240</td>
                 <td class="td-num" style="font-weight:700;">1,080.00</td>
@@ -328,6 +378,7 @@
               <tr>
                 <td><input type="checkbox" class="ck" disabled></td>
                 <td class="td-mono">RW-88155</td>
+                <td><span class="pill" style="background:#f3f4f6;color:#4b5563;">矿机销售</span></td>
                 <td class="td-address">0x2f47…e88 <span class="pill pill-v">V7</span></td>
                 <td><span class="td-address">0x9012…c3d</span> <span class="pill pill-v">V4</span></td><td class="td-num">1</td><td class="td-mono">ORD-77210</td>
                 <td class="td-num" style="font-weight:700;">1,030.00</td>
@@ -339,7 +390,7 @@
           </table>
         </div>
         <div class="table-footer">
-          <span class="total-count">共 <strong>7</strong> 条 · 待结算 1 · 待发放 4 · 已发放 2（含自动 1）</span>
+          <span class="total-count">共 <strong>11</strong> 条 · 待结算 3 · 待发放 4 · 已发放 4（含自动 3）· 其中托管费返佣 4 条</span>
           <div class="pagination">
             <button class="page-btn disabled">‹</button>
             <button class="page-btn active">1</button>
@@ -400,20 +451,20 @@
         </div>
       </div></div>
       <div class="card">
-        <div class="card-header"><div class="card-title">佣金与矿机统计</div><span class="text-mute">佣金（USDT）· 矿机（台）· 每个地址一行</span></div>
+        <div class="card-header"><div class="card-title">佣金与矿机统计</div><span class="text-mute">佣金（USDT，含托管费返佣）· 矿机（台）· 每个地址一行</span></div>
         <div class="table-wrapper"><table>
           <thead><tr>
             <th>用户地址 / 级别</th>
-            <th class="td-num">总佣金</th><th class="td-num">已发放佣金</th><th class="td-num">已提取佣金</th><th class="td-num">待发放佣金</th>
+            <th class="td-num">总佣金</th><th class="td-num">其中托管费返佣 <span class="pill" style="background:#fff7ed;color:#c2410c;">🆕</span></th><th class="td-num">已发放佣金</th><th class="td-num">已提取佣金</th><th class="td-num">待发放佣金</th>
             <th class="td-num">总购买矿机数</th><th class="td-num">当前持有矿机数</th><th class="td-num">已转赠矿机数</th>
           </tr></thead>
           <tbody>
-            <tr><td><span class="td-address">0x2236…dEF2</span> <span class="pill pill-v">V3</span></td><td class="td-num">8,420.00</td><td class="td-num td-green">6,400.00</td><td class="td-num">2,000.00</td><td class="td-num td-orange">2,020.00</td><td class="td-num">120</td><td class="td-num">65</td><td class="td-num">55</td></tr>
-            <tr><td><span class="td-address">0x9f2c…a1b</span> <span class="pill pill-v">V8</span></td><td class="td-num">96,540.00</td><td class="td-num td-green">90,120.00</td><td class="td-num">72,000.00</td><td class="td-num td-orange">6,420.00</td><td class="td-num">1,250</td><td class="td-num">820</td><td class="td-num">430</td></tr>
-            <tr><td><span class="td-address">0x2f47…e88</span> <span class="pill pill-v">V7</span></td><td class="td-num">61,300.00</td><td class="td-num td-green">58,000.00</td><td class="td-num">45,000.00</td><td class="td-num td-orange">3,300.00</td><td class="td-num">760</td><td class="td-num">500</td><td class="td-num">260</td></tr>
-            <tr><td><span class="td-address">0x6a1f…0c2</span> <span class="pill pill-v">V6</span></td><td class="td-num">42,180.00</td><td class="td-num td-green">38,900.00</td><td class="td-num">30,000.00</td><td class="td-num td-orange">3,280.00</td><td class="td-num">540</td><td class="td-num">300</td><td class="td-num">240</td></tr>
-            <tr><td><span class="td-address">0x88f3…2f13</span> <span class="pill pill-v">V4</span></td><td class="td-num">15,760.00</td><td class="td-num td-green">14,200.00</td><td class="td-num">10,000.00</td><td class="td-num td-orange">1,560.00</td><td class="td-num">210</td><td class="td-num">150</td><td class="td-num">60</td></tr>
-            <tr><td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span></td><td class="td-num">7,890.00</td><td class="td-num td-green">6,890.00</td><td class="td-num">5,000.00</td><td class="td-num td-orange">1,000.00</td><td class="td-num">96</td><td class="td-num">70</td><td class="td-num">26</td></tr>
+            <tr><td><span class="td-address">0x2236…dEF2</span> <span class="pill pill-v">V3</span></td><td class="td-num">8,420.00</td><td class="td-num" style="color:#c2410c;">133.27</td><td class="td-num td-green">6,400.00</td><td class="td-num">2,000.00</td><td class="td-num td-orange">2,020.00</td><td class="td-num">120</td><td class="td-num">65</td><td class="td-num">55</td></tr>
+            <tr><td><span class="td-address">0x9f2c…a1b</span> <span class="pill pill-v">V8</span></td><td class="td-num">96,540.00</td><td class="td-num" style="color:#c2410c;">0.00</td><td class="td-num td-green">90,120.00</td><td class="td-num">72,000.00</td><td class="td-num td-orange">6,420.00</td><td class="td-num">1,250</td><td class="td-num">820</td><td class="td-num">430</td></tr>
+            <tr><td><span class="td-address">0x2f47…e88</span> <span class="pill pill-v">V7</span></td><td class="td-num">61,300.00</td><td class="td-num" style="color:#c2410c;">0.00</td><td class="td-num td-green">58,000.00</td><td class="td-num">45,000.00</td><td class="td-num td-orange">3,300.00</td><td class="td-num">760</td><td class="td-num">500</td><td class="td-num">260</td></tr>
+            <tr><td><span class="td-address">0x6a1f…0c2</span> <span class="pill pill-v">V6</span></td><td class="td-num">42,180.00</td><td class="td-num" style="color:#c2410c;">45.23</td><td class="td-num td-green">38,900.00</td><td class="td-num">30,000.00</td><td class="td-num td-orange">3,280.00</td><td class="td-num">540</td><td class="td-num">300</td><td class="td-num">240</td></tr>
+            <tr><td><span class="td-address">0x88f3…2f13</span> <span class="pill pill-v">V4</span></td><td class="td-num">15,760.00</td><td class="td-num" style="color:#c2410c;">0.00</td><td class="td-num td-green">14,200.00</td><td class="td-num">10,000.00</td><td class="td-num td-orange">1,560.00</td><td class="td-num">210</td><td class="td-num">150</td><td class="td-num">60</td></tr>
+            <tr><td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span></td><td class="td-num">7,890.00</td><td class="td-num" style="color:#c2410c;">71.76</td><td class="td-num td-green">6,890.00</td><td class="td-num">5,000.00</td><td class="td-num td-orange">1,000.00</td><td class="td-num">96</td><td class="td-num">70</td><td class="td-num">26</td></tr>
           </tbody>
         </table></div>
         <div class="table-footer"><span class="total-count">共 <strong>6</strong> 位用户</span><div class="pagination"><button class="page-btn disabled">‹</button><button class="page-btn active">1</button><button class="page-btn">2</button><button class="page-btn">›</button></div></div>
@@ -507,6 +558,17 @@
               <td class="ops-cell"><button class="btn btn-secondary btn-sm" onclick="openRebateView('新春活动返佣表')">查看</button><button class="btn btn-secondary btn-sm" onclick="openRebateEdit('编辑 · 新春活动返佣表')">编辑</button><button class="btn btn-success btn-sm" onclick="showToastMsg('已启用')">启用</button></td>
             </tr>
           </tbody>
+        </table></div>
+      </div>
+
+      <div class="card">
+        <div class="card-header"><div class="card-title"><span class="pill" style="background:#fff7ed;color:#c2410c;">🆕</span> 托管费返佣比例</div><span class="text-mute">依据默认表「标准原价返佣表 RB-01」自动折算 · 只读</span></div>
+        <div class="card-body" style="font-size:12px;color:#4b5563;line-height:1.8;padding-bottom:0;">
+          托管费返佣比例 = 该级别<b>单台原价奖励 ÷ 3,980 U</b>（单台矿机原价）· 等级佣金 = 托管费 × 缴费人比例（归缴费人本人）· 级差佣金 = 托管费 ×（直接上级比例 − 缴费人比例），≤ 0 不产生 · 金额四舍五入保留 2 位小数 · 修改默认表单台奖励后，比例随之更新，仅影响之后缴费的订单
+        </div>
+        <div class="table-wrapper"><table>
+          <thead><tr><th>级别</th><th class="td-num">单台原价奖励（U）</th><th class="td-num">托管费返佣比例</th><th class="td-num">180 天 · 420 U</th><th class="td-num">360 天 · 780 U</th><th class="td-num">720 天 · 1,440 U</th></tr></thead>
+          <tbody><tr><td style="font-weight:600;">普通</td><td class="td-num">380</td><td class="td-num" style="font-weight:700;color:#c2410c;">9.5477%</td><td class="td-num">40.10</td><td class="td-num">74.47</td><td class="td-num">137.49</td></tr><tr><td style="font-weight:600;">V0</td><td class="td-num">380</td><td class="td-num" style="font-weight:700;color:#c2410c;">9.5477%</td><td class="td-num">40.10</td><td class="td-num">74.47</td><td class="td-num">137.49</td></tr><tr><td style="font-weight:600;">V1</td><td class="td-num">480</td><td class="td-num" style="font-weight:700;color:#c2410c;">12.0603%</td><td class="td-num">50.65</td><td class="td-num">94.07</td><td class="td-num">173.67</td></tr><tr><td style="font-weight:600;">V2</td><td class="td-num">580</td><td class="td-num" style="font-weight:700;color:#c2410c;">14.5729%</td><td class="td-num">61.21</td><td class="td-num">113.67</td><td class="td-num">209.85</td></tr><tr><td style="font-weight:600;">V3</td><td class="td-num">680</td><td class="td-num" style="font-weight:700;color:#c2410c;">17.0854%</td><td class="td-num">71.76</td><td class="td-num">133.27</td><td class="td-num">246.03</td></tr><tr><td style="font-weight:600;">V4</td><td class="td-num">730</td><td class="td-num" style="font-weight:700;color:#c2410c;">18.3417%</td><td class="td-num">77.04</td><td class="td-num">143.07</td><td class="td-num">264.12</td></tr><tr><td style="font-weight:600;">V5</td><td class="td-num">780</td><td class="td-num" style="font-weight:700;color:#c2410c;">19.5980%</td><td class="td-num">82.31</td><td class="td-num">152.86</td><td class="td-num">282.21</td></tr><tr><td style="font-weight:600;">V6</td><td class="td-num">830</td><td class="td-num" style="font-weight:700;color:#c2410c;">20.8543%</td><td class="td-num">87.59</td><td class="td-num">162.66</td><td class="td-num">300.30</td></tr><tr><td style="font-weight:600;">V7</td><td class="td-num">880</td><td class="td-num" style="font-weight:700;color:#c2410c;">22.1106%</td><td class="td-num">92.86</td><td class="td-num">172.46</td><td class="td-num">318.39</td></tr><tr><td style="font-weight:600;">V8</td><td class="td-num">930</td><td class="td-num" style="font-weight:700;color:#c2410c;">23.3668%</td><td class="td-num">98.14</td><td class="td-num">182.26</td><td class="td-num">336.48</td></tr><tr><td style="font-weight:600;">V9</td><td class="td-num">960</td><td class="td-num" style="font-weight:700;color:#c2410c;">24.1206%</td><td class="td-num">101.31</td><td class="td-num">188.14</td><td class="td-num">347.34</td></tr><tr><td style="font-weight:600;">V10</td><td class="td-num">980</td><td class="td-num" style="font-weight:700;color:#c2410c;">24.6231%</td><td class="td-num">103.42</td><td class="td-num">192.06</td><td class="td-num">354.57</td></tr></tbody>
         </table></div>
       </div>
     </div>
