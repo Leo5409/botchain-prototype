@@ -271,7 +271,7 @@
                 <td><span class="pill" style="background:#fff7ed;color:#c2410c;">托管费</span></td>
                 <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
                 <td><span class="td-address">0x2236…dEF2</span> <span class="pill pill-v">V3</span></td><td class="td-num">1</td><td class="td-mono">HF-20260810-0031<div class="text-mute" style="font-size:11px;">360 天 × 1 台 · 780 U</div></td>
-                <td class="td-num" style="font-weight:700;">29.40</td>
+                <td class="td-num" style="font-weight:700;">234.00</td>
                 <td><span class="badge badge-warn">待结算</span></td>
                 <td class="text-mute">矿机未开机</td>
                 <td class="ops-cell"><span class="text-mute">待矿机开机后结算</span></td>
@@ -282,7 +282,7 @@
                 <td><span class="pill" style="background:#fff7ed;color:#c2410c;">托管费</span></td>
                 <td class="td-address">0x2236…dEF2 <span class="pill pill-v">V3</span></td>
                 <td><span class="text-mute">本人</span></td><td class="td-num">1</td><td class="td-mono">HF-20260810-0031<div class="text-mute" style="font-size:11px;">360 天 × 1 台 · 780 U</div></td>
-                <td class="td-num" style="font-weight:700;">133.27</td>
+                <td class="td-num" style="font-weight:700;">335.40</td>
                 <td><span class="badge badge-warn">待结算</span></td>
                 <td class="text-mute">矿机未开机</td>
                 <td class="ops-cell"><span class="text-mute">待矿机开机后结算</span></td>
@@ -293,7 +293,7 @@
                 <td><span class="pill" style="background:#fff7ed;color:#c2410c;">托管费</span></td>
                 <td class="td-address">0x6a1f…0c2 <span class="pill pill-v">V6</span></td>
                 <td><span class="td-address">0x74d4…f1f</span> <span class="pill pill-v">V3</span></td><td class="td-num">1</td><td class="td-mono">HF-20260718-0016<div class="text-mute" style="font-size:11px;">180 天 × 1 台 · 420 U</div></td>
-                <td class="td-num" style="font-weight:700;">15.83</td>
+                <td class="td-num" style="font-weight:700;">126.00</td>
                 <td><span class="badge badge-done">已发放</span> <span class="pill" style="background:#ecfdf5;color:#047857;">自动</span></td>
                 <td class="text-mute">—</td>
                 <td class="ops-cell"><span class="text-mute">自动发放 · 已入账</span></td>
@@ -304,7 +304,7 @@
                 <td><span class="pill" style="background:#fff7ed;color:#c2410c;">托管费</span></td>
                 <td class="td-address">0x74d4…f1f <span class="pill pill-v">V3</span></td>
                 <td><span class="text-mute">本人</span></td><td class="td-num">1</td><td class="td-mono">HF-20260718-0016<div class="text-mute" style="font-size:11px;">180 天 × 1 台 · 420 U</div></td>
-                <td class="td-num" style="font-weight:700;">71.76</td>
+                <td class="td-num" style="font-weight:700;">180.60</td>
                 <td><span class="badge badge-done">已发放</span> <span class="pill" style="background:#ecfdf5;color:#047857;">自动</span></td>
                 <td class="text-mute">—</td>
                 <td class="ops-cell"><span class="text-mute">自动发放 · 已入账</span></td>
@@ -560,15 +560,17 @@
           </tbody>
         </table></div>
       </div>
-
       <div class="card">
-        <div class="card-header"><div class="card-title"><span class="pill" style="background:#fff7ed;color:#c2410c;">🆕</span> 托管费返佣比例</div><span class="text-mute">依据默认表「标准原价返佣表 RB-01」自动折算 · 只读</span></div>
+        <div class="card-header">
+          <div><div class="card-title"><span class="pill" style="background:#fff7ed;color:#c2410c;">🆕</span> 托管费返佣比例</div><span class="text-mute">奖励比例可直接编辑（0.2 = 20%）· 保存后生效</span></div>
+          <button class="btn btn-primary" onclick="showToastMsg('托管费返佣比例已保存（落审计）')">保存</button>
+        </div>
         <div class="card-body" style="font-size:12px;color:#4b5563;line-height:1.8;padding-bottom:0;">
-          托管费返佣比例 = 该级别<b>单台原价奖励 ÷ 3,980 U</b>（单台矿机原价）· 等级佣金 = 托管费 × 缴费人比例（归缴费人本人）· 级差佣金 = 托管费 ×（直接上级比例 − 缴费人比例），≤ 0 不产生 · 金额四舍五入保留 2 位小数 · 修改默认表单台奖励后，比例随之更新，仅影响之后缴费的订单
+          「单台原价返佣比例」用于矿机销售返佣（单台返佣 = <b>3,980 U</b> × 比例）· 「托管费返佣比例」用于托管费返佣（返佣 = <b>托管费合计</b> × 比例）· 等级佣金归缴费人本人 · 级差佣金 = 托管费 ×（直接上级比例 − 缴费人比例），≤ 0 不产生 · 金额四舍五入保留 2 位小数 · 修改后仅影响之后缴费的订单
         </div>
         <div class="table-wrapper"><table>
-          <thead><tr><th>级别</th><th class="td-num">单台原价奖励（U）</th><th class="td-num">托管费返佣比例</th><th class="td-num">180 天 · 420 U</th><th class="td-num">360 天 · 780 U</th><th class="td-num">720 天 · 1,440 U</th></tr></thead>
-          <tbody><tr><td style="font-weight:600;">普通</td><td class="td-num">380</td><td class="td-num" style="font-weight:700;color:#c2410c;">9.5477%</td><td class="td-num">40.10</td><td class="td-num">74.47</td><td class="td-num">137.49</td></tr><tr><td style="font-weight:600;">V0</td><td class="td-num">380</td><td class="td-num" style="font-weight:700;color:#c2410c;">9.5477%</td><td class="td-num">40.10</td><td class="td-num">74.47</td><td class="td-num">137.49</td></tr><tr><td style="font-weight:600;">V1</td><td class="td-num">480</td><td class="td-num" style="font-weight:700;color:#c2410c;">12.0603%</td><td class="td-num">50.65</td><td class="td-num">94.07</td><td class="td-num">173.67</td></tr><tr><td style="font-weight:600;">V2</td><td class="td-num">580</td><td class="td-num" style="font-weight:700;color:#c2410c;">14.5729%</td><td class="td-num">61.21</td><td class="td-num">113.67</td><td class="td-num">209.85</td></tr><tr><td style="font-weight:600;">V3</td><td class="td-num">680</td><td class="td-num" style="font-weight:700;color:#c2410c;">17.0854%</td><td class="td-num">71.76</td><td class="td-num">133.27</td><td class="td-num">246.03</td></tr><tr><td style="font-weight:600;">V4</td><td class="td-num">730</td><td class="td-num" style="font-weight:700;color:#c2410c;">18.3417%</td><td class="td-num">77.04</td><td class="td-num">143.07</td><td class="td-num">264.12</td></tr><tr><td style="font-weight:600;">V5</td><td class="td-num">780</td><td class="td-num" style="font-weight:700;color:#c2410c;">19.5980%</td><td class="td-num">82.31</td><td class="td-num">152.86</td><td class="td-num">282.21</td></tr><tr><td style="font-weight:600;">V6</td><td class="td-num">830</td><td class="td-num" style="font-weight:700;color:#c2410c;">20.8543%</td><td class="td-num">87.59</td><td class="td-num">162.66</td><td class="td-num">300.30</td></tr><tr><td style="font-weight:600;">V7</td><td class="td-num">880</td><td class="td-num" style="font-weight:700;color:#c2410c;">22.1106%</td><td class="td-num">92.86</td><td class="td-num">172.46</td><td class="td-num">318.39</td></tr><tr><td style="font-weight:600;">V8</td><td class="td-num">930</td><td class="td-num" style="font-weight:700;color:#c2410c;">23.3668%</td><td class="td-num">98.14</td><td class="td-num">182.26</td><td class="td-num">336.48</td></tr><tr><td style="font-weight:600;">V9</td><td class="td-num">960</td><td class="td-num" style="font-weight:700;color:#c2410c;">24.1206%</td><td class="td-num">101.31</td><td class="td-num">188.14</td><td class="td-num">347.34</td></tr><tr><td style="font-weight:600;">V10</td><td class="td-num">980</td><td class="td-num" style="font-weight:700;color:#c2410c;">24.6231%</td><td class="td-num">103.42</td><td class="td-num">192.06</td><td class="td-num">354.57</td></tr></tbody>
+          <thead><tr><th>级别</th><th class="td-num">单台原价返佣比例</th><th class="td-num">托管费返佣比例</th></tr></thead>
+          <tbody><tr><td style="font-weight:600;">普通</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0"></td></tr><tr><td style="font-weight:600;">V0</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0"></td></tr><tr><td style="font-weight:600;">V1</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.2"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.2"></td></tr><tr><td style="font-weight:600;">V2</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.33"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.33"></td></tr><tr><td style="font-weight:600;">V3</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.43"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.43"></td></tr><tr><td style="font-weight:600;">V4</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.53"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.53"></td></tr><tr><td style="font-weight:600;">V5</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.63"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.63"></td></tr><tr><td style="font-weight:600;">V6</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.73"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.73"></td></tr><tr><td style="font-weight:600;">V7</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.8"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.8"></td></tr><tr><td style="font-weight:600;">V8</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.87"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.87"></td></tr><tr><td style="font-weight:600;">V9</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.93"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="0.93"></td></tr><tr><td style="font-weight:600;">V10</td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="1.0"></td><td class="td-num"><input class="form-input" style="height:26px;width:110px;text-align:right;margin-left:auto;" value="1.0"></td></tr></tbody>
         </table></div>
       </div>
     </div>
